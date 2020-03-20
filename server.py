@@ -1,6 +1,6 @@
 import socket
 import sys
-import thread
+import _thread
 
 def new_client(clientsocket, addr):
 	msg_out = 'Welcoome to the BBS server'
@@ -21,7 +21,7 @@ serversocket.listen(11)
 while True:
 	clientsocket, addr = serversocket.accept();
 	print("New Connection: %s" %str(addr))
-	thread.start_new_thread(new_client, (clientsocket, addr))
+	_thread.start_new_thread(new_client, (clientsocket, addr))
 
 	
 	
