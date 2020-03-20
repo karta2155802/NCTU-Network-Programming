@@ -9,8 +9,9 @@ def new_client(clientsocket, addr):
 	while True:
 		msg_out = '%'
 		clientsocket.send(msg_out.encode('utf-8'))
-		msg_in = clientsocket.recv(1024)
-		print(msg_in.decode('utf-8'))
+		msg_in = clientsocket.recv(1024).decode('utf-8')
+		msg_in = replace('\r','').replace('\n','')
+		print(msg_in)
 
 
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
