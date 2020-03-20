@@ -7,12 +7,10 @@ def new_client(clientsocket, addr):
 	clientsocket.send(msg_out.encode('utf-8'))
 	clientsocket.recv(1024)
 	while True:
-		msg_in = 'initial'
-		if msg_in != '': 
-			msg_out = '%'
-			clientsocket.send(msg_out.encode('utf-8'))
+		msg_out = '%'
+		clientsocket.send(msg_out.encode('utf-8'))
 		msg_in = clientsocket.recv(1024).decode('utf-8')
-		msg_in = replace('\r','').replace('\n','')
+		msg_in = msg_in.replace('\r','').replace('\n','')
 		print(msg_in)
 
 
