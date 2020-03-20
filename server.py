@@ -5,10 +5,12 @@ import _thread
 def new_client(clientsocket, addr):
 	msg_out = 'Welcoome to the BBS server\r\n'
 	clientsocket.send(msg_out.encode('utf-8'))
-	msg_in = clientsocket.recv(1024)
+	clientsocket.recv(1024)
 	while True:
-		msg_out = '%'
-		clientsocket.send(msg_out.encode('utf-8'))
+		msg_in = 'initial'
+		if msg_in != '': 
+			msg_out = '%'
+			clientsocket.send(msg_out.encode('utf-8'))
 		msg_in = clientsocket.recv(1024).decode('utf-8')
 		msg_in = replace('\r','').replace('\n','')
 		print(msg_in)
