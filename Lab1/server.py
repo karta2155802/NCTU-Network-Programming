@@ -28,12 +28,14 @@ def new_client(clientsocket, addr):
 		if msg_in != '': 
 			msg_out = '% '
 			clientsocket.send(msg_out.encode('utf-8'))
+		print('1')
 		msg_in = clientsocket.recv(1024).decode('utf-8')
+		print('2')
 		msg_in = msg_in.replace('\r','').replace('\n','')
 		print(msg_in)
 		#msg_list = msg_in.split();
 		string_processing(msg_in, conn, c)
-		print('command finish')
+		print('3')
 
 
 def string_processing(msg_in, conn, c):
