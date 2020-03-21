@@ -8,7 +8,7 @@ from sqlite3 import Error
 def sql_insert(msg_in, conn, c):
 	try:
 		msg_split = msg_in.split()
-		reply=c.execute('INSERT INTO  USERS ("Username", "Email", "Password") VALUES (?,?,?)', (msg_split[1], msg_split[2], msg_split[3]))
+		reply=c.execute('insert into USERS ("Username", "Email", "Password") values (?,?,?)', (msg_split[1], msg_split[2], msg_split[3]))
 		conn.commit()
 		print('Insertion success')
 	except Error:
@@ -33,11 +33,12 @@ def new_client(clientsocket, addr):
 		print(msg_in)
 		#msg_list = msg_in.split();
 		string_processing(msg_in, conn, c)
+		print('command finish')
 
 
 def string_processing(msg_in, conn, c):
 	msg_split = msg_in.split()
-	if msg_split[0] == "register":
+	if msg_split[0] == 'register':
 		if len(msg_split) != 4:
 			msg_out = 'Usage: regoster <username> <email> <password>\r\n'
 			clientsocket.send(msg_out.encode('utf-8'))
