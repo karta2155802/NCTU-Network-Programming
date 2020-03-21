@@ -5,8 +5,9 @@ import sqlite3
 from sqlite3 import Error
 
 
-def sql_insert(msg_list, conn, c):
-	reply=c.execute('INSERT INTO  USERS ("Username", "Email", "Password") VALUES (?,?,?)', (msg_list[1], msg_list[2], msg_list[3]))
+def sql_insert(msg_in, conn, c):
+	msg_split = msg_in.split()
+	reply=c.execute('INSERT INTO  USERS ("Username", "Email", "Password") VALUES (?,?,?)', (msg_split[1], msg_split[2], msg_split[3]))
 	conn.commit()
 	print('Insertion success')
 	#except Error:
@@ -30,18 +31,19 @@ def new_client(clientsocket, addr):
 		msg_in = clientsocket.recv(1024).decode('utf-8')
 		msg_in = msg_in.replace('\r','').replace('\n','')
 		print(msg_in)
-		msg_list = msg_in.split();
-		string_processing(msg_list, conn, c)
+		#msg_list = msg_in.split();
+		string_processing(msg_in, conn, c)
 
 
-def string_processing(msg_list, conn, c):
-	if msg_list[0] == "register":
+def string_processing(msg_in, conn, c):
+	msg_split = msg_in.split()
+	if msg_split[0] == "register":
 		if len(msg_split) != 4:
 			msg_out = 'Usage: regoster <username> <email> <password>\r\n'
 			clientsocket.send(msg_out.encode('utf-8'))
 		else:
 			print('Inserting...')
-			sql_insert(msg_list,conn, c)
+			sql_insert(msg_in, conn, c)
 
 
 	#elif str[0] == "login":
