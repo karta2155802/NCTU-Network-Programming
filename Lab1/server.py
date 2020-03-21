@@ -8,7 +8,9 @@ from sqlite3 import Error
 def sql_insert(msg_in):
 	msg_split = msg_in.split()
 	try:
+		print(msg_split[1])
 		c.execute('INSERT INTO  USERS ("Username", "Email", "Password") VALUES (?,?,?)', (msg_split[1], msg_split[2], msg_split[3]))
+		print(msg_split[2])
 		con.commit()
 		print('Insertion success')
 	except Error:
