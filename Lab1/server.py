@@ -17,9 +17,10 @@ def sql_connection():
 def sql_insert(str):
 	try:
 		cursorObj.execute("insert into  USERS (Username, Email, Password) values (?,?,?)", (str[1], str[2], str[3]))
+		cursorObj.commit()
 	except Error:
-		print(Error)
-		msg_out = 'Username is already used.'
+		print('Insertion Error')
+		msg_out = 'Username is already used.\r\n'
 		clientsocket.send(msg_out.encode('utf-8'))
 
 def new_client(clientsocket, addr):
@@ -41,7 +42,7 @@ def new_client(clientsocket, addr):
 def string_processing(str):
 	if str[0] == 'register':
 		if len(str) != 4:
-			msg_out = 'Usage: regoster <username> <email> <password>'
+			msg_out = 'Usage: regoster <username> <email> <password>\r\n'
 			clientsocket.send(msg_out.encode('utf-8'))
 		else:
 			print('Inserting')
@@ -53,7 +54,7 @@ def string_processing(str):
 		if len(str) != 3:
 			msg_out = 'Usage: login <username> <password>'
 			clientsocket.send(msg_out.encode('utf-8'))
-		else:
+		
 
 	#elif str[0] == 'logout':
 
