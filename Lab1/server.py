@@ -28,10 +28,12 @@ def new_client(clientsocket, addr):
 	clientsocket.send(msg_out.encode('utf-8'))
 	while True:
 		msg_in = clientsocket.recv(1024).decode('utf-8')
-		if msg_in == '':
+		print(msg_in)
+		enter = '\r\n'
+		if msg_in.find(enter) < 0:
 			continue
 		msg_in = msg_in.replace('\r','').replace('\n','')			
-		print(msg_in)
+		
 		#msg_list = msg_in.split();	
 		string_processing(msg_in, conn, c)
 		msg_out = '% '
