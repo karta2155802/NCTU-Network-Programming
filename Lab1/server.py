@@ -16,7 +16,7 @@ def sql_connection():
 
 def sql_insert(str):
 	try:
-		c.execute("insert into  USERS (Username, Email, Password) values (?,?,?)", (str.split()[1], str.split()[2], str.split()[3]))
+		c.execute('nsert into  USERS ("Username", "Email", "Password") values (?,?,?)', (str[1], str[2], str[3]))
 		con.commit()
 		print('Insertion success')
 	except Error:
@@ -36,13 +36,13 @@ def new_client(clientsocket, addr):
 		msg_in = clientsocket.recv(1024).decode('utf-8')
 		msg_in = msg_in.replace('\r','').replace('\n','')
 		print(msg_in)
-		#msg_list = msg_in.split();
+		msg_list = msg_in.split();
 		string_processing(msg_in)
 
 
 def string_processing(str):
-	if str.split()[0] == 'register':
-		if len(str.split()) != 4:
+	if str[0] == "register":
+		if len(str) != 4:
 			msg_out = 'Usage: regoster <username> <email> <password>\r\n'
 			clientsocket.send(msg_out.encode('utf-8'))
 		else:
@@ -50,8 +50,8 @@ def string_processing(str):
 			sql_insert(str)
 
 
-	elif str.split()[0] == 'login':
-		if len(str.split()) != 3:
+	elif str[0] == "login":
+		if len(str) != 3:
 			msg_out = 'Usage: login <username> <password>'
 			clientsocket.send(msg_out.encode('utf-8'))
 		
