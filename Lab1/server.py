@@ -12,6 +12,7 @@ def sql_insert(msg_in, conn, c):
 		conn.commit()
 		print('Insertion success')
 	except Error:
+		print('Username is already used')
 		msg_out = 'Username is already used.\r\n'
 		clientsocket.send(msg_out.encode('utf-8'))
 
@@ -23,24 +24,23 @@ def new_client(clientsocket, addr):
 	msg_out = 'Welcoome to the BBS server\r\n'
 	clientsocket.send(msg_out.encode('utf-8'))
 	clientsocket.recv(1024)
-	msg_in = 'initial'
+	msg_out = '% '
+	clientsocket.send(msg_out.encode('utf-8'))
 	while True:
-		if msg_in != '': 
-			msg_out = '% '
-			clientsocket.send(msg_out.encode('utf-8'))
-		print('1')
 		msg_in = clientsocket.recv(1024).decode('utf-8')
-		print('2')
-		msg_in = msg_in.replace('\r','').replace('\n','')
+		if msg_in == '':
+			continue
+		msg_in = msg_in.replace('\r','').replace('\n','')			
 		print(msg_in)
-		#msg_list = msg_in.split();
+		#msg_list = msg_in.split();	
 		string_processing(msg_in, conn, c)
-		print('3')
+		msg_out = '% '
+		clientsocket.send(msg_out.encode('utf-8'))
 
 
 def string_processing(msg_in, conn, c):
 	msg_split = msg_in.split()
-	if msg_split[0] == 'register':
+	if msg_split[0] == "register":
 		if len(msg_split) != 4:
 			msg_out = 'Usage: regoster <username> <email> <password>\r\n'
 			clientsocket.send(msg_out.encode('utf-8'))
@@ -67,7 +67,7 @@ host = socket.gethostname();
 port = 10000
 serversocket.bind((host, port))
 serversocket.listen(11)
-print("Waiting for connection")
+print("Waiting for connection...")
 
 while True:
 	clientsocket, addr = serversocket.accept();
