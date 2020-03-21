@@ -7,16 +7,13 @@ from sqlite3 import Error
 
 def sql_insert(msg_in):
 	msg_split = msg_in.split()
-	try:
-		print(msg_split[1])
-		c.execute('INSERT INTO  USERS ("Username", "Email", "Password") VALUES (?,?,?)', (msg_split[1], msg_split[2], msg_split[3]))
-		print(msg_split[2])
-		con.commit()
-		print('Insertion success')
-	except Error:
-		print('Insertion Error')
-		msg_out = 'Username is already used.\r\n'
-		clientsocket.send(msg_out.encode('utf-8'))
+	reply=c.execute('INSERT INTO  USERS ("Username", "Email", "Password") VALUES (?,?,?)', (msg_split[1], msg_split[2], msg_split[3]))
+	con.commit()
+	print('Insertion success')
+	#except Error:
+	#	print('Insertion Error')
+	#	msg_out = 'Username is already used.\r\n'
+	#	clientsocket.send(msg_out.encode('utf-8'))
 
 def new_client(clientsocket, addr):
 	msg_out = 'Welcoome to the BBS server\r\n'
