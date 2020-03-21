@@ -9,18 +9,16 @@ from sqlite3 import Error
 def sql_connection():
 	try:
 		con = sqlite3.connect('Database.db')
-		print('sql connect success')
+		print('Sql Connecttion Succeed')
 		return con
 	except Error:
 		print(Error)
 
 def sql_insert(str):
 	try:
-		print(str[1])
-		print(str[2])
-		print(str[3])
-		cursorObj.execute("insert into  USERS (Username, Email, Password) values (?,?,?)", (str[1], str[2], str[3]))
-		cursorObj.commit()
+		c.execute("insert into  USERS (Username, Email, Password) values (?,?,?)", (str[1], str[2], str[3]))
+		con.commit()
+		print('Insertion success')
 	except Error:
 		print('Insertion Error')
 		msg_out = 'Username is already used.\r\n'
@@ -38,7 +36,7 @@ def new_client(clientsocket, addr):
 		msg_in = clientsocket.recv(1024).decode('utf-8')
 		msg_in = msg_in.replace('\r','').replace('\n','')
 		print(msg_in)
-		msg_list  = msg_in.split();
+		msg_list = msg_in.split();
 		string_processing(msg_list)
 
 
@@ -48,9 +46,8 @@ def string_processing(str):
 			msg_out = 'Usage: regoster <username> <email> <password>\r\n'
 			clientsocket.send(msg_out.encode('utf-8'))
 		else:
-			print('Inserting')
+			print('Inserting...')
 			sql_insert(str)
-			print('Finish insert')
 
 
 	elif str[0] == 'login':
@@ -67,7 +64,7 @@ def string_processing(str):
 
 
 con = sql_connection()
-cursorObj = con.cursor()
+c = con.cursor()
 
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 host = socket.gethostname();
