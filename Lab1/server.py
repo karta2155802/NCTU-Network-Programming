@@ -6,14 +6,14 @@ from sqlite3 import Error
 
 
 def sql_insert(msg_in, conn, c):
-	msg_split = msg_in.split()
-	reply=c.execute('INSERT INTO  USERS ("Username", "Email", "Password") VALUES (?,?,?)', (msg_split[1], msg_split[2], msg_split[3]))
-	conn.commit()
-	print('Insertion success')
-	#except Error:
-	#	print('Insertion Error')
-	#	msg_out = 'Username is already used.\r\n'
-	#	clientsocket.send(msg_out.encode('utf-8'))
+	try:
+		msg_split = msg_in.split()
+		reply=c.execute('INSERT INTO  USERS ("Username", "Email", "Password") VALUES (?,?,?)', (msg_split[1], msg_split[2], msg_split[3]))
+		conn.commit()
+		print('Insertion success')
+	except Error:
+		msg_out = 'Username is already used.\r\n'
+		clientsocket.send(msg_out.encode('utf-8'))
 
 def new_client(clientsocket, addr):
 	conn = sqlite3.connect('Database.db')
