@@ -5,19 +5,10 @@ import sqlite3
 from sqlite3 import Error
 
 
-
-def sql_connection():
-	try:
-		con = sqlite3.connect('Database.db')
-		print('Sql Connecttion Succeed')
-		return con
-	except Error:
-		print(Error)
-
 def sql_insert(msg_in):
 	msg_split = msg_in.split()
 	try:
-		c.execute('nsert into  USERS ("Username", "Email", "Password") values (?,?,?)', (msg_split[1], msg_split[2], msg_split[3]))
+		c.execute('INSERT INTO  USERS ("Username", "Email", "Password") VALUES (?,?,?)', (msg_split[1], msg_split[2], msg_split[3]))
 		con.commit()
 		print('Insertion success')
 	except Error:
@@ -65,7 +56,10 @@ def string_processing(msg_in):
 	#elif str[0] == 'exit':
 
 
-con = sql_connection()
+global con 
+con = sqlite3.connect('Database.db')
+print('Sql Connecttion Succeed')
+global c
 c = con.cursor()
 
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
