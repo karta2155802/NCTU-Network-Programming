@@ -14,9 +14,10 @@ def sql_connection():
 	except Error:
 		print(Error)
 
-def sql_insert(str):
+def sql_insert(msg_in):
+	msg_split = msg_in.split()
 	try:
-		c.execute('nsert into  USERS ("Username", "Email", "Password") values (?,?,?)', (str[1], str[2], str[3]))
+		c.execute('nsert into  USERS ("Username", "Email", "Password") values (?,?,?)', (msg_split[1], msg_split[2], msg_split[3]))
 		con.commit()
 		print('Insertion success')
 	except Error:
@@ -36,24 +37,25 @@ def new_client(clientsocket, addr):
 		msg_in = clientsocket.recv(1024).decode('utf-8')
 		msg_in = msg_in.replace('\r','').replace('\n','')
 		print(msg_in)
-		msg_list = msg_in.split();
+		#msg_list = msg_in.split();
 		string_processing(msg_in)
 
 
-def string_processing(str):
-	if str[0] == "register":
-		if len(str) != 4:
+def string_processing(msg_in):
+	msg_split = msg_in.split()
+	if msg_split[0] == "register":
+		if len(msg_split) != 4:
 			msg_out = 'Usage: regoster <username> <email> <password>\r\n'
 			clientsocket.send(msg_out.encode('utf-8'))
 		else:
 			print('Inserting...')
-			sql_insert(str)
+			sql_insert(msg_in)
 
 
-	elif str[0] == "login":
-		if len(str) != 3:
-			msg_out = 'Usage: login <username> <password>'
-			clientsocket.send(msg_out.encode('utf-8'))
+	#elif str[0] == "login":
+	#	if len(str) != 3:
+	#		msg_out = 'Usage: login <username> <password>'
+	#		clientsocket.send(msg_out.encode('utf-8'))
 		
 
 	#elif str[0] == 'logout':
