@@ -16,6 +16,10 @@ def sql_insert(msg_in):
 	#	clientsocket.send(msg_out.encode('utf-8'))
 
 def new_client(clientsocket, addr):
+	con = sqlite3.connect('Database.db')
+	c = con.cursor()
+	print('Sql Connecttion Succeed')
+
 	msg_out = 'Welcoome to the BBS server\r\n'
 	clientsocket.send(msg_out.encode('utf-8'))
 	clientsocket.recv(1024)
@@ -54,12 +58,6 @@ def string_processing(msg_in):
 
 	#elif str[0] == 'exit':
 
-
-global con 
-con = sqlite3.connect('Database.db')
-print('Sql Connecttion Succeed')
-global c
-c = con.cursor()
 
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 host = socket.gethostname();
