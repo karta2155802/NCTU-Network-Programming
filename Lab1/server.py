@@ -7,7 +7,6 @@ from sqlite3 import Error
 
 def sql_insert(msg_list, conn, c):
 	try:
-		#msg_split = msg_in.split()
 		c.execute('insert into USERS ("Username", "Email", "Password") values (?,?,?)', (msg_list[1], msg_list[2], msg_list[3]))
 		conn.commit()
 		print('Insertion success')
@@ -16,33 +15,7 @@ def sql_insert(msg_list, conn, c):
 		msg_out = 'Username is already used.\r\n'
 		clientsocket.send(msg_out.encode('utf-8'))
 
-def new_client(clientsocket, addr):
-	conn = sqlite3.connect('Database.db')
-	c = conn.cursor()
-	print('Sql Connecttion Succeed')
-
-	msg_out = 'Welcoome to the BBS server\r\n'
-	clientsocket.send(msg_out.encode('utf-8'))
-	clientsocket.recv(1024)
-
-	while True:
-		msg_out = '% '
-		clientsocket.send(msg_out.encode('utf-8'))
-		msg_in = clientsocket.recv(1024).decode('utf-8')
-		print(msg_in)
-		msg_in = msg_in.replace('\r','').replace('\n','')			
-		
-		msg_list = msg_in.split();	
-		try:
-			string_processing(msg_list, conn, c)
-		except:
-			continue
-
-		
-
-
 def string_processing(msg_list, conn, c):
-	#msg_split = msg_in.split()
 	if msg_list[0] == "register":
 		if len(msg_list) != 4:
 			msg_out = 'Usage: regoster <username> <email> <password>\r\n'
@@ -64,6 +37,32 @@ def string_processing(msg_list, conn, c):
 
 	#elif str[0] == 'exit':
 
+def new_client(clientsocket, addr):
+	conn = sqlite3.connect('Database.db')
+	c = conn.cursor()
+	print('Sql Connecttion Succeed')
+
+	msg_out = 'Welcoome to the BBS server\r\n'
+	clientsocket.send(msg_out.encode('utf-8'))
+	clientsocket.recv(1024)
+
+	msg_out = '% '
+	clientsocket.send(msg_out.encode('utf-8'))
+	while True:
+		
+		msg_in = clientsocket.recv(1024).decode('utf-8')
+		print(msg_in)
+		msg_in = msg_in.replace('\r','').replace('\n','')			
+		
+		msg_list = msg_in.split();	
+		try:
+			string_processing(msg_list, conn, c)
+		except:
+			continue
+	msg_out = '% '
+	clientsocket.send(msg_out.encode('utf-8'))
+
+		
 
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 host = socket.gethostname();
