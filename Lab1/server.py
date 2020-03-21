@@ -5,10 +5,10 @@ import sqlite3
 from sqlite3 import Error
 
 
-def sql_insert(msg_in):
+def sql_insert(msg_in, conn, c):
 	msg_split = msg_in.split()
 	reply=c.execute('INSERT INTO  USERS ("Username", "Email", "Password") VALUES (?,?,?)', (msg_split[1], msg_split[2], msg_split[3]))
-	con.commit()
+	conn.commit()
 	print('Insertion success')
 	#except Error:
 	#	print('Insertion Error')
@@ -16,8 +16,8 @@ def sql_insert(msg_in):
 	#	clientsocket.send(msg_out.encode('utf-8'))
 
 def new_client(clientsocket, addr):
-	con = sqlite3.connect('Database.db')
-	c = con.cursor()
+	conn = sqlite3.connect('Database.db')
+	c = conn.cursor()
 	print('Sql Connecttion Succeed')
 
 	msg_out = 'Welcoome to the BBS server\r\n'
@@ -32,10 +32,10 @@ def new_client(clientsocket, addr):
 		msg_in = msg_in.replace('\r','').replace('\n','')
 		print(msg_in)
 		#msg_list = msg_in.split();
-		string_processing(msg_in)
+		string_processing(msg_in, conn, c)
 
 
-def string_processing(msg_in):
+def string_processing(msg_in, conn, c):
 	msg_split = msg_in.split()
 	if msg_split[0] == "register":
 		if len(msg_split) != 4:
@@ -43,7 +43,7 @@ def string_processing(msg_in):
 			clientsocket.send(msg_out.encode('utf-8'))
 		else:
 			print('Inserting...')
-			sql_insert(msg_in)
+			sql_insert(msg_in, conn, c)
 
 
 	#elif str[0] == "login":
