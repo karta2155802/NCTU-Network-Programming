@@ -24,20 +24,23 @@ def new_client(clientsocket, addr):
 	msg_out = 'Welcoome to the BBS server\r\n'
 	clientsocket.send(msg_out.encode('utf-8'))
 	clientsocket.recv(1024)
-	msg_out = '% '
-	clientsocket.send(msg_out.encode('utf-8'))
+	#msg_out = '% '
+	#clientsocket.send(msg_out.encode('utf-8'))
 	while True:
+		msg_out = '% '
+		clientsocket.send(msg_out.encode('utf-8'))
 		msg_in = clientsocket.recv(1024).decode('utf-8')
 		print(msg_in)
-		enter = '\r\n'
-		if msg_in.find(enter) < 0:
-			continue
 		msg_in = msg_in.replace('\r','').replace('\n','')			
 		
 		#msg_list = msg_in.split();	
-		string_processing(msg_in, conn, c)
-		msg_out = '% '
-		clientsocket.send(msg_out.encode('utf-8'))
+		try:
+			string_processing(msg_in, conn, c)
+		except:
+			continue
+		#msg_out = '% '
+		#clientsocket.send(msg_out.encode('utf-8'))
+		
 
 
 def string_processing(msg_in, conn, c):
