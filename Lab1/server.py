@@ -9,6 +9,7 @@ from sqlite3 import Error
 def sql_connection():
 	try:
 		con = sqlite3.connect('Database.db')
+		print('sql connect success')
 		return con
 	except Error:
 		print(Error)
@@ -39,28 +40,30 @@ def new_client(clientsocket, addr):
 
 def string_processing(str):
 	if str[0] == 'register':
-		if(len(str != 4)):
+		if len(str) != 4:
 			msg_out = 'Usage: regoster <username> <email> <password>'
 			clientsocket.send(msg_out.encode('utf-8'))
 		else:
+			print('Inserting')
 			sql_insert(str)
+			print('Finish insert')
 
 
-	elif str.split()[0] == 'login':
-		if(len(str.split() != 3)):
+	elif str[0] == 'login':
+		if len(str) != 3:
 			msg_out = 'Usage: login <username> <password>'
 			clientsocket.send(msg_out.encode('utf-8'))
 		else:
 
-	elif str.split()[0] == 'logout':
+	#elif str[0] == 'logout':
 
-	elif str.split()[0] == 'whoami':
+	#elif str[0] == 'whoami':
 
-	elif str.split()[0] == 'exit':
+	#elif str[0] == 'exit':
 
 
 con = sql_connection()
-cursorObj = con.consor()
+cursorObj = con.cursor()
 
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 host = socket.gethostname();
