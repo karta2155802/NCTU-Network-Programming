@@ -16,6 +16,9 @@ def sql_connection():
 
 def sql_insert(str):
 	try:
+		print(str[1])
+		print(str[2])
+		print(str[3])
 		cursorObj.execute("insert into  USERS (Username, Email, Password) values (?,?,?)", (str[1], str[2], str[3]))
 		cursorObj.commit()
 	except Error:
@@ -25,7 +28,7 @@ def sql_insert(str):
 
 def new_client(clientsocket, addr):
 	msg_out = 'Welcoome to the BBS server\r\n'
-	
+	clientsocket.send(msg_out.encode('utf-8'))
 	clientsocket.recv(1024)
 	msg_in = 'initial'
 	while True:
