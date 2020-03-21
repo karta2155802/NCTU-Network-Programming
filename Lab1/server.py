@@ -6,8 +6,8 @@ def new_client(clientsocket, addr):
 	msg_out = 'Welcoome to the BBS server\r\n'
 	clientsocket.send(msg_out.encode('utf-8'))
 	clientsocket.recv(1024)
+	msg_in = 'initial'
 	while True:
-		msg_in = 'initial'
 		if msg_in != '': 
 			msg_out = '%'
 			clientsocket.send(msg_out.encode('utf-8'))
