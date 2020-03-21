@@ -59,8 +59,8 @@ def new_client(clientsocket, addr):
 			string_processing(msg_list, conn, c)
 		except:
 			continue
-	msg_out = '% '
-	clientsocket.send(msg_out.encode('utf-8'))
+		msg_out = '% '
+		clientsocket.send(msg_out.encode('utf-8'))
 
 		
 
