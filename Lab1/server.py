@@ -17,11 +17,8 @@ def sql_logout(msg_list, c, uid):
 		sql_return = sql_return.fetchone()
 		msg_out = 'Bye, ' + sql_return[1] + '.\r\n'
 		clientsocket.send(msg_out.encode('utf-8'))
-		print('logout error1')
 		uid = -1
-		print('logout error2')
-		print(msg_list[1], 'has logout')
-		print('logout error3')
+		print(sql_return[1],'has logout')
 	else:
 		msg_out = 'Please login first\r\n'
 		clientsocket.send(msg_out.encode('utf-8'))
