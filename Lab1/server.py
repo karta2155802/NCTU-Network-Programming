@@ -94,7 +94,7 @@ def new_client(clientsocket, addr):
 		
 		msg_list = msg_in.split();	
 		try:
-		uid = string_processing(msg_list, conn, c, uid)
+			uid = string_processing(msg_list, conn, c, uid)
 		except:
 			print('string processing error')
 			continue
