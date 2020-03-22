@@ -42,6 +42,7 @@ def sql_register(msg_list, conn, c):
 		clientsocket.send(msg_out.encode('utf-8'))
 
 def string_processing(msg_list, conn, c, uid):
+	print(uid)
 	if msg_list[0] == "register":
 		if len(msg_list) != 4:
 			msg_out = 'Usage: regoster <username> <email> <password>\r\n'
