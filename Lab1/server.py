@@ -11,14 +11,14 @@ def sql_whoami(c, uid):
 	msg_out = sql_return[1]
 	clientsocket.send(msg_out.encode('utf-8'))
 
-def sql_logout(c, uid):
+def sql_logout(msg_list, c, uid):
 	if uid != -1:
 		sql_return = c.execute('select * from USERS where UID = ?',(uid,))
 		sql_return = sql_return.fetchone()
 		msg_out = 'Bye, ' + sql_return[1] + '.\r\n'
 		clientsocket.send(msg_out.encode('utf-8'))
 		uid = -1
-		print(msg_list[1],'has logout')
+		print(msg_list[1] + 'has logout')
 	else:
 		msg_out = 'Please login first'
 		clientsocket.send(msg_out.encode('utf-8'))
@@ -74,7 +74,7 @@ def string_processing(msg_list, conn, c, uid):
 			clientsocket.send(msg_out.encode('utf-8'))
 		else:
 			print('Logout...')
-			uid = sql_logout(c, uid)
+			uid = sql_logout(msg_list, c, uid)
 	elif msg_list[0] == 'whoami':
 		if uid == -1:
 			msg_out = 'Please login first.\r\n'
