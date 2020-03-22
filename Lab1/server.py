@@ -105,7 +105,7 @@ def new_client(clientsocket, addr):
 		msg_in = msg_in.replace('\r','').replace('\n','')			
 		
 		msg_list = msg_in.split();
-		if msg_list[0] == 'exit':
+		if msg_in == 'exit':
 			clientsocket.close()
 			break
 		else:
