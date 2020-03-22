@@ -76,17 +76,15 @@ def string_processing(msg_list, conn, c, uid):
 			print('Logout...')
 			uid = sql_logout(msg_list, c, uid)
 	elif msg_list[0] == 'whoami':
-		if uid == -1:
-			msg_out = 'Please login first.\r\n'
-			clientsocket.send(msg_out.encode('utf-8'))
-		elif len(msg_list) != 1:
+		if len(msg_list) != 1:
 			msg_out = 'Usage: whoami\r\n'
 			clientsocket.send(msg_out.encode('utf-8'))
+		elif uid == -1:
+			msg_out = 'Please login first.\r\n'
+			clientsocket.send(msg_out.encode('utf-8'))		
 		else:
 			print('whoami...')
 			sql_whoami(c,uid)
-	#elif msg_list[0] == 'exit':
-
 	return uid
 
 def new_client(clientsocket, addr):
@@ -101,18 +99,21 @@ def new_client(clientsocket, addr):
 	msg_out = '% '
 	clientsocket.send(msg_out.encode('utf-8'))
 	uid=-1
-	while True:
-		
+	while True:		
 		msg_in = clientsocket.recv(1024).decode('utf-8')
 		print('msg_in = ',msg_in)
 		msg_in = msg_in.replace('\r','').replace('\n','')			
 		
-		msg_list = msg_in.split();	
-		try:
-			uid = string_processing(msg_list, conn, c, uid)
-		except:
-			#print('string processing error')
-			continue
+		msg_list = msg_in.split();
+		if msg_list[0] == 'exit':
+			clientsocket.close()
+			break
+		else:
+			try:
+				uid = string_processing(msg_list, conn, c, uid)
+			except:
+				#print('string processing error')
+				continue
 		msg_out = '% '
 		clientsocket.send(msg_out.encode('utf-8'))
 
