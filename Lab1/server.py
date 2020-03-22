@@ -91,8 +91,11 @@ def new_client(clientsocket, addr):
 	conn = sqlite3.connect('Database.db')
 	c = conn.cursor()
 	print('Sql Connecttion Succeed')
-
-	msg_out = 'Welcoome to the BBS server\r\n'
+	msg_out = '********************************\r\n'
+	clientsocket.send(msg_out.encode('utf-8'))
+	msg_out = '** Welcoome to the BBS server **\r\n'
+	clientsocket.send(msg_out.encode('utf-8'))
+	msg_out = '********************************\r\n'
 	clientsocket.send(msg_out.encode('utf-8'))
 	clientsocket.recv(1024)
 
@@ -123,7 +126,7 @@ serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 host = socket.gethostname();
 port = 10000
 serversocket.bind((host, port))
-serversocket.listen(11)
+serversocket.listen(20)
 print('Waiting for connection...')
 
 while True:
