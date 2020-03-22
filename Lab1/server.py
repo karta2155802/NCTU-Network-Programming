@@ -19,7 +19,8 @@ def sql_logout(conn, c, uid):
 def sql_login(msg_list, conn, c, uid):
 	sql_return = c.execute('select * from USERS where Username = ?',(msg_list[1]))
 	sql_return = sql_return.fetchone()
-	if sql_return != None and sql_returnp[3] == msg_list[2]:
+	print(sql_return)
+	if sql_return != None and sql_return[3] == msg_list[2]:
 		uid = sql_return[0]
 		print(msg_list[1],'has login')
 		msg_out = 'Welcome, ' + msg_list[1] +'.\r\n'
@@ -59,7 +60,7 @@ def string_processing(msg_list, conn, c, uid):
 			clientsocket.send(msg_out.encode('utf-8'))
 		elif len(msg_list) == 3 and uid == -1:
 			print('Logging')
-			uid = sql_loging(msg_list, conn, c, uid)
+			uid = sql_login(msg_list, conn, c, uid)
 	elif msg_list[0] == 'logout':
 		if len(msg_list) != 1:
 			msg_out = 'Usage: logout\r\n'
