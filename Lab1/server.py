@@ -6,7 +6,7 @@ from sqlite3 import Error
 
 def sql_logout(conn, c, uid):
 	if uid != -1:
-		sql_return = c.execute('select * from USERS where UID = ?',(uid))
+		sql_return = c.execute('select * from USERS where UID = ?',(uid,))
 		sql_return = sql_return.fetchone()
 		msg_out = 'Bye, ' + sql_return[1] + '.\r\n'
 		clientsocket.send(msg_out.encode('utf-8'))
@@ -17,6 +17,7 @@ def sql_logout(conn, c, uid):
 	return uid
 
 def sql_login(msg_list, conn, c, uid):
+	print(msg_list[1])
 	sql_return = c.execute('select * from USERS where Username = ?',(msg_list[1]))
 	sql_return = sql_return.fetchone()
 	print(sql_return)
@@ -90,7 +91,7 @@ def new_client(clientsocket, addr):
 	while True:
 		
 		msg_in = clientsocket.recv(1024).decode('utf-8')
-		print(msg_in)
+		print('msg_in = ',msg_in)
 		msg_in = msg_in.replace('\r','').replace('\n','')			
 		
 		msg_list = msg_in.split();	
