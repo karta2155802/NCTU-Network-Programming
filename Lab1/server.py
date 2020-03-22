@@ -93,11 +93,11 @@ def new_client(clientsocket, addr):
 		msg_in = msg_in.replace('\r','').replace('\n','')			
 		
 		msg_list = msg_in.split();	
-		#try:
+		try:
 		uid = string_processing(msg_list, conn, c, uid)
-		#except:
-		#	print('string processing error')
-		#	continue
+		except:
+			print('string processing error')
+			continue
 		msg_out = '% '
 		clientsocket.send(msg_out.encode('utf-8'))
 
