@@ -8,7 +8,7 @@ from sqlite3 import Error
 def sql_whoami(c, uid):
 	sql_return = c.execute('select * from USERS where UID = ?',(uid,))
 	sql_return = sql_return.fetchone()
-	msg_out = sql_return[1]
+	msg_out = sql_return[1] + '\r\n'
 	clientsocket.send(msg_out.encode('utf-8'))
 
 def sql_logout(msg_list, c, uid):
