@@ -104,19 +104,21 @@ def new_client(clientsocket, addr):
 	uid=-1
 	while True:		
 		msg_in = clientsocket.recv(1024).decode('utf-8')
-		print('msg_in = ',msg_in)
-		msg_in = msg_in.replace('\r','').replace('\n','')			
 		
+		msg_in = msg_in.replace('\r','').replace('\n','')			
+		print('msg_in = ',msg_in)
 		msg_list = msg_in.split();
 		if msg_in == 'exit':
 			clientsocket.close()
 			break
+		elif msg_in == None:
+
 		else:
 			try:
 				uid = string_processing(msg_list, conn, c, uid)
-			except:
+			#except:
 				#print('string processing error')
-				continue
+			#	continue
 		msg_out = '% '
 		clientsocket.send(msg_out.encode('utf-8'))
 
