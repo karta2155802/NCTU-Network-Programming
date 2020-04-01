@@ -112,7 +112,7 @@ def new_client(clientsocket, addr):
 			clientsocket.close()
 			break
 		elif msg_in == None:
-			
+			print('none')
 		else:
 			try:
 				uid = string_processing(msg_list, conn, c, uid)
