@@ -107,12 +107,15 @@ def new_client(clientsocket, addr):
 		
 		msg_in = msg_in.replace('\r','').replace('\n','')			
 		print('msg_in = ',msg_in)
+		if msg_in == None:
+			msg_out = '% '
+			clientsocket.send(msg_out.encode('utf-8'))
+			continue
+
 		msg_list = msg_in.split();
 		if msg_in == 'exit':
 			clientsocket.close()
 			break
-		elif msg_in == None:
-			print('none')
 		else:
 			#try:
 			uid = string_processing(msg_list, conn, c, uid)
