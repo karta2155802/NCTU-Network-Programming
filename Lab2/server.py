@@ -114,8 +114,8 @@ def new_client(clientsocket, addr):
 		elif msg_in == None:
 			print('none')
 		else:
-			try:
-				uid = string_processing(msg_list, conn, c, uid)
+			#try:
+			uid = string_processing(msg_list, conn, c, uid)
 			#except:
 				#print('string processing error')
 			#	continue
