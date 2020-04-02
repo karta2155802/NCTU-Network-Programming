@@ -4,6 +4,17 @@ import _thread
 import sqlite3
 from sqlite3 import Error
 
+def sql_creat_board(msg_list, conn, c, uid):
+	try:
+		c.execute('insert into BOARD ("Name", "Moderator_id") values (?,?)', (msg_list[1], uid))
+		conn.commit()
+		print('Create board successfully')
+		msg_out = 'Create board successfully.\r\n'
+		clientsocket.send(msg_out.encode('utf-8'))
+	except Error:
+		print('Board is already exist')
+		msg_out = 'Board is already exist.\r\n'
+		clientsocket.send(msg_out.encode('utf-8'))
 
 def sql_whoami(c, uid):
 	sql_return = c.execute('select * from USERS where UID = ?',(uid,))
@@ -41,7 +52,7 @@ def sql_register(msg_list, conn, c):
 	try:
 		c.execute('insert into USERS ("Username", "Email", "Password") values (?,?,?)', (msg_list[1], msg_list[2], msg_list[3]))
 		conn.commit()
-		print('Registration success')
+		print('Register successfully')
 		msg_out = 'Register successfully.\r\n'
 		clientsocket.send(msg_out.encode('utf-8'))
 	except Error:
@@ -85,6 +96,16 @@ def string_processing(msg_list, conn, c, uid):
 		else:
 			print('whoami...')
 			sql_whoami(c,uid)
+	elif msg_list[0] == 'create-board':
+		if len(msg_list) != 2:
+			msg_out = 'Usage: create-board <name>\r\n'
+			clientsocket.send(msg_out.encode('utf-8'))
+		elif uid == -1:
+			msg_out = 'Please login first.\r\n'
+			clientsocket.send(msg_out.encode('utf-8'))
+		else:
+			print('creating board...')
+			sql_create_board(msg_list, conn, c, uid)
 	return uid
 
 def new_client(clientsocket, addr):
