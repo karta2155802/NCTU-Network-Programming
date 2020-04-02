@@ -4,7 +4,7 @@ import _thread
 import sqlite3
 from sqlite3 import Error
 
-def sql_creat_board(msg_list, conn, c, uid):
+def sql_create_board(msg_list, conn, c, uid):
 	try:
 		c.execute('insert into BOARD ("Name", "Moderator_id") values (?,?)', (msg_list[1], uid))
 		conn.commit()
