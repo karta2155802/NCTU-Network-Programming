@@ -110,20 +110,20 @@ def string_processing(msg_in, conn, c, uid):
 	elif msg_list[0] == 'create-post':
 		if len(msg_list)>5 and msg_list[2] == '--title' and '--content' in msg_in:
 			board_name = msg_list[1]
-			print(board_name)
+			print('board_name =' board_name)
 			content_position = msg_list.index('--content')
 			title = ''
 			for i in range(3,content_position-1):
 				title += msg_list[i]
 				title += ' '
 			title = title.rstrip()
-			print(title)
+			print('title =', title)
 			content=''
 			for i in range (content_position + 1, len(msg_list)):
 				content += msg_list[i]
 				content += ' '
 			content = content.rstrip()
-			print(content)
+			print('content =', content)
 
 		else:
 			msg_out = 'Usage: create-post <board-name> --title <title> --content <content>\r\n'
