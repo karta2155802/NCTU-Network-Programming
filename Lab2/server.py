@@ -100,7 +100,7 @@ def sql_register(msg_list, conn, c):
 def string_processing(msg_in, conn, c, uid):
 	hashtag = '##'
 	msg_list = msg_in.split();
-	print(uid)
+	print('uid =',uid)
 	if msg_list[0] == 'register':
 		if len(msg_list) != 4:
 			msg_out = 'Usage: regoster <username> <email> <password>\r\n'
@@ -194,8 +194,11 @@ def string_processing(msg_in, conn, c, uid):
 			keyword = '%%'
 			print('no hashtag')
 			sql_list_post(c, uid, board_name, keyword)
-
-		##elif hashtag in msg_list[2] :
+		elif hashtag in msg_list[2]:
+			msg_list[2] = msg_list[2].replace('##','',1)
+			keyword = '%' + ' '.join(msg_list[2:len(msg_list)])
+			print('keyword =', keyword)
+			
 
 
 		
