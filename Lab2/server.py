@@ -5,12 +5,29 @@ import sqlite3
 import time
 from sqlite3 import Error
 
+def sql_list_post(c, uid, board_name, keyword):
+	sql_return = c.execute('select BOARD.ID from BOARD where BOARD.Name = ?', (board_name,)).fetchone()
+	if sql_return == None:
+		msg_out = 'Board is not exist.\r\n'
+		clientsocket.send(msg_out.encode('utf-8'))
+	else:
+		board_id = sql_return[0]
+		sql_return_post = c.execute('select POST.ID, POST.Title, USERS.Name, POST.Date from POST inner join USERS on POST.Author_id = USERS.UID where Board_id = ? and POST.Title like ?', (board_id, keyword))
+		msg_out = '    {:<7} {:<20} {:<20} {:<9}\r\n'.format('ID', 'Title', 'Author', 'Date')
+		clientsocket.send(msg_out.encode('utf-8'))
+		for row in sql_return_post:
+			msg_out = '    {:<7} {:<20} {:<20} {:<9}\r\n'.format(row[0], row[1], row[2], row[3])
+			clientsocket.send(msg_out.encode('utf-8'))
+		print('List post successfully')
+
+
+
 def sql_list_board(c, uid, keyword):
 	sql_return = c.execute('select BOARD.ID, BOARD.Name, USERS.Username from BOARD inner join USERS on BOARD.Moderator_id = USERS.UID where BOARD.Name like ?', (keyword,))
-	msg_out = '   {:<7} {:^20} {:^20}\r\n'.format('Index', 'Name', 'Moderator')
+	msg_out = '    {:<7} {:^20} {:^20}\r\n'.format('Index', 'Name', 'Moderator')
 	clientsocket.send(msg_out.encode('utf-8'))
 	for row in sql_return:
-		msg_out = '   {:<7} {:^20} {:^20}\r\n'.format(row[0], row[1], row[2])
+		msg_out = '    {:<7} {:^20} {:^20}\r\n'.format(row[0], row[1], row[2])
 		clientsocket.send(msg_out.encode('utf-8'))
 	print('List board successfully')
 
@@ -156,16 +173,34 @@ def string_processing(msg_in, conn, c, uid):
 		if uid == -1:
 			msg_out = 'Please login first.\r\n'
 			clientsocket.send(msg_out.encode('utf-8'))
-		elif hashtag in msg_in and len(msg_list) == 2:
-			keyword = '%' + msg_list[1].replace('##', '', 1) + '%'
-			print('keyword =', keyword)
-			sql_list_board(c, uid, keyword)
 		elif len(msg_list) == 1:
 			keyword = '%%';
-			sql_list_board(c, uid, keyword)
+			print('no hashtag')	
+			sql_list_board(c, uid, keyword)			
+		elif hashtag in msg_list[1] and len(msg_list) == 2:
+			keyword = '%' + msg_list[1].replace('##', '', 1) + '%'
+			print('keyword =', keyword)
+			sql_list_board(c, uid, keyword)				
 		else:
 			msg_out = 'Usage: list-board ##<key>\r\n'
 			clientsocket.send(msg_out.encode('utf-8'))
+	elif msg_list[0] == 'list-post':
+		if uid == -1:
+			msg_out = 'Please login first.\r\n'
+			clientsocket.send(msg_out.encode('utf-8'))
+		elif len(msg_list) == 2:
+			baord_name = msg_list[1]
+			keyword = '%%'
+			sql_list_post(c, uid, board_name, keyword)
+
+		##elif hashtag in msg_list[2] :
+
+
+		
+
+	else:
+		msg_out = 'Command not found\r\n'
+		clientsocket.send(msg_out.encode('utf-8'))
 
 	return uid
 
