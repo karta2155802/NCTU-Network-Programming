@@ -157,12 +157,12 @@ def string_processing(msg_in, conn, c, uid):
 			msg_out = 'Please login first.\r\n'
 			clientsocket.send(msg_out.encode('utf-8'))
 		elif hashtag in msg_in and len(msg_list) == 2:
-			keyword = '%' + msg_list[1].replace('##','') + '%'
+			keyword = '%' + msg_list[1].replace('##', '', 1) + '%'
 			print('keyword =', keyword)
 			sql_list_board(c, uid, keyword)
-
-		##elif len(msg_list) == 1:
-
+		elif len(msg_list) == 1:
+			keyword = '';
+			sql_list_board(c, uid, keyword)
 		else:
 			msg_out = 'Usage: list-board ##<key>\r\n'
 			clientsocket.send(msg_out.encode('utf-8'))
