@@ -7,6 +7,8 @@ from sqlite3 import Error
 
 def sql_list_post(c, uid, board_name, keyword):
 	sql_return = c.execute('select BOARD.ID from BOARD where BOARD.Name = ?', (board_name,)).fetchone()
+	print(sql_return[0])
+	print(sql_return)
 	if sql_return == None:
 		msg_out = 'Board is not exist.\r\n'
 		clientsocket.send(msg_out.encode('utf-8'))
