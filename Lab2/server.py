@@ -232,13 +232,14 @@ def new_client(clientsocket, addr):
 	count = 0
 	while True:		
 		msg_in = clientsocket.recv(1024).decode('utf-8')
-		if msg_in == '\r\n':
+		if msg_in == '\r\n' or msg_in.split() == None:
 			msg_out = '% '
 			clientsocket.send(msg_out.encode('utf-8'))
 			continue
 		if msg_in == '':
 			count += 1
 		if count == 3:
+			clientsocket.close()
 			break		
 		msg_in = msg_in.replace('\r','').replace('\n','')			
 		print('msg_in = ',msg_in)
