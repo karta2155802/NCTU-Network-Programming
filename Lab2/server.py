@@ -113,7 +113,7 @@ def string_processing(msg_in, conn, c, uid):
 			print('board_name =', board_name)
 			content_position = msg_list.index('--content')
 			title = ''
-			for i in range(3,content_position-1):
+			for i in range(3,content_position):
 				title += msg_list[i]
 				title += ' '
 			title = title.rstrip()
