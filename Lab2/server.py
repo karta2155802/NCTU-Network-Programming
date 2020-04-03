@@ -231,13 +231,14 @@ def new_client(clientsocket, addr):
 	uid = -1
 	count = 0
 	while True:		
-		msg_in = clientsocket.recv(1024).decode('utf-8')		
-		msg_in = msg_in.replace('\r','').replace('\n','')			
-		print('msg_in = ',msg_in)
+		msg_in = clientsocket.recv(1024).decode('utf-8')
 		if msg_in == '':
 			count += 1
 		if count == 3:
-			break
+			break		
+		msg_in = msg_in.replace('\r','').replace('\n','')			
+		print('msg_in = ',msg_in)
+		
 		if msg_in == 'exit':
 			clientsocket.close()
 			break
