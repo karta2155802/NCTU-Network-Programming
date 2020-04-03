@@ -247,11 +247,11 @@ def new_client(clientsocket, addr):
 			clientsocket.close()
 			break
 		else:
-			#try:
-			uid = string_processing(msg_in, conn, c, uid)
-			#except:
+			try:
+				uid = string_processing(msg_in, conn, c, uid)
+			except:
 				#print('string processing error')
-				#continue
+				continue
 		msg_out = '% '
 		clientsocket.send(msg_out.encode('utf-8'))
 
