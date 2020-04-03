@@ -23,16 +23,12 @@ def sql_whoami(c, uid):
 	clientsocket.send(msg_out.encode('utf-8'))
 
 def sql_logout(msg_list, c, uid):
-	if uid != -1:
-		sql_return = c.execute('select * from USERS where UID = ?',(uid,))
-		sql_return = sql_return.fetchone()
-		msg_out = 'Bye, ' + sql_return[1] + '.\r\n'
-		clientsocket.send(msg_out.encode('utf-8'))
-		uid = -1
-		print(sql_return[1],'has logout')
-	else:
-		msg_out = 'Please login first\r\n'
-		clientsocket.send(msg_out.encode('utf-8'))
+	sql_return = c.execute('select * from USERS where UID = ?',(uid,))
+	sql_return = sql_return.fetchone()
+	msg_out = 'Bye, ' + sql_return[1] + '.\r\n'
+	clientsocket.send(msg_out.encode('utf-8'))
+	uid = -1
+	print(sql_return[1],'has logout')
 	return uid
 
 def sql_login(msg_list, c, uid):
@@ -71,16 +67,19 @@ def string_processing(msg_in, conn, c, uid):
 			print('Inserting...')
 			sql_register(msg_list, conn, c)
 	elif msg_list[0] == 'login':
-		if len(msg_list) != 3:
-			msg_out = 'Usage: login <username> <password>\r\n'
-			clientsocket.send(msg_out.encode('utf-8'))
-		elif len(msg_list) == 3 and uid != -1:
+		if uid != -1:
 			msg_out = 'Please logout first.\r\n'
 			clientsocket.send(msg_out.encode('utf-8'))
+		elif len(msg_list) != 3:
+			msg_out = 'Usage: login <username> <password>\r\n'
+			clientsocket.send(msg_out.encode('utf-8'))		
 		elif len(msg_list) == 3 and uid == -1:
 			print('Logging...')
 			uid = sql_login(msg_list, c, uid)
 	elif msg_list[0] == 'logout':
+		if uid == -1:
+			msg_out = 'Please login first\r\n'
+			clientsocket.send(msg_out.encode('utf-8'))
 		if len(msg_list) != 1:
 			msg_out = 'Usage: logout\r\n'
 			clientsocket.send(msg_out.encode('utf-8'))
@@ -88,27 +87,30 @@ def string_processing(msg_in, conn, c, uid):
 			print('Logout...')
 			uid = sql_logout(msg_list, c, uid)
 	elif msg_list[0] == 'whoami':
-		if len(msg_list) != 1:
-			msg_out = 'Usage: whoami\r\n'
-			clientsocket.send(msg_out.encode('utf-8'))
-		elif uid == -1:
+		if uid == -1:
 			msg_out = 'Please login first.\r\n'
-			clientsocket.send(msg_out.encode('utf-8'))		
+			clientsocket.send(msg_out.encode('utf-8'))	
+		elif len(msg_list) != 1:
+			msg_out = 'Usage: whoami\r\n'
+			clientsocket.send(msg_out.encode('utf-8'))			
 		else:
 			print('whoami...')
 			sql_whoami(c,uid)
 	elif msg_list[0] == 'create-board':
-		if len(msg_list) != 2:
-			msg_out = 'Usage: create-board <name>\r\n'
-			clientsocket.send(msg_out.encode('utf-8'))
-		elif uid == -1:
+		if uid == -1:
 			msg_out = 'Please login first.\r\n'
 			clientsocket.send(msg_out.encode('utf-8'))
+		elif len(msg_list) != 2:
+			msg_out = 'Usage: create-board <name>\r\n'
+			clientsocket.send(msg_out.encode('utf-8'))		
 		else:
 			print('creating board...')
 			sql_create_board(msg_list, conn, c, uid)
 	elif msg_list[0] == 'create-post':
-		if len(msg_list)>5 and msg_list[2] == '--title' and '--content' in msg_in:
+		if uid == -1:
+			msg_out = 'Please login first.\r\n'
+			clientsocket.send(msg_out.encode('utf-8'))
+		elif len(msg_list)>5 and msg_list[2] == '--title' and '--content' in msg_in:
 			board_name = msg_list[1]
 			print('board_name =', board_name)
 			content_position = msg_list.index('--content')
@@ -116,7 +118,7 @@ def string_processing(msg_in, conn, c, uid):
 			print('title =', title)
 			content = ' '.join(msg_list[content_position+1:len(msg_list)])
 			print('content =', content)
-
+			print(title=='')
 		else:
 			msg_out = 'Usage: create-post <board-name> --title <title> --content <content>\r\n'
 			clientsocket.send(msg_out.encode('utf-8'))
