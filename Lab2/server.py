@@ -235,7 +235,7 @@ def new_client(clientsocket, addr):
 		msg_in = msg_in.replace('\r','').replace('\n','')			
 		print('msg_in = ',msg_in)
 		if msg_in == '':
-			count ++
+			count += 1
 		if count == 3:
 			break
 		if msg_in == 'exit':
