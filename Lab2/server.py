@@ -1,4 +1,4 @@
-import socket
+import socketc
 import sys
 import _thread
 import sqlite3
@@ -6,15 +6,12 @@ import time
 from sqlite3 import Error
 
 def sql_create_post(conn, c, uid, data):
-	print('ya')
 	sql_return = c.execute('select * from BOARD where Name = ?',(data[0],))
 	sql_return = sql_return.fetchone()
-	print(sql_return)
 	if(sql_return == None):
 		print('Board is not exist')
 		msg_out = 'Board is not exist.\r\n'
 		clientsocket.send(msg_out.encode('utf-8'))
-		return 0
 	else:
 		board_id = sql_return[0]
 		nowtime =  time.strftime("%m/%d", time.localtime())
