@@ -234,7 +234,7 @@ def new_client(clientsocket, addr):
 		msg_in = clientsocket.recv(1024).decode('utf-8')		
 		msg_in = msg_in.replace('\r','').replace('\n','')			
 		print('msg_in = ',msg_in)
-		if msg_in = '':
+		if msg_in == '':
 			count ++
 		if count == 3:
 			break
