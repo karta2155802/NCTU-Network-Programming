@@ -232,7 +232,7 @@ def new_client(clientsocket, addr):
 	count = 0
 	while True:		
 		msg_in = clientsocket.recv(1024).decode('utf-8')
-		if msg_in == '\r\n' or msg_in.replace(' ','') == '':
+		if msg_in == '\r\n':
 			msg_out = '% '
 			clientsocket.send(msg_out.encode('utf-8'))
 			continue
