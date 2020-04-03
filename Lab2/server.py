@@ -24,7 +24,7 @@ def sql_create_post(conn, c, uid, data):
 		board_id = sql_return[0]
 		nowtime =  time.strftime('%m/%d', time.localtime())
 		print('nowtime =', nowtime)
-		c.execute('insert into POST ('Title', 'Author_id', 'Date', 'Content', 'Board_id') values (?,?,?,?,?)', (data[1], uid, nowtime, data[2], board_id))
+		c.execute('insert into POST ("Title", "Author_id", "Date", "Content", "Board_id") values (?,?,?,?,?)', (data[1], uid, nowtime, data[2], board_id))
 		conn.commit()
 		print('Create post successfully')
 		msg_out = 'Create post successfully.\r\n'
@@ -32,7 +32,7 @@ def sql_create_post(conn, c, uid, data):
 
 def sql_create_board(msg_list, conn, c, uid):
 	try:
-		c.execute('insert into BOARD ('Name', 'Moderator_id') values (?,?)', (msg_list[1], uid))
+		c.execute('insert into BOARD ("Name", "Moderator_id") values (?,?)', (msg_list[1], uid))
 		conn.commit()
 		print('Create board successfully')
 		msg_out = 'Create board successfully.\r\n'
@@ -69,7 +69,7 @@ def sql_login(msg_list, c, uid):
 
 def sql_register(msg_list, conn, c):
 	try:
-		c.execute('insert into USERS ('Username', 'Email', 'Password') values (?,?,?)', (msg_list[1], msg_list[2], msg_list[3]))
+		c.execute('insert into USERS ("Username", "Email", "Password") values (?,?,?)', (msg_list[1], msg_list[2], msg_list[3]))
 		conn.commit()
 		print('Register successfully')
 		msg_out = 'Register successfully.\r\n'
