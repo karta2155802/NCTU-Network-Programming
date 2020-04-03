@@ -1,4 +1,4 @@
-import socketc
+import socket
 import sys
 import _thread
 import sqlite3
