@@ -21,8 +21,6 @@ def sql_list_post(c, uid, board_name, keyword):
 			clientsocket.send(msg_out.encode('utf-8'))
 		print('List post successfully')
 
-
-
 def sql_list_board(c, uid, keyword):
 	sql_return = c.execute('select BOARD.ID, BOARD.Name, USERS.Username from BOARD inner join USERS on BOARD.Moderator_id = USERS.UID where BOARD.Name like ?', (keyword,))
 	msg_out = '    {:<7} {:^20} {:^20}\r\n'.format('Index', 'Name', 'Moderator')
@@ -210,12 +208,10 @@ def string_processing(msg_in, conn, c, uid):
 
 
 
-		
-
 	else:
 		msg_out = 'Command not found\r\n'
 		clientsocket.send(msg_out.encode('utf-8'))
-
+	print('')
 	return uid
 
 def new_client(clientsocket, addr):
@@ -232,12 +228,16 @@ def new_client(clientsocket, addr):
 
 	msg_out = '% '
 	clientsocket.send(msg_out.encode('utf-8'))
-	uid=-1
+	uid = -1
+	count = 0
 	while True:		
 		msg_in = clientsocket.recv(1024).decode('utf-8')		
 		msg_in = msg_in.replace('\r','').replace('\n','')			
 		print('msg_in = ',msg_in)
-		
+		if msg_in = '':
+			count ++
+		if count == 3:
+			break
 		if msg_in == 'exit':
 			clientsocket.close()
 			break
