@@ -2,7 +2,25 @@ import socket
 import sys
 import _thread
 import sqlite3
+import time
 from sqlite3 import Error
+
+def sql_create_post(conn, c, uid, data):
+	sql_return = c.execute('select * from BOARD where Name = ?',(data[0],))
+	if(sql_return == None):
+		print('Board is not exist')
+		msg_out = 'Board is not exist.\r\n'
+		clientsocket.send(msg_out.encode('utf-8'))
+		return 0
+	else:
+		board_id = sql_return[0]
+		nowtime =  time.strftime("%m/%d", time.localtime())
+		print('nowtime =', nowtime)
+		c.execute('insert into POST ("Title", "Author_id", "Date", "Content", "Board_id") values (?,?,?,?,?)', (data[1], uid, nowtime, data[2], board_id))
+		conn.commit()
+		print('Create post successfully')
+		msg_out = 'Create post successfully.\r\n'
+		clientsocket.send(msg_out.encode('utf-8'))
 
 def sql_create_board(msg_list, conn, c, uid):
 	try:
@@ -118,7 +136,13 @@ def string_processing(msg_in, conn, c, uid):
 			print('title =', title)
 			content = ' '.join(msg_list[content_position+1:len(msg_list)])
 			print('content =', content)
-			print(title=='')
+			if title == '' or content == '':
+				msg_out = 'Usage: create-post <board-name> --title <title> --content <content>\r\n'
+				clientsocket.send(msg_out.encode('utf-8'))
+			else:
+				data = [board_name, title, content]
+				print('creating post...')
+				sql_create_post(conn, c, uid, data)
 		else:
 			msg_out = 'Usage: create-post <board-name> --title <title> --content <content>\r\n'
 			clientsocket.send(msg_out.encode('utf-8'))
