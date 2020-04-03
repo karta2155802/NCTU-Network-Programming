@@ -14,10 +14,10 @@ def sql_list_post(c, uid, board_name, keyword):
 		board_id = sql_return[0]
 		print('board_id =', board_id)
 		sql_return_post = c.execute('select POST.ID, POST.Title, USERS.Username, POST.Date from POST inner join USERS on POST.Author_id = USERS.UID where Board_id = ? and POST.Title like ?', (board_id, keyword))
-		msg_out = '    {:<7} {:<20} {:<20} {:<9}\r\n'.format('ID', 'Title', 'Author', 'Date')
+		msg_out = '    {:<7} {:<20} {:<12} {:<9}\r\n'.format('ID', 'Title', 'Author', 'Date')
 		clientsocket.send(msg_out.encode('utf-8'))
 		for row in sql_return_post:
-			msg_out = '    {:<7} {:<20} {:<20} {:<9}\r\n'.format(row[0], row[1], row[2], row[3])
+			msg_out = '    {:<7} {:<20} {:<12} {:<9}\r\n'.format(row[0], row[1], row[2], row[3])
 			clientsocket.send(msg_out.encode('utf-8'))
 		print('List post successfully')
 
@@ -178,7 +178,7 @@ def string_processing(msg_in, conn, c, uid):
 			keyword = '%%';
 			print('no hashtag')	
 			sql_list_board(c, uid, keyword)			
-		elif hashtag in msg_list[1] and len(msg_list) == 2:
+		elif len(msg_list) == 2 and hashtag in msg_list[1]:
 			keyword = '%' + msg_list[1].replace('##', '', 1) + '%'
 			print('keyword =', keyword)
 			sql_list_board(c, uid, keyword)				
@@ -194,12 +194,16 @@ def string_processing(msg_in, conn, c, uid):
 			keyword = '%%'
 			print('no hashtag')
 			sql_list_post(c, uid, board_name, keyword)
-		elif hashtag in msg_list[2]:
+		elif len(msg_list) >2 and hashtag in msg_list[2]:
 			board_name = msg_list[1]
 			msg_list[2] = msg_list[2].replace('##','',1)
-			keyword = '%' + ' '.join(msg_list[2:len(msg_list)]) + '%'
-			print('keyword =', keyword)
-			sql_list_post(c, uid, board_name, keyword)
+			if msg_list[2] == '':
+				msg_out = 'Usage: list-post <board-name> ##<key>\r\n'
+				clientsocket.send(msg_out.encode('utf-8'))
+			else:
+				keyword = '%' + ' '.join(msg_list[2:len(msg_list)]) + '%'
+				print('keyword =', keyword)
+				sql_list_post(c, uid, board_name, keyword)
 		else:
 			msg_out = 'Usage: list-post <board-name> ##<key>\r\n'
 			clientsocket.send(msg_out.encode('utf-8'))
