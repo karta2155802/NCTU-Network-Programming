@@ -12,7 +12,8 @@ def sql_list_post(c, uid, board_name, keyword):
 		clientsocket.send(msg_out.encode('utf-8'))
 	else:
 		board_id = sql_return[0]
-		sql_return_post = c.execute('select POST.ID, POST.Title, USERS.Name, POST.Date from POST inner join USERS on POST.Author_id = USERS.UID where Board_id = ? and POST.Title like ?', (board_id, keyword))
+		print('board_id =', board_id)
+		sql_return_post = c.execute('select POST.ID, POST.Title, USERS.Userame, POST.Date from POST inner join USERS on POST.Author_id = USERS.UID where Board_id = ? and POST.Title like ?', (board_id, keyword))
 		msg_out = '    {:<7} {:<20} {:<20} {:<9}\r\n'.format('ID', 'Title', 'Author', 'Date')
 		clientsocket.send(msg_out.encode('utf-8'))
 		for row in sql_return_post:
