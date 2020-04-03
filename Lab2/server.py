@@ -161,7 +161,7 @@ def string_processing(msg_in, conn, c, uid):
 			print('keyword =', keyword)
 			sql_list_board(c, uid, keyword)
 		elif len(msg_list) == 1:
-			keyword = '';
+			keyword = '%%';
 			sql_list_board(c, uid, keyword)
 		else:
 			msg_out = 'Usage: list-board ##<key>\r\n'
