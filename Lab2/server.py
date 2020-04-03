@@ -192,6 +192,7 @@ def string_processing(msg_in, conn, c, uid):
 		elif len(msg_list) == 2:
 			baord_name = msg_list[1]
 			keyword = '%%'
+			print('no hashtag')
 			sql_list_post(c, uid, board_name, keyword)
 
 		##elif hashtag in msg_list[2] :
