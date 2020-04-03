@@ -6,8 +6,7 @@ import time
 from sqlite3 import Error
 
 def sql_create_post(conn, c, uid, data):
-	sql_return = c.execute('select * from BOARD where Name = ?',(data[0],))
-	sql_return = sql_return.fetchone()
+	sql_return = c.execute('select * from BOARD where Name = ?',(data[0],)).fetchone()
 	if(sql_return == None):
 		print('Board is not exist')
 		msg_out = 'Board is not exist.\r\n'
@@ -35,14 +34,12 @@ def sql_create_board(msg_list, conn, c, uid):
 		clientsocket.send(msg_out.encode('utf-8'))
 
 def sql_whoami(c, uid):
-	sql_return = c.execute('select * from USERS where UID = ?',(uid,))
-	sql_return = sql_return.fetchone()
+	sql_return = c.execute('select * from USERS where UID = ?',(uid,)).fetchone()
 	msg_out = sql_return[1] + '\r\n'
 	clientsocket.send(msg_out.encode('utf-8'))
 
 def sql_logout(msg_list, c, uid):
-	sql_return = c.execute('select * from USERS where UID = ?',(uid,))
-	sql_return = sql_return.fetchone()
+	sql_return = c.execute('select * from USERS where UID = ?',(uid,)).fetchone()
 	msg_out = 'Bye, ' + sql_return[1] + '.\r\n'
 	clientsocket.send(msg_out.encode('utf-8'))
 	uid = -1
@@ -50,8 +47,7 @@ def sql_logout(msg_list, c, uid):
 	return uid
 
 def sql_login(msg_list, c, uid):
-	sql_return = c.execute('select * from USERS where Username = ?',(msg_list[1],))
-	sql_return = sql_return.fetchone()
+	sql_return = c.execute('select * from USERS where Username = ?',(msg_list[1],)).fetchone()
 	if sql_return != None and sql_return[3] == msg_list[2]:
 		uid = sql_return[0]
 		print(msg_list[1],'has login')
