@@ -6,7 +6,9 @@ import time
 from sqlite3 import Error
 
 def sql_create_post(conn, c, uid, data):
+	print('ya')
 	sql_return = c.execute('select * from BOARD where Name = ?',(data[0],))
+	print(sql_return)
 	if(sql_return == None):
 		print('Board is not exist')
 		msg_out = 'Board is not exist.\r\n'
