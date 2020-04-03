@@ -232,6 +232,10 @@ def new_client(clientsocket, addr):
 	count = 0
 	while True:		
 		msg_in = clientsocket.recv(1024).decode('utf-8')
+		if msg_in == '\r\n':
+			msg_out = '% '
+			clientsocket.send(msg_out.encode('utf-8'))
+			continue
 		if msg_in == '':
 			count += 1
 		if count == 3:
@@ -245,9 +249,9 @@ def new_client(clientsocket, addr):
 		else:
 			try:
 				uid = string_processing(msg_in, conn, c, uid)
-			except:
+			#except:
 				#print('string processing error')
-				continue
+				#continue
 		msg_out = '% '
 		clientsocket.send(msg_out.encode('utf-8'))
 
