@@ -112,17 +112,9 @@ def string_processing(msg_in, conn, c, uid):
 			board_name = msg_list[1]
 			print('board_name =', board_name)
 			content_position = msg_list.index('--content')
-			title = ''
-			for i in range(3,content_position):
-				title += msg_list[i]
-				title += ' '
-			title = title.rstrip()
+			title = ' '.join(msg_list[3:content_position])			
 			print('title =', title)
-			content=''
-			for i in range (content_position + 1, len(msg_list)):
-				content += msg_list[i]
-				content += ' '
-			content = content.rstrip()
+			content = ' '.join(msg_list[content_position+1:len(msg_list)])
 			print('content =', content)
 
 		else:
