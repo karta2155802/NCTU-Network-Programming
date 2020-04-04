@@ -17,6 +17,16 @@ def sql_read_post(c, post_id):
 		clientsocket.send(msg_out.encode('utf-8'))
 		msg_out = '    {:<10}:{}\r\n'.format('Date', sql_return_fetch[2])
 		clientsocket.send(msg_out.encode('utf-8'))
+		msg_out = '    --\r\n'
+		clientsocket.send(msg_out.encode('utf-8'))
+
+		content = sql_return_fetch.split('<br>')
+		for i in len(content):
+			msg_out = '    {}\r\n'.format(content[i])
+			clientsocket.send(msg_out.encode('utf-8'))
+
+		msg_out = '    --\r\n'
+		clientsocket.send(msg_out.encode('utf-8'))
 		print('Read post successfully')
 		
 
