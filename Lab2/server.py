@@ -236,11 +236,11 @@ def new_client(clientsocket, addr):
 			msg_out = '% '
 			clientsocket.send(msg_out.encode('utf-8'))
 			continue
-		if msg_in == '':
+		elif msg_in == '':
 			count += 1
-		if count == 3:
-			clientsocket.close()
-			break		
+			if count == 3:
+				clientsocket.close()
+				break		
 		msg_in = msg_in.replace('\r','').replace('\n','')			
 		print('msg_in = ',msg_in)
 		
