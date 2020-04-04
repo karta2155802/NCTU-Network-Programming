@@ -37,7 +37,7 @@ def sql_read_post(c, post_id):
 		msg_out = 'Post is not exist.\r\n'
 		clientsocket.send(msg_out.encode('utf-8'))
 	else:
-		msg_out = '    {:<10}:{}\r\n'.format('Author', sql_return_fetch[0])
+		msg_out = '\r\n    {:<10}:{}\r\n'.format('Author', sql_return_fetch[0])
 		clientsocket.send(msg_out.encode('utf-8'))
 		msg_out = '    {:<10}:{}\r\n'.format('Title', sql_return_fetch[1])
 		clientsocket.send(msg_out.encode('utf-8'))
@@ -57,6 +57,8 @@ def sql_read_post(c, post_id):
 		for row in sql_return_comment:
 			msg_out = '    {}: {}\r\n'.format(row[0], row[1])
 			clientsocket.send(msg_out.encode('utf-8'))
+		msg_out = '\r\n'
+		clientsocket.send(msg_out.encode('utf-8'))
 		print('Read post successfully')
 
 def sql_list_post(c, board_name, keyword):
@@ -68,20 +70,24 @@ def sql_list_post(c, board_name, keyword):
 		board_id = sql_return_fetch[0]
 		print('board_id =', board_id)
 		sql_return_post = c.execute('select POST.ID, POST.Title, USERS.Username, POST.Date from POST inner join USERS on POST.Author_id = USERS.UID where Board_id = ? and POST.Title like ?', (board_id, keyword))
-		msg_out = '    {:<7} {:<20} {:<12} {:<9}\r\n'.format('ID', 'Title', 'Author', 'Date')
+		msg_out = '\r\n    {:<7} {:<20} {:<12} {:<9}\r\n'.format('ID', 'Title', 'Author', 'Date')
 		clientsocket.send(msg_out.encode('utf-8'))
 		for row in sql_return_post:
 			msg_out = '    {:<7} {:<20} {:<12} {:<9}\r\n'.format(row[0], row[1], row[2], row[3])
 			clientsocket.send(msg_out.encode('utf-8'))
+		msg_out = '\r\n'
+		clientsocket.send(msg_out.encode('utf-8'))
 		print('List post successfully')
 
 def sql_list_board(c, keyword):
 	sql_return = c.execute('select BOARD.ID, BOARD.Name, USERS.Username from BOARD inner join USERS on BOARD.Moderator_id = USERS.UID where BOARD.Name like ?', (keyword,))
-	msg_out = '    {:<7} {:^20} {:^20}\r\n'.format('Index', 'Name', 'Moderator')
+	msg_out = '\r\n    {:<7} {:^20} {:^20}\r\n'.format('Index', 'Name', 'Moderator')
 	clientsocket.send(msg_out.encode('utf-8'))
 	for row in sql_return:
 		msg_out = '    {:<7} {:^20} {:^20}\r\n'.format(row[0], row[1], row[2])
 		clientsocket.send(msg_out.encode('utf-8'))
+	msg_out = '\r\n'
+	clientsocket.send(msg_out.encode('utf-8'))
 	print('List board successfully')
 
 def sql_create_post(conn, c, uid, data):
