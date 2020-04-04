@@ -21,9 +21,8 @@ def sql_read_post(c, post_id):
 		clientsocket.send(msg_out.encode('utf-8'))
 
 		content = sql_return_fetch[3].split('<br>')
-		print(content[0])
-		for i in len(content):
-			msg_out = '    {}\r\n'.format(content[i])
+		for i in content:
+			msg_out = '    {}\r\n'.format(i)
 			clientsocket.send(msg_out.encode('utf-8'))
 
 		msg_out = '    --\r\n'
