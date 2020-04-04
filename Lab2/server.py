@@ -5,6 +5,22 @@ import sqlite3
 import time
 from sqlite3 import Error
 
+def sql_delete_post(conn, c, uid, post_id):
+	sql_return_fetch = c.execute('select Author_id from POST where ID = ?', (post_id)).fetchone()
+	if sql_return_fetch == None:
+		msg_out = 'Post is not exist.\r\n'
+		clientsocket.send(msg_out.encode('utf-8'))
+	elif sql_return_fetch[0] != uid:
+		msg_out = 'Not the post owner.\r\n'
+		clientsocket.send(msg_out.encode('utf-8'))
+	else:
+		c.execute('delete from POST where ID = ?', (post_id))
+		print('Delete successfully')
+		msg_out = 'Delete successfully\r\n'
+		clientsocket.send(msg_out.encode('utf-8'))
+
+
+
 def sql_read_post(c, post_id):
 	sql_return_fetch = c.execute('select USERS.Username, POST.Title, POST.Date, POST.Content from POST inner join USERS on POST.Author_id = USERS.UID where POST.ID = ?', (post_id,)).fetchone()
 	if sql_return_fetch == None:
@@ -30,7 +46,7 @@ def sql_read_post(c, post_id):
 		sql_return_comment = c.execute('select USERS.Username, COMMENT.Comment from COMMENT inner join USERS on COMMENT.Writer_id = USERS.UID where Post_id = ?', (post_id))
 		for row in sql_return_comment:
 			msg_out = '    {:<10}: {}\r\n'.format(row[0], row[1])
-		clientsocket.send(msg_out.encode('utf-8'))
+			clientsocket.send(msg_out.encode('utf-8'))
 		print('Read post successfully')
 		
 
@@ -245,7 +261,17 @@ def string_processing(msg_in, conn, c, uid):
 		else:
 			msg_out = 'Usage: read <post-id> \r\n'
 			clientsocket.send(msg_out.encode('utf-8'))
-
+	elif msg_list[0] == 'delete-post':
+		if uid == -1:
+			msg_out = 'Please login first.\r\n'
+			clientsocket.send(msg_out.encode('utf-8'))
+		elif len(msg_list) == 2:
+			post_id = msg_list[1]
+			print('deleting post...')
+			sql_delete_post(conn, c, uid, post_id)
+		else:
+			msg_out = 'Usage: delete-post <post-id> \r\n'
+			clientsocket.send(msg_out.encode('utf-8'))
 
 
 	else:
