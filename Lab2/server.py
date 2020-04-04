@@ -5,6 +5,18 @@ import sqlite3
 import time
 from sqlite3 import Error
 
+def sql_comment(conn, c , uid, post_id, comment):
+	sql_return_fetch = c.execute('select ID from POST where ID = ?', (post_id)).fetchone()
+	if sql_return_fetch == None:
+		msg_out = 'Post is not exist.\r\n'
+		clientsocket.send(msg_out.encode('utf-8'))
+	else:
+		c.execute('insert into COMMENT ("Writer_id", "Comment", "Post_id") values (?,?,?)', (uid, comment, post_id))
+		conn.commit()
+		print('Comment successfully')
+		msg_out = 'Comment successfully.\r\n'
+		clientsocket.send(msg_out.encode('utf-8'))
+
 def sql_delete_post(conn, c, uid, post_id):
 	sql_return_fetch = c.execute('select Author_id from POST where ID = ?', (post_id)).fetchone()
 	if sql_return_fetch == None:
@@ -18,8 +30,6 @@ def sql_delete_post(conn, c, uid, post_id):
 		print('Delete successfully')
 		msg_out = 'Delete successfully\r\n'
 		clientsocket.send(msg_out.encode('utf-8'))
-
-
 
 def sql_read_post(c, post_id):
 	sql_return_fetch = c.execute('select USERS.Username, POST.Title, POST.Date, POST.Content from POST inner join USERS on POST.Author_id = USERS.UID where POST.ID = ?', (post_id,)).fetchone()
@@ -48,8 +58,6 @@ def sql_read_post(c, post_id):
 			msg_out = '    {:<10}: {}\r\n'.format(row[0], row[1])
 			clientsocket.send(msg_out.encode('utf-8'))
 		print('Read post successfully')
-		
-
 
 def sql_list_post(c, board_name, keyword):
 	sql_return_fetch = c.execute('select BOARD.ID from BOARD where BOARD.Name = ?', (board_name,)).fetchone()
@@ -220,7 +228,7 @@ def string_processing(msg_in, conn, c, uid):
 			clientsocket.send(msg_out.encode('utf-8'))
 		elif len(msg_list) == 1:
 			keyword = '%%';
-			print('no hashtag')	
+			print('search without hashtag')	
 			sql_list_board(c, keyword)			
 		elif len(msg_list) == 2 and hashtag in msg_list[1]:
 			keyword = '%' + msg_list[1].replace('##', '', 1) + '%'
@@ -236,15 +244,11 @@ def string_processing(msg_in, conn, c, uid):
 		elif len(msg_list) == 2:
 			board_name = msg_list[1]
 			keyword = '%%'
-			print('no hashtag')
+			print('search without hashtag')
 			sql_list_post(c, board_name, keyword)
 		elif len(msg_list) >2 and hashtag in msg_list[2]:
 			board_name = msg_list[1]
 			msg_list[2] = msg_list[2].replace('##','',1)
-			#if msg_list[2] == '':
-			#	msg_out = 'Usage: list-post <board-name> ##<key>\r\n'
-			#	clientsocket.send(msg_out.encode('utf-8'))
-			#else:
 			keyword = '%' + ' '.join(msg_list[2:len(msg_list)]) + '%'
 			print('keyword =', keyword)
 			sql_list_post(c, board_name, keyword)
@@ -267,13 +271,28 @@ def string_processing(msg_in, conn, c, uid):
 			clientsocket.send(msg_out.encode('utf-8'))
 		elif len(msg_list) == 2:
 			post_id = msg_list[1]
-			print('deleting post...')
+			print('Deleting post...')
 			sql_delete_post(conn, c, uid, post_id)
 		else:
 			msg_out = 'Usage: delete-post <post-id> \r\n'
 			clientsocket.send(msg_out.encode('utf-8'))
 
 
+
+
+
+	elif msg_list[0] == 'comment':
+		if uid == -1:
+			msg_out = 'Please login first.\r\n'
+			clientsocket.send(msg_out.encode('utf-8'))
+		elif len(msg_list) > 2:
+			post_id = msg_list[1]
+			comment = ''.join(msg_list[2:len(msg_list)])
+			print('comment =', comment)
+			sql_comment(conn, c, uid, post_id, comment)
+		else:
+			msg_out = 'Usage: comment <post-id> <comment> \r\n'
+			clientsocket.send(msg_out.encode('utf-8'))
 	else:
 		msg_out = 'Command not found\r\n'
 		clientsocket.send(msg_out.encode('utf-8'))
