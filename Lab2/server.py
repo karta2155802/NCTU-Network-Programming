@@ -195,13 +195,13 @@ def string_processing(msg_in, conn, c, uid):
 		elif len(msg_list) >2 and hashtag in msg_list[2]:
 			board_name = msg_list[1]
 			msg_list[2] = msg_list[2].replace('##','',1)
-			if msg_list[2] == '':
-				msg_out = 'Usage: list-post <board-name> ##<key>\r\n'
-				clientsocket.send(msg_out.encode('utf-8'))
-			else:
-				keyword = '%' + ' '.join(msg_list[2:len(msg_list)]) + '%'
-				print('keyword =', keyword)
-				sql_list_post(c, uid, board_name, keyword)
+			#if msg_list[2] == '':
+			#	msg_out = 'Usage: list-post <board-name> ##<key>\r\n'
+			#	clientsocket.send(msg_out.encode('utf-8'))
+			#else:
+			keyword = '%' + ' '.join(msg_list[2:len(msg_list)]) + '%'
+			print('keyword =', keyword)
+			sql_list_post(c, uid, board_name, keyword)
 		else:
 			msg_out = 'Usage: list-post <board-name> ##<key>\r\n'
 			clientsocket.send(msg_out.encode('utf-8'))
