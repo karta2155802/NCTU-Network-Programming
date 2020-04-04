@@ -27,6 +27,10 @@ def sql_read_post(c, post_id):
 
 		msg_out = '    --\r\n'
 		clientsocket.send(msg_out.encode('utf-8'))
+		sql_return_comment = c.execute('select USERS.Username, COMMENT.Comment from COMMENT inner USERS on COMMENT.Writer_id = USERS.UID where Post_id = ?', (post_id))
+		for row in sql_return_comment:
+			msg_out = '    {:<10}: {}\r\n'.format(row[0], row[1])
+		clientsocket.send(msg_out.encode('utf-8'))
 		print('Read post successfully')
 		
 
