@@ -23,7 +23,7 @@ def sql_update_post_title(conn, c, uid, post_id, update_data):
 		clientsocket.send(msg_out.encode('utf-8'))
 
 def sql_update_post_content(conn, c, uid, post_id, update_data):
-	sql_return_fetch = c.execute('select Author_id from POST where ID = ?', (post_id)).fetchone()
+	sql_return_fetch = c.execute('select Author_id from POST where ID = ?', (post_id,)).fetchone()
 	if sql_return_fetch == None:
 		msg_out = 'Post is not exist.\r\n'
 		clientsocket.send(msg_out.encode('utf-8'))
@@ -38,7 +38,7 @@ def sql_update_post_content(conn, c, uid, post_id, update_data):
 		clientsocket.send(msg_out.encode('utf-8'))
 
 def sql_comment(conn, c , uid, post_id, comment):
-	sql_return_fetch = c.execute('select ID from POST where ID = ?', (post_id)).fetchone()
+	sql_return_fetch = c.execute('select ID from POST where ID = ?', (post_id,)).fetchone()
 	if sql_return_fetch == None:
 		msg_out = 'Post is not exist.\r\n'
 		clientsocket.send(msg_out.encode('utf-8'))
@@ -50,7 +50,7 @@ def sql_comment(conn, c , uid, post_id, comment):
 		clientsocket.send(msg_out.encode('utf-8'))
 
 def sql_delete_post(conn, c, uid, post_id):
-	sql_return_fetch = c.execute('select Author_id from POST where ID = ?', (post_id)).fetchone()
+	sql_return_fetch = c.execute('select Author_id from POST where ID = ?', (post_id,)).fetchone()
 	if sql_return_fetch == None:
 		msg_out = 'Post is not exist.\r\n'
 		clientsocket.send(msg_out.encode('utf-8'))
@@ -58,7 +58,7 @@ def sql_delete_post(conn, c, uid, post_id):
 		msg_out = 'Not the post owner.\r\n'
 		clientsocket.send(msg_out.encode('utf-8'))
 	else:
-		c.execute('delete from POST where ID = ?', (post_id))
+		c.execute('delete from POST where ID = ?', (post_id,))
 		print('Delete successfully')
 		msg_out = 'Delete successfully\r\n'
 		clientsocket.send(msg_out.encode('utf-8'))
