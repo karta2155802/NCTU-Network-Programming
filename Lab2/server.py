@@ -373,7 +373,8 @@ def new_client(clientsocket, addr):
 			count += 1
 			if count == 3:
 				clientsocket.close()
-				break		
+				break
+			continue	
 		msg_in = msg_in.replace('\r','').replace('\n','')			
 		print('msg_in = ',msg_in)
 		
@@ -384,7 +385,6 @@ def new_client(clientsocket, addr):
 			try:
 				uid = string_processing(msg_in, conn, c, uid)
 			except:
-				print('string processing error')
 				continue
 		msg_out = '% '
 		clientsocket.send(msg_out.encode('utf-8'))
