@@ -335,7 +335,7 @@ def string_processing(msg_in, conn, c, uid):
 			clientsocket.send(msg_out.encode('utf-8'))
 		elif len(msg_list) > 2:
 			post_id = msg_list[1]
-			comment = ''.join(msg_list[2:len(msg_list)])
+			comment = ' '.join(msg_list[2:len(msg_list)])
 			print('comment =', comment)
 			sql_comment(conn, c, uid, post_id, comment)
 		else:
@@ -381,11 +381,11 @@ def new_client(clientsocket, addr):
 			clientsocket.close()
 			break
 		else:
-			#try:
-			uid = string_processing(msg_in, conn, c, uid)
-			#except:
-				#print('string processing error')
-				#continue
+			try:
+				uid = string_processing(msg_in, conn, c, uid)
+			except:
+				print('string processing error')
+				continue
 		msg_out = '% '
 		clientsocket.send(msg_out.encode('utf-8'))
 
