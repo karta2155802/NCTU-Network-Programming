@@ -282,8 +282,15 @@ def string_processing(msg_in, conn, c, uid):
 		else:
 			msg_out = 'Usage: delete-post <post-id> \r\n'
 			clientsocket.send(msg_out.encode('utf-8'))
-
-
+	elif msg_list[0] == 'update-post':
+		if uid == -1:
+			msg_out = 'Please login first.\r\n'
+			clientsocket.send(msg_out.encode('utf-8'))
+		elif len(msg_list) > 3:
+			post_id = msg_list[1]
+			update_object = msg_list[2].replace('--0', '')
+			c.execute('update POST set ? = ? where ID = ?', (update_object, msg_list[3], post_id))
+			conn.commit()
 
 
 
