@@ -29,7 +29,7 @@ def sql_update_post_content(conn, c, uid, post_id, update_data):
 		msg_out = 'Not the post owner.\r\n'
 		clientsocket.send(msg_out.encode('utf-8'))
 	else:
-		c.execute('update POST set Content = ? where ID = ?', (updata_data, post_id))
+		c.execute('update POST set Content = ? where ID = ?', (update_data, post_id))
 		conn.commit()
 		print('Update post content successfully')
 		msg_out = 'Update successfully.\r\n'
