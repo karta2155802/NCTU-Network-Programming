@@ -5,6 +5,36 @@ import sqlite3
 import time
 from sqlite3 import Error
 
+def sql_update_post_title(conn, c, uid, post_id, update_data):
+	sql_return_fetch = c.execute('select Author_id from POST where ID = ?', (post_id)).fetchone()
+	if sql_return_fetch == None:
+		msg_out = 'Post is not exist.\r\n'
+		clientsocket.send(msg_out.encode('utf-8'))
+	elif sql_return_fetch[0] != uid:
+		msg_out = 'Not the post owner.\r\n'
+		clientsocket.send(msg_out.encode('utf-8'))
+	else:
+		c.execute('update POST set Title = ? where ID = ?', (update_date, post_id))
+		conn.commit()
+		print('Update post title successfully')
+		msg_out = 'Update successfully.\r\n'
+		clientsocket.send(msg_out.encode('utf-8'))
+
+def sql_update_post_content(conn, c, uid, post_id, update_data):
+	sql_return_fetch = c.execute('select Author_id from POST where ID = ?', (post_id)).fetchone()
+	if sql_return_fetch == None:
+		msg_out = 'Post is not exist.\r\n'
+		clientsocket.send(msg_out.encode('utf-8'))
+	elif sql_return_fetch[0] != uid:
+		msg_out = 'Not the post owner.\r\n'
+		clientsocket.send(msg_out.encode('utf-8'))
+	else:
+		c.execute('update POST set Content = ? where ID = ?', (update_date, post_id))
+		conn.commit()
+		print('Update post content successfully')
+		msg_out = 'Update successfully.\r\n'
+		clientsocket.send(msg_out.encode('utf-8'))
+
 def sql_comment(conn, c , uid, post_id, comment):
 	sql_return_fetch = c.execute('select ID from POST where ID = ?', (post_id)).fetchone()
 	if sql_return_fetch == None:
@@ -286,14 +316,19 @@ def string_processing(msg_in, conn, c, uid):
 		if uid == -1:
 			msg_out = 'Please login first.\r\n'
 			clientsocket.send(msg_out.encode('utf-8'))
-		elif len(msg_list) > 3:
+		elif len(msg_list) > 3 and msg_list[2] == '--title':
 			post_id = msg_list[1]
-			update_object = msg_list[2].replace('--0', '')
-			c.execute('update POST set ? = ? where ID = ?', (update_object, msg_list[3], post_id))
-			conn.commit()
-
-
-
+			update_data = ''.join[3:len(msg_list)]
+			print('Updating post title =', update_data)
+			sql_update_post_title(conn, c, uid, post_id, update_data)
+		elif len(msg_list) > 3 and msg_list[2] == '--content':
+			post_id = msg_list[1]
+			update_data = ''.join[3:len(msg_list)]
+			print('Updating post content', update_data)
+			sql_update_post_content(conn, c, uid, post_id, update_data)
+		else:
+			msg_out = 'Usage: update-post <post-id> --title/content <new>\r\n'
+			clientsocket.send(msg_out.encode('utf-8'))
 	elif msg_list[0] == 'comment':
 		if uid == -1:
 			msg_out = 'Please login first.\r\n'
