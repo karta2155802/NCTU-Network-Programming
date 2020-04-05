@@ -323,7 +323,7 @@ def string_processing(msg_in, conn, c, uid):
 			sql_update_post_title(conn, c, uid, post_id, update_data)
 		elif len(msg_list) > 3 and msg_list[2] == '--content':
 			post_id = msg_list[1]
-			update_data = ''.join[3:len(msg_list)]
+			update_data = ''.join(msg_list[3:len(msg_list)])
 			print('Updating post content', update_data)
 			sql_update_post_content(conn, c, uid, post_id, update_data)
 		else:
