@@ -6,9 +6,7 @@ import time
 from sqlite3 import Error
 
 def sql_update_post_title(conn, c, uid, post_id, update_data):
-	print('123')
-	sql_return_fetch = c.execute('select Author_id from POST where ID = ?', (post_id,)).fetchone()
-	print(sql_return_fetch[0])
+	sql_return_fetch = c.execute('select Author_id from POST where ID = ?', (post_id,)).fetchone()	
 	if sql_return_fetch == None:
 		msg_out = 'Post is not exist.\r\n'
 		clientsocket.send(msg_out.encode('utf-8'))
