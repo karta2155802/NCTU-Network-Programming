@@ -210,7 +210,7 @@ def string_processing(msg_in, conn, c, uid):
 		if uid == -1:
 			msg_out = 'Please login first.\r\n'
 			clientsocket.send(msg_out.encode('utf-8'))
-		if len(msg_list) != 1:
+		elif len(msg_list) != 1:
 			msg_out = 'Usage: logout\r\n'
 			clientsocket.send(msg_out.encode('utf-8'))
 		else:
