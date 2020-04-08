@@ -86,6 +86,9 @@ def string_processing(msg_in, conn, c, uid):
 		else:
 			print('whoami...')
 			sql_whoami(c,uid)
+	else:
+		msg_out = 'Command not found\r\n'
+		clientsocket.send(msg_out.encode('utf-8'))
 	print('')
 	return uid
 
