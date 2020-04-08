@@ -49,7 +49,8 @@ def sql_register(msg_list, conn, c):
 		msg_out = 'Username is already used.\r\n'
 		clientsocket.send(msg_out.encode('utf-8'))
 
-def string_processing(msg_list, conn, c, uid):
+def string_processing(msg_in, conn, c, uid):
+	msg_list = msg_in.split();
 	print(uid)
 	if msg_list[0] == 'register':
 		if len(msg_list) != 4:
@@ -101,21 +102,30 @@ def new_client(clientsocket, addr):
 
 	msg_out = '% '
 	clientsocket.send(msg_out.encode('utf-8'))
-	uid=-1
+	uid = -1
+	count = 0
 	while True:		
 		msg_in = clientsocket.recv(1024).decode('utf-8')
-		print('msg_in = ',msg_in)
+		if msg_in == '\r\n':
+			msg_out = '% '
+			clientsocket.send(msg_out.encode('utf-8'))
+			continue
+		elif msg_in == '':
+			count += 1
+			if count == 3:
+				clientsocket.close()
+				break
+			continue	
 		msg_in = msg_in.replace('\r','').replace('\n','')			
+		print('msg_in = ',msg_in)
 		
-		msg_list = msg_in.split();
 		if msg_in == 'exit':
 			clientsocket.close()
 			break
 		else:
 			try:
-				uid = string_processing(msg_list, conn, c, uid)
+				uid = string_processing(msg_in, conn, c, uid)
 			except:
-				#print('string processing error')
 				continue
 		msg_out = '% '
 		clientsocket.send(msg_out.encode('utf-8'))
