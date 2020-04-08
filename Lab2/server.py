@@ -382,10 +382,10 @@ def new_client(clientsocket, addr):
 			clientsocket.close()
 			break
 		else:
-			#try:
-			uid = string_processing(msg_in, conn, c, uid)
-			#except:
-			#	continue
+			try:
+				uid = string_processing(msg_in, conn, c, uid)
+			except:
+				continue
 		msg_out = '% '
 		clientsocket.send(msg_out.encode('utf-8'))
 
