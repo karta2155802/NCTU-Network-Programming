@@ -86,6 +86,7 @@ def string_processing(msg_in, conn, c, uid):
 		else:
 			print('whoami...')
 			sql_whoami(c,uid)
+	print('')
 	return uid
 
 def new_client(clientsocket, addr):
@@ -134,7 +135,7 @@ def new_client(clientsocket, addr):
 
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 host = socket.gethostname();
-port = 10000
+port = sys.argv[1]
 serversocket.bind((host, port))
 serversocket.listen(20)
 print('Waiting for connection...')
