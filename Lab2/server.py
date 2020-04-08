@@ -318,7 +318,7 @@ def string_processing(msg_in, conn, c, uid):
 			clientsocket.send(msg_out.encode('utf-8'))
 		elif len(msg_list) > 3 and msg_list[2] == '--title':
 			post_id = msg_list[1]
-			update_data = ''.join(msg_list[3:len(msg_list)])
+			update_data = ' '.join(msg_list[3:len(msg_list)])
 			print('Updating post title =', update_data)
 			sql_update_post_title(conn, c, uid, post_id, update_data)
 		elif len(msg_list) > 3 and msg_list[2] == '--content':
@@ -382,10 +382,10 @@ def new_client(clientsocket, addr):
 			clientsocket.close()
 			break
 		else:
-			try:
-				uid = string_processing(msg_in, conn, c, uid)
-			except:
-				continue
+			#try:
+			uid = string_processing(msg_in, conn, c, uid)
+			#except:
+			#	continue
 		msg_out = '% '
 		clientsocket.send(msg_out.encode('utf-8'))
 
