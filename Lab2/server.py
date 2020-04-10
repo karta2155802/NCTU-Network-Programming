@@ -392,7 +392,7 @@ def new_client(clientsocket, addr):
 		
 
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-host = socket.gethostname();
+host = socket.gethostname()
 port = 10000
 serversocket.bind((host, port))
 serversocket.listen(20)
