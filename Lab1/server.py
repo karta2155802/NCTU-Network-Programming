@@ -6,7 +6,7 @@ from sqlite3 import Error
 
 
 def new_client(clientsocket, addr):
-	#-------------------------------------------------------------
+	#------------------------------------------------------sqlite3 function
 	def sql_whoami(c, uid):
 		sql_return = c.execute('select * from USERS where UID = ?', (uid,)).fetchone()
 		msg_out = sql_return[1] + '\r\n'
@@ -100,7 +100,7 @@ def new_client(clientsocket, addr):
 	clientsocket.send(msg_out.encode('utf-8'))
 	msg_out = '********************************\r\n'
 	clientsocket.send(msg_out.encode('utf-8'))
-	clientsocket.recv(1024)
+	#clientsocket.recv(1024)
 
 	msg_out = '% '
 	clientsocket.send(msg_out.encode('utf-8'))
@@ -134,7 +134,7 @@ def new_client(clientsocket, addr):
 
 		
 bind_ip = "0.0.0.0"
-port = 10000
+port = int(sys.argv[1])
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 serversocket.bind((bind_ip, port))
