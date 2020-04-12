@@ -47,7 +47,7 @@ def string_processing(msg_in, conn, c, uid):
 	print(uid)
 	if msg_list[0] == 'register':
 		if len(msg_list) != 4:
-			msg_out = 'Usage: regoster <username> <email> <password>\r\n'
+			msg_out = 'Usage: register <username> <email> <password>\r\n'
 			clientsocket.send(msg_out.encode('utf-8'))
 		else:
 			print('Inserting...')
