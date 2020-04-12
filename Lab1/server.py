@@ -4,9 +4,8 @@ import _thread
 import sqlite3
 from sqlite3 import Error
 
-
 def new_client(clientsocket, addr):
-	#------------------------------------------------------sqlite3 function
+#------------------------------------------------------sqlite3 function
 	def sql_whoami(c, uid):
 		sql_return = c.execute('select * from USERS where UID = ?', (uid,)).fetchone()
 		msg_out = sql_return[1] + '\r\n'
@@ -46,7 +45,7 @@ def new_client(clientsocket, addr):
 
 	def string_processing(msg_in, conn, c, uid):
 		msg_list = msg_in.split();
-		print(uid)
+		print('uid =',uid)
 		if msg_list[0] == 'register':
 			if len(msg_list) != 4:
 				msg_out = 'Usage: register <username> <email> <password>\r\n'
@@ -100,37 +99,23 @@ def new_client(clientsocket, addr):
 	clientsocket.send(msg_out.encode('utf-8'))
 	msg_out = '********************************\r\n'
 	clientsocket.send(msg_out.encode('utf-8'))
-	#clientsocket.recv(1024)
-
-	msg_out = '% '
-	clientsocket.send(msg_out.encode('utf-8'))
 	uid = -1
-	count = 0
-	while True:		
-		msg_in = clientsocket.recv(1024).decode('utf-8')
-		if msg_in == '\r\n':
-			msg_out = '% '
-			clientsocket.send(msg_out.encode('utf-8'))
-			continue
-		elif msg_in == '':
-			count += 1
-			if count == 3:
-				clientsocket.close()
-				break
-			continue	
-		msg_in = msg_in.replace('\r','').replace('\n','')			
-		print('msg_in = ',msg_in)
-		
-		if msg_in == 'exit':
-			clientsocket.close()
-			break
-		else:
-			try:
-				uid = string_processing(msg_in, conn, c, uid)
-			except:
-				continue
+
+	while True:
 		msg_out = '% '
 		clientsocket.send(msg_out.encode('utf-8'))
+		msg_in = clientsocket.recv(1024).decode('utf-8')
+		if not msg_in or len(msg_in.split()) == 0:
+			pass
+		else:	
+			msg_in = msg_in.replace('\r','').replace('\n','')			
+			print('msg_in = ',msg_in)
+			if msg_in == 'exit':
+				clientsocket.close()
+				break		
+			else:				
+				uid = string_processing(msg_in, conn, c, uid)				
+	clientsocket.close()
 
 		
 bind_ip = "0.0.0.0"
