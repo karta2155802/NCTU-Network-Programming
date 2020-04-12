@@ -91,10 +91,10 @@ def string_processing(msg_in, conn, c, uid):
 def new_client(clientsocket, addr):
 	conn = sqlite3.connect('Database.db')
 	c = conn.cursor()
-	print('Sql Connecttion Succeed')
+	print('Sql Connection Succeed')
 	msg_out = '********************************\r\n'
 	clientsocket.send(msg_out.encode('utf-8'))
-	msg_out = '** Welcoome to the BBS server **\r\n'
+	msg_out = '** Welcome to the BBS server **\r\n'
 	clientsocket.send(msg_out.encode('utf-8'))
 	msg_out = '********************************\r\n'
 	clientsocket.send(msg_out.encode('utf-8'))
