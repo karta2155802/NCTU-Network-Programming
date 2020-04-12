@@ -131,11 +131,11 @@ def new_client(clientsocket, addr):
 		clientsocket.send(msg_out.encode('utf-8'))
 
 		
-
-serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-host = socket.gethostname();
+bind_ip = "0.0.0.0"
 port = 10000
-serversocket.bind((host, port))
+serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+serversocket.bind((bind_ip, port))
 serversocket.listen(20)
 print('Waiting for connection...')
 
