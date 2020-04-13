@@ -32,13 +32,14 @@ def new_client(clientsocket, addr):
 		return uid
 
 	def sql_register(msg_list, conn, c):
-		try:
+		sql_return = c.execute('select * from USERS where Username = ?', (msg_list[1],)).fetchall()
+		if len(sql_return) == 0:
 			c.execute('insert into USERS ("Username", "Email", "Password") values (?,?,?)', (msg_list[1], msg_list[2], msg_list[3]))
 			conn.commit()
 			print('Register successfully')
 			msg_out = 'Register successfully.\r\n'
 			clientsocket.send(msg_out.encode('utf-8'))
-		except Error:
+		else:
 			print('Username is already used')
 			msg_out = 'Username is already used.\r\n'
 			clientsocket.send(msg_out.encode('utf-8'))
