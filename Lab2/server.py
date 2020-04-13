@@ -59,6 +59,8 @@ def new_client(clientsocket, addr):
 			clientsocket.send(msg_out.encode('utf-8'))
 		else:
 			c.execute('delete from POST where ID = ?', (post_id,))
+			c.execute('delete from COMMENT where Post_id = ?', (post_id,))
+			conn.commit()
 			print('Delete successfully')
 			msg_out = 'Delete successfully\r\n'
 			clientsocket.send(msg_out.encode('utf-8'))
