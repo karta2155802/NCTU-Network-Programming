@@ -194,7 +194,7 @@ def new_client(clientsocket, addr):
 	def string_processing(msg_in, conn, c, uid):
 		hashtag = '##'
 		msg_list = msg_in.split();
-		print('uid =',uid)
+		#print('uid =',uid)
 		if msg_list[0] == 'register':
 			if len(msg_list) != 4:
 				msg_out = 'Usage: regoster <username> <email> <password>\r\n'
