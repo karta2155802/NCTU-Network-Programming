@@ -6,70 +6,63 @@ import time
 from sqlite3 import Error	
 
 def new_client(clientsocket, addr):
+	msg_suc = ""
 #------------------------------------------------------sqlite3 function
 	def sql_update_post_title(conn, c, uid, post_id, update_data):
 		sql_return_fetch = c.execute('select Author_id from POST where ID = ?', (post_id,)).fetchone()	
 		if sql_return_fetch == None:
-			msg_out = 'Post is not exist.\r\n'
-			clientsocket.send(msg_out.encode('utf-8'))
+			msg_suc = 'Post is not exist.\r\n'
 		elif sql_return_fetch[0] != uid:
-			msg_out = 'Not the post owner.\r\n'
-			clientsocket.send(msg_out.encode('utf-8'))
+			msg_suc = 'Not the post owner.\r\n'
 		else:
 			c.execute('update POST set Title = ? where ID = ?', (update_data, post_id))
 			conn.commit()
 			print('Update post title successfully')
-			msg_out = 'Update successfully.\r\n'
-			clientsocket.send(msg_out.encode('utf-8'))
+			msg_suc = 'Update successfully.\r\n'
+		return msg_suc
 
 	def sql_update_post_content(conn, c, uid, post_id, update_data):
 		sql_return_fetch = c.execute('select Author_id from POST where ID = ?', (post_id,)).fetchone()
 		if sql_return_fetch == None:
-			msg_out = 'Post is not exist.\r\n'
-			clientsocket.send(msg_out.encode('utf-8'))
+			msg_suc = 'Post is not exist.\r\n'
 		elif sql_return_fetch[0] != uid:
-			msg_out = 'Not the post owner.\r\n'
-			clientsocket.send(msg_out.encode('utf-8'))
+			msg_suc = 'Not the post owner.\r\n'
 		else:
 			c.execute('update POST set Content = ? where ID = ?', (update_data, post_id))
 			conn.commit()
 			print('Update post content successfully')
-			msg_out = 'Update successfully.\r\n'
-			clientsocket.send(msg_out.encode('utf-8'))
+			msg_suc = 'Update successfully.\r\n'
+		return msg_suc
 
 	def sql_comment(conn, c , uid, post_id, comment):
 		sql_return_fetch = c.execute('select ID from POST where ID = ?', (post_id,)).fetchone()
 		if sql_return_fetch == None:
-			msg_out = 'Post is not exist.\r\n'
-			clientsocket.send(msg_out.encode('utf-8'))
+			msg_suc = 'Post is not exist.\r\n'
 		else:
 			c.execute('insert into COMMENT ("Writer_id", "Comment", "Post_id") values (?,?,?)', (uid, comment, post_id))
 			conn.commit()
 			print('Comment successfully')
-			msg_out = 'Comment successfully.\r\n'
-			clientsocket.send(msg_out.encode('utf-8'))
+			msg_suc = 'Comment successfully.\r\n'
+		return msg_suc
 
 	def sql_delete_post(conn, c, uid, post_id):
 		sql_return_fetch = c.execute('select Author_id from POST where ID = ?', (post_id,)).fetchone()
 		if sql_return_fetch == None:
-			msg_out = 'Post is not exist.\r\n'
-			clientsocket.send(msg_out.encode('utf-8'))
+			msg_suc = 'Post is not exist.\r\n'
 		elif sql_return_fetch[0] != uid:
-			msg_out = 'Not the post owner.\r\n'
-			clientsocket.send(msg_out.encode('utf-8'))
+			msg_suc = 'Not the post owner.\r\n'
 		else:
 			c.execute('delete from POST where ID = ?', (post_id,))
 			c.execute('delete from COMMENT where Post_id = ?', (post_id,))
 			conn.commit()
 			print('Delete successfully')
-			msg_out = 'Delete successfully\r\n'
-			clientsocket.send(msg_out.encode('utf-8'))
+			msg_suc = 'Delete successfully\r\n'
+		return msg_suc
 
 	def sql_read_post(c, post_id):
 		sql_return_fetch = c.execute('select USERS.Username, POST.Title, POST.Date, POST.Content from POST inner join USERS on POST.Author_id = USERS.UID where POST.ID = ?', (post_id,)).fetchone()
 		if sql_return_fetch == None:
-			msg_out = 'Post is not exist.\r\n'
-			clientsocket.send(msg_out.encode('utf-8'))
+			msg_suc = 'Post is not exist.\r\n'
 		else:
 			msg_out = '\r\n    {:<10}:{}\r\n'.format('Author', sql_return_fetch[0])
 			clientsocket.send(msg_out.encode('utf-8'))
@@ -94,12 +87,13 @@ def new_client(clientsocket, addr):
 			msg_out = '\r\n'
 			clientsocket.send(msg_out.encode('utf-8'))
 			print('Read post successfully')
+			msg_suc = ""
+		return msg_suc
 
 	def sql_list_post(c, board_name, keyword):
 		sql_return_fetch = c.execute('select BOARD.ID from BOARD where BOARD.Name = ?', (board_name,)).fetchone()
 		if sql_return_fetch == None:
-			msg_out = 'Board is not exist.\r\n'
-			clientsocket.send(msg_out.encode('utf-8'))
+			msg_suc = 'Board is not exist.\r\n'
 		else:
 			board_id = sql_return_fetch[0]
 			print('board_id =', board_id)
@@ -112,6 +106,8 @@ def new_client(clientsocket, addr):
 			msg_out = '\r\n'
 			clientsocket.send(msg_out.encode('utf-8'))
 			print('List post successfully')
+			msg_suc = ""
+		return msg_suc
 
 	def sql_list_board(c, keyword):
 		sql_return = c.execute('select BOARD.ID, BOARD.Name, USERS.Username from BOARD inner join USERS on BOARD.Moderator_id = USERS.UID where BOARD.Name like ?', (keyword,))
@@ -123,13 +119,14 @@ def new_client(clientsocket, addr):
 		msg_out = '\r\n'
 		clientsocket.send(msg_out.encode('utf-8'))
 		print('List board successfully')
+		msg_suc = ""
+		return msg_suc
 
 	def sql_create_post(conn, c, uid, data):
 		sql_return = c.execute('select * from BOARD where Name = ?', (data[0],)).fetchone()
 		if(sql_return == None):
 			print('Board is not exist')
-			msg_out = 'Board is not exist.\r\n'
-			clientsocket.send(msg_out.encode('utf-8'))
+			msg_suc = 'Board is not exist.\r\n'
 		else:
 			board_id = sql_return[0]
 			nowtime =  time.strftime('%m/%d', time.localtime())
@@ -137,8 +134,8 @@ def new_client(clientsocket, addr):
 			c.execute('insert into POST ("Title", "Author_id", "Date", "Content", "Board_id") values (?,?,?,?,?)', (data[1], uid, nowtime, data[2], board_id))
 			conn.commit()
 			print('Create post successfully')
-			msg_out = 'Create post successfully.\r\n'
-			clientsocket.send(msg_out.encode('utf-8'))
+			msg_suc = 'Create post successfully.\r\n'
+		return msg_suc
 
 	def sql_create_board(msg_list, conn, c, uid):
 		sql_return = c.execute('select * from BOARD where Name = ?', (msg_list[1],)).fetchall()
@@ -146,37 +143,33 @@ def new_client(clientsocket, addr):
 			c.execute('insert into BOARD ("Name", "Moderator_id") values (?,?)', (msg_list[1], uid))
 			conn.commit()
 			print('Create board successfully')
-			msg_out = 'Create board successfully.\r\n'
-			clientsocket.send(msg_out.encode('utf-8'))
+			msg_suc = 'Create board successfully.\r\n'
 		else:
 			print('Board is already exist')
-			msg_out = 'Board is already exist.\r\n'
-			clientsocket.send(msg_out.encode('utf-8'))
+			msg_suc = 'Board is already exist.\r\n'
+		return msg_suc
 
 	def sql_whoami(c, uid):
 		sql_return = c.execute('select * from USERS where UID = ?', (uid,)).fetchone()
-		msg_out = sql_return[1] + '\r\n'
-		clientsocket.send(msg_out.encode('utf-8'))
+		msg_suc = sql_return[1] + '\r\n'
+		return msg_suc
 
 	def sql_logout(msg_list, c, uid):
 		sql_return = c.execute('select * from USERS where UID = ?', (uid,)).fetchone()
-		msg_out = 'Bye, ' + sql_return[1] + '.\r\n'
-		clientsocket.send(msg_out.encode('utf-8'))
+		msg_suc = 'Bye, ' + sql_return[1] + '.\r\n'
 		uid = -1
 		print(sql_return[1],'has logout')
-		return uid
+		return uid, msg_suc
 
 	def sql_login(msg_list, c, uid):
 		sql_return = c.execute('select * from USERS where Username = ?', (msg_list[1],)).fetchone()
 		if sql_return != None and sql_return[3] == msg_list[2]:
 			uid = sql_return[0]
 			print(msg_list[1],'has login')
-			msg_out = 'Welcome, ' + msg_list[1] +'.\r\n'
-			clientsocket.send(msg_out.encode('utf-8'))
+			msg_suc = 'Welcome, ' + msg_list[1] +'.\r\n'
 		else:
-			msg_out = 'Login failed.\r\n'
-			clientsocket.send(msg_out.encode('utf-8'))
-		return uid
+			msg_suc = 'Login failed.\r\n'
+		return uid, msg_suc
 
 	def sql_register(msg_list, conn, c):
 		sql_return = c.execute('select * from USERS where Username = ?', (msg_list[1],)).fetchall()
@@ -184,68 +177,56 @@ def new_client(clientsocket, addr):
 			c.execute('insert into USERS ("Username", "Email", "Password") values (?,?,?)', (msg_list[1], msg_list[2], msg_list[3]))
 			conn.commit()
 			print('Register successfully')
-			msg_out = 'Register successfully.\r\n'
-			clientsocket.send(msg_out.encode('utf-8'))
+			msg_suc = 'Register successfully.\r\n'
 		else:
 			print('Username is already used')
-			msg_out = 'Username is already used.\r\n'
-			clientsocket.send(msg_out.encode('utf-8'))
+			msg_suc = 'Username is already used.\r\n'
+		return msg_suc
 
 	def string_processing(msg_in, conn, c, uid):
 		hashtag = '##'
 		msg_list = msg_in.split();
-		#print('uid =',uid)
 		if msg_list[0] == 'register':
 			if len(msg_list) != 4:
-				msg_out = 'Usage: regoster <username> <email> <password>\r\n'
-				clientsocket.send(msg_out.encode('utf-8'))
+				msg_suc = 'Usage: regoster <username> <email> <password>\r\n'
 			else:
 				print('Inserting...')
-				sql_register(msg_list, conn, c)
+				msg_suc = sql_register(msg_list, conn, c)
 		elif msg_list[0] == 'login':
 			if uid != -1:
-				msg_out = 'Please logout first.\r\n'
-				clientsocket.send(msg_out.encode('utf-8'))
+				msg_suc = 'Please logout first.\r\n'
 			elif len(msg_list) != 3:
-				msg_out = 'Usage: login <username> <password>\r\n'
-				clientsocket.send(msg_out.encode('utf-8'))		
+				msg_suc = 'Usage: login <username> <password>\r\n'
 			elif len(msg_list) == 3 and uid == -1:
 				print('Logging...')
-				uid = sql_login(msg_list, c, uid)
+				uid, msg_suc = sql_login(msg_list, c, uid)
 		elif msg_list[0] == 'logout':
 			if uid == -1:
-				msg_out = 'Please login first.\r\n'
-				clientsocket.send(msg_out.encode('utf-8'))
+				msg_suc = 'Please login first.\r\n'
 			elif len(msg_list) != 1:
-				msg_out = 'Usage: logout\r\n'
-				clientsocket.send(msg_out.encode('utf-8'))
+				msg_suc = 'Usage: logout\r\n'
 			else:
 				print('Logout...')
-				uid = sql_logout(msg_list, c, uid)
+				uid, msg_suc = sql_logout(msg_list, c, uid)
 		elif msg_list[0] == 'whoami':
 			if uid == -1:
-				msg_out = 'Please login first.\r\n'
-				clientsocket.send(msg_out.encode('utf-8'))	
+				msg_suc = 'Please login first.\r\n'
 			elif len(msg_list) != 1:
-				msg_out = 'Usage: whoami\r\n'
-				clientsocket.send(msg_out.encode('utf-8'))			
+				msg_suc = 'Usage: whoami\r\n'
 			else:
 				print('whoami...')
-				sql_whoami(c,uid)
+				msg_suc = sql_whoami(c,uid)
 		elif msg_list[0] == 'create-board':
 			if uid == -1:
-				msg_out = 'Please login first.\r\n'
-				clientsocket.send(msg_out.encode('utf-8'))
+				msg_suc = 'Please login first.\r\n'
 			elif len(msg_list) != 2:
-				msg_out = 'Usage: create-board <name>\r\n'
-				clientsocket.send(msg_out.encode('utf-8'))		
+				msg_suc = 'Usage: create-board <name>\r\n'
 			else:
 				print('creating board...')
-				sql_create_board(msg_list, conn, c, uid)
+				msg_suc = sql_create_board(msg_list, conn, c, uid)
 		elif msg_list[0] == 'create-post':
 			if uid == -1:
-				msg_out = 'Please login first.\r\n'
-				clientsocket.send(msg_out.encode('utf-8'))
+				msg_suc = 'Please login first.\r\n'
 			elif len(msg_list) > 5 and msg_list[2] == '--title' and '--content' in msg_in:
 				board_name = msg_list[1]
 				print('board_name =', board_name)
@@ -255,103 +236,88 @@ def new_client(clientsocket, addr):
 				content = ' '.join(msg_list[content_position+1:len(msg_list)])
 				print('content =', content)
 				if title == '' or content == '':
-					msg_out = 'Usage: create-post <board-name> --title <title> --content <content>\r\n'
-					clientsocket.send(msg_out.encode('utf-8'))
+					msg_suc = 'Usage: create-post <board-name> --title <title> --content <content>\r\n'
 				else:
 					data = [board_name, title, content]
 					print('creating post...')
-					sql_create_post(conn, c, uid, data)
+					msg_suc = sql_create_post(conn, c, uid, data)
 			else:
-				msg_out = 'Usage: create-post <board-name> --title <title> --content <content>\r\n'
-				clientsocket.send(msg_out.encode('utf-8'))
+				msg_suc = 'Usage: create-post <board-name> --title <title> --content <content>\r\n'
 		elif msg_list[0] == 'list-board':
 			if uid == -1:
-				msg_out = 'Please login first.\r\n'
-				clientsocket.send(msg_out.encode('utf-8'))
+				msg_suc = 'Please login first.\r\n'
 			elif len(msg_list) == 1:
 				keyword = '%%';
 				print('search without hashtag')	
-				sql_list_board(c, keyword)			
+				msg_suc = sql_list_board(c, keyword)			
 			elif len(msg_list) == 2 and hashtag in msg_list[1]:
 				keyword = '%' + msg_list[1].replace('##', '', 1) + '%'
 				print('keyword =', keyword)
-				sql_list_board(c, keyword)				
+				msg_suc = sql_list_board(c, keyword)				
 			else:
-				msg_out = 'Usage: list-board ##<key>\r\n'
-				clientsocket.send(msg_out.encode('utf-8'))
+				msg_suc = 'Usage: list-board ##<key>\r\n'
 		elif msg_list[0] == 'list-post':
 			if uid == -1:
-				msg_out = 'Please login first.\r\n'
-				clientsocket.send(msg_out.encode('utf-8'))
+				msg_suc = 'Please login first.\r\n'
 			elif len(msg_list) == 2:
 				board_name = msg_list[1]
 				keyword = '%%'
 				print('search without hashtag')
-				sql_list_post(c, board_name, keyword)
+				msg_suc = sql_list_post(c, board_name, keyword)
 			elif len(msg_list) >2 and hashtag in msg_list[2]:
 				board_name = msg_list[1]
 				msg_list[2] = msg_list[2].replace('##','',1)
 				keyword = '%' + ' '.join(msg_list[2:len(msg_list)]) + '%'
 				print('keyword =', keyword)
-				sql_list_post(c, board_name, keyword)
+				msg_suc = sql_list_post(c, board_name, keyword)
 			else:
-				msg_out = 'Usage: list-post <board-name> ##<key>\r\n'
-				clientsocket.send(msg_out.encode('utf-8'))
+				msg_suc = 'Usage: list-post <board-name> ##<key>\r\n'
 		elif msg_list[0] == 'read':
 			if uid == -1:
-				msg_out = 'Please login first.\r\n'
-				clientsocket.send(msg_out.encode('utf-8'))
+				msg_suc = 'Please login first.\r\n'
 			elif len(msg_list) == 2:
 				post_id = msg_list[1]
-				sql_read_post(c, post_id)
+				msg_suc = sql_read_post(c, post_id)
 			else:
-				msg_out = 'Usage: read <post-id> \r\n'
-				clientsocket.send(msg_out.encode('utf-8'))
+				msg_suc = 'Usage: read <post-id> \r\n'
 		elif msg_list[0] == 'delete-post':
 			if uid == -1:
-				msg_out = 'Please login first.\r\n'
-				clientsocket.send(msg_out.encode('utf-8'))
+				msg_suc = 'Please login first.\r\n'
 			elif len(msg_list) == 2:
 				post_id = msg_list[1]
 				print('Deleting post...')
-				sql_delete_post(conn, c, uid, post_id)
+				msg_suc = sql_delete_post(conn, c, uid, post_id)
 			else:
-				msg_out = 'Usage: delete-post <post-id> \r\n'
-				clientsocket.send(msg_out.encode('utf-8'))
+				msg_suc = 'Usage: delete-post <post-id> \r\n'
 		elif msg_list[0] == 'update-post':
 			if uid == -1:
-				msg_out = 'Please login first.\r\n'
-				clientsocket.send(msg_out.encode('utf-8'))
+				msg_suc = 'Please login first.\r\n'
 			elif len(msg_list) > 3 and msg_list[2] == '--title':
 				post_id = msg_list[1]
 				update_data = ' '.join(msg_list[3:len(msg_list)])
 				print('Updating post title =', update_data)
-				sql_update_post_title(conn, c, uid, post_id, update_data)
+				msg_suc = sql_update_post_title(conn, c, uid, post_id, update_data)
 			elif len(msg_list) > 3 and msg_list[2] == '--content':
 				post_id = msg_list[1]
 				update_data = ''.join(msg_list[3:len(msg_list)])
 				print('Updating post content', update_data)
-				sql_update_post_content(conn, c, uid, post_id, update_data)
+				msg_suc = sql_update_post_content(conn, c, uid, post_id, update_data)
 			else:
-				msg_out = 'Usage: update-post <post-id> --title/content <new>\r\n'
-				clientsocket.send(msg_out.encode('utf-8'))
+				msg_suc = 'Usage: update-post <post-id> --title/content <new>\r\n'
 		elif msg_list[0] == 'comment':
 			if uid == -1:
-				msg_out = 'Please login first.\r\n'
-				clientsocket.send(msg_out.encode('utf-8'))
+				msg_suc = 'Please login first.\r\n'
 			elif len(msg_list) > 2:
 				post_id = msg_list[1]
 				comment = ' '.join(msg_list[2:len(msg_list)])
 				print('comment =', comment)
-				sql_comment(conn, c, uid, post_id, comment)
+				msg_suc = sql_comment(conn, c, uid, post_id, comment)
 			else:
-				msg_out = 'Usage: comment <post-id> <comment> \r\n'
-				clientsocket.send(msg_out.encode('utf-8'))
+				msg_suc = 'Usage: comment <post-id> <comment> \r\n'
 		else:
-			msg_out = 'Command not found\r\n'
-			clientsocket.send(msg_out.encode('utf-8'))
+			msg_suc = 'Command not found\r\n'
 		print('')
-		return uid
+		return uid, msg_suc
 #-------------------------------------------------------------
 
 	conn = sqlite3.connect('Database.db')
@@ -378,7 +344,10 @@ def new_client(clientsocket, addr):
 				clientsocket.close()
 				break		
 			else:				
-				uid = string_processing(msg_in, conn, c, uid)				
+				uid, msg_suc = string_processing(msg_in, conn, c, uid)
+				if msg_suc != "":
+					clientsocket.send(msg_suc.encode('utf-8'))
+					msg_suc = ""
 	clientsocket.close()
 
 		
