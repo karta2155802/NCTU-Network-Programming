@@ -244,9 +244,7 @@ def new_client(clientsocket, addr):
 			else:
 				msg_suc = 'Usage: create-post <board-name> --title <title> --content <content>\r\n'
 		elif msg_list[0] == 'list-board':
-			if uid == -1:
-				msg_suc = 'Please login first.\r\n'
-			elif len(msg_list) == 1:
+			if len(msg_list) == 1:
 				keyword = '%%';
 				print('search without hashtag')	
 				msg_suc = sql_list_board(c, keyword)			
@@ -257,9 +255,7 @@ def new_client(clientsocket, addr):
 			else:
 				msg_suc = 'Usage: list-board ##<key>\r\n'
 		elif msg_list[0] == 'list-post':
-			if uid == -1:
-				msg_suc = 'Please login first.\r\n'
-			elif len(msg_list) == 2:
+			if len(msg_list) == 2:
 				board_name = msg_list[1]
 				keyword = '%%'
 				print('search without hashtag')
@@ -273,9 +269,7 @@ def new_client(clientsocket, addr):
 			else:
 				msg_suc = 'Usage: list-post <board-name> ##<key>\r\n'
 		elif msg_list[0] == 'read':
-			if uid == -1:
-				msg_suc = 'Please login first.\r\n'
-			elif len(msg_list) == 2:
+			if len(msg_list) == 2:
 				post_id = msg_list[1]
 				msg_suc = sql_read_post(c, post_id)
 			else:
