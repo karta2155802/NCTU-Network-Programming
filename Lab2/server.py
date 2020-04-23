@@ -110,6 +110,7 @@ def new_client(clientsocket, addr):
 		return msg_suc
 
 	def sql_list_board(c, keyword):
+		c.execute('PRAGMA case_sensitive_like = 1')
 		sql_return = c.execute('select BOARD.ID, BOARD.Name, USERS.Username from BOARD inner join USERS on BOARD.Moderator_id = USERS.UID where BOARD.Name like ?', (keyword,))
 		msg_out = '\r\n    {:<7} {:^20} {:^20}\r\n'.format('Index', 'Name', 'Moderator')
 		clientsocket.send(msg_out.encode('utf-8'))
