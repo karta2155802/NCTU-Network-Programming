@@ -1,9 +1,14 @@
 import socket
 import sys
 import time
-#import boto3
+import boto3
 
 	
+def command(cmd, msg_in):
+	if msg_in == 'Register successfully.\r\n'
+		bucket_name = '0516319-' + cmd.split()[1] + '-0516319'
+		s3 = boto3.resource('s3')
+		s3.create_bucket(Bucket = bucket_name)
 
 
 dst_ip = str(sys.argv[1])
@@ -23,15 +28,17 @@ while True:
 			pass	
 	print(msg_in ,end = "")
 	cmd = input()
-	
-	s.send(cmd.encode('utf-8'))
 	if not cmd or len(cmd.split()) == 0:
-		print('this is enter or space')
-		
-	while True:
-		try:
-			msg_in = s.recv(1024).decode('utf-8')
-			break
-		except:
-			pass
-	print(msg_in ,end = "")
+		cmd = 'enter&&space'
+		s.send(cmd.encode('utf-8'))
+	else:
+		s.send(cmd.encode('utf-8'))
+		while True:
+			try:
+				msg_in = s.recv(1024).decode('utf-8')
+				break
+			except:
+				pass
+
+		print(msg_in ,end = "")
+

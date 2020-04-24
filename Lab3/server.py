@@ -176,7 +176,9 @@ def new_client(clientsocket, addr):
 	def sql_register(msg_list, conn, c):
 		sql_return = c.execute('select * from USERS where Username = ?', (msg_list[1],)).fetchall()
 		if len(sql_return) == 0:
-			c.execute('insert into USERS ("Username", "Email", "Password") values (?,?,?)', (msg_list[1], msg_list[2], msg_list[3]))
+			bucket_name = '0516319-' + msg_list[1] + '-0516319'
+			print(bucket_name)
+			c.execute('insert into USERS ("Username", "Email", "Password", "Bucket_name") values (?,?,?)', (msg_list[1], msg_list[2], msg_list[3], bucket_name))
 			conn.commit()
 			print('Register successfully')
 			msg_suc = 'Register successfully.\r\n'
@@ -310,6 +312,9 @@ def new_client(clientsocket, addr):
 				msg_suc = sql_comment(conn, c, uid, post_id, comment)
 			else:
 				msg_suc = 'Usage: comment <post-id> <comment> \r\n'
+		elif msg_list[0] == 'enter&&space':
+			msg_suc = ""
+			pass
 		else:
 			msg_suc = 'Command not found\r\n'
 		print('')
@@ -327,21 +332,18 @@ def new_client(clientsocket, addr):
 	while True:
 		msg_out = '% '
 		clientsocket.send(msg_out.encode('utf-8'))
-		msg_in = clientsocket.recv(1024).decode('utf-8')
-		if not msg_in or len(msg_in.split()) == 0:
-			print('this is enter or space')
-			pass
-		else:	
-			msg_in = msg_in.replace('\r','').replace('\n','')			
-			print('msg_in = ',msg_in)
-			if msg_in == 'exit':
-				clientsocket.close()
-				break		
-			else:				
-				uid, msg_suc = string_processing(msg_in, conn, c, uid)
-				if msg_suc != "":
-					clientsocket.send(msg_suc.encode('utf-8'))
-					msg_suc = ""
+		msg_in = clientsocket.recv(1024).decode('utf-8')	
+
+		msg_in = msg_in.replace('\r','').replace('\n','')			
+		print('msg_in = ',msg_in)
+		if msg_in == 'exit':
+			clientsocket.close()
+			break		
+		else:				
+			uid, msg_suc = string_processing(msg_in, conn, c, uid)
+			if msg_suc != "":
+				clientsocket.send(msg_suc.encode('utf-8'))
+				msg_suc = ""
 	clientsocket.close()
 
 		
