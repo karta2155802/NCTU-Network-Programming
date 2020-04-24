@@ -3,7 +3,7 @@ import sys
 import _thread
 import sqlite3
 import time
-from sqlite3 import Error	
+
 
 def new_client(clientsocket, addr):
 	msg_suc = ""
@@ -319,11 +319,8 @@ def new_client(clientsocket, addr):
 	conn = sqlite3.connect('Database.db')
 	c = conn.cursor()
 	print('Sql Connection Succeed')
-	msg_out = '********************************\r\n'
-	clientsocket.send(msg_out.encode('utf-8'))
-	msg_out = '** Welcome to the BBS server. **\r\n'
-	clientsocket.send(msg_out.encode('utf-8'))
-	msg_out = '********************************\r\n'
+	msg_out = '********************************\r\n' + '** Welcome to the BBS server. **\r\n' + '********************************\r\n'
+
 	clientsocket.send(msg_out.encode('utf-8'))
 	uid = -1
 
@@ -332,6 +329,7 @@ def new_client(clientsocket, addr):
 		clientsocket.send(msg_out.encode('utf-8'))
 		msg_in = clientsocket.recv(1024).decode('utf-8')
 		if not msg_in or len(msg_in.split()) == 0:
+			print('this is enter or space')
 			pass
 		else:	
 			msg_in = msg_in.replace('\r','').replace('\n','')			
