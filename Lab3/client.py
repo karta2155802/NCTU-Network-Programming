@@ -12,10 +12,9 @@ def command(cmd, msg_in, s):
 		s3.create_bucket(Bucket = bucket_name)
 	elif cmd.startswith('login') and msg_in.startswith('0516319'):
 		target_bucket = s3.Bucket(msg_in)
-		print(target_bucket)
 		while True:
 			try:
-				msg_in = s.recv(1024).decode('utf-8')
+				msg_in = s.recv(12).decode('utf-8')
 				break
 			except:
 				pass
@@ -43,7 +42,6 @@ while True:
 		except:
 			pass	
 	print(msg_in ,end = "")
-	print('please input')
 	cmd = input()
 	if not cmd or len(cmd.split()) == 0:
 		cmd = 'enter&&space'
@@ -59,7 +57,6 @@ while True:
 		msg_in = command(cmd, msg_in, s)
 		print(msg_in ,end = "")
 		print(msg_in ,end = "")
-		print('here')
 		msg_in = ""
 
 
