@@ -21,7 +21,7 @@ def command(cmd, msg_in, s):
 	elif cmd.startswith('logout') and msg_in.startswith('Bye'):
 		target_bucket = None
 	elif cmd == 'exit':
-		s.close()
+		sys.exit()
 	else:
 		pass
 	return msg_in
