@@ -43,6 +43,7 @@ while True:
 		except:
 			pass	
 	print(msg_in ,end = "")
+	print('please input')
 	cmd = input()
 	if not cmd or len(cmd.split()) == 0:
 		cmd = 'enter&&space'
@@ -58,5 +59,5 @@ while True:
 		msg_in = command(cmd, msg_in)
 		print(msg_in ,end = "")
 		msg_in = ""
-		
+
 
