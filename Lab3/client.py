@@ -39,6 +39,6 @@ while True:
 				break
 			except:
 				pass
-
+		command(cmd, msg_in)
 		print(msg_in ,end = "")
 
