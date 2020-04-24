@@ -12,7 +12,7 @@ def command(cmd, msg_in):
 		s3.create_bucket(Bucket = bucket_name)
 	elif cmd.startswith('login') and msg_in.startswith('0516319'):
 		target_bucket = s3.Bucket(msg_in)
-		print(target_bucket + '123')
+		print(target_bucket)
 		while True:
 			try:
 				msg_in = s.recv(1024).decode('utf-8')
