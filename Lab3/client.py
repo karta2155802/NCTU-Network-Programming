@@ -18,7 +18,7 @@ def command(cmd, msg_in, s):
 				break
 			except:
 				pass
-	elif cmd.startswith('logout') and msg_in.endswith('has logout'):
+	elif cmd.startswith('logout') and msg_in.startswith('Bye'):
 		target_bucket = None
 		print('321')
 	else:
