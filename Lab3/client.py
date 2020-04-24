@@ -10,7 +10,7 @@ def command(cmd, msg_in):
 	if msg_in == 'Register successfully.\r\n':
 		bucket_name = '0516319-' + cmd.split()[1] + '-0516319'		
 		s3.create_bucket(Bucket = bucket_name)
-	elif cmd.startswith('login') and msg_in.startswith('0516319')
+	elif cmd.startswith('login') and msg_in.startswith('0516319'):
 		target_bucket = s3.Bucket(msg_in)
 		print(target_bucket + '123')
 		while True:
@@ -19,7 +19,7 @@ def command(cmd, msg_in):
 				break
 			except:
 				pass
-	elif cmd.startswith('logout') and msg_in.endswith('has logout')
+	elif cmd.startswith('logout') and msg_in.endswith('has logout'):
 		target_bucket = None
 		print('321')
 	else:
