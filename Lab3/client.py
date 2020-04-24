@@ -15,7 +15,7 @@ def command(cmd, msg_in):
 		print(target_bucket)
 		while True:
 			try:
-				msg_in = s.recv(1024).decode('utf-8')
+				msg_in = s.setblocking(0).recv(1024).decode('utf-8')
 				break
 			except:
 				pass
