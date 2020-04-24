@@ -57,4 +57,6 @@ while True:
 				pass
 		msg_in = command(cmd, msg_in)
 		print(msg_in ,end = "")
+		msg_in = ""
+		
 
