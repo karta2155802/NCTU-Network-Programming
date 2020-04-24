@@ -5,7 +5,7 @@ import boto3
 
 	
 def command(cmd, msg_in):
-	if msg_in == 'Register successfully.\r\n'
+	if msg_in == 'Register successfully.\r\n':
 		bucket_name = '0516319-' + cmd.split()[1] + '-0516319'
 		s3 = boto3.resource('s3')
 		s3.create_bucket(Bucket = bucket_name)

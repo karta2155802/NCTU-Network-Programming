@@ -178,7 +178,7 @@ def new_client(clientsocket, addr):
 		if len(sql_return) == 0:
 			bucket_name = '0516319-' + msg_list[1] + '-0516319'
 			print(bucket_name)
-			c.execute('insert into USERS ("Username", "Email", "Password", "Bucket_name") values (?,?,?)', (msg_list[1], msg_list[2], msg_list[3], bucket_name))
+			c.execute('insert into USERS ("Username", "Email", "Password", "Bucket_name") values (?,?,?,?)', (msg_list[1], msg_list[2], msg_list[3], bucket_name))
 			conn.commit()
 			print('Register successfully')
 			msg_suc = 'Register successfully.\r\n'
