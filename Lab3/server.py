@@ -168,6 +168,7 @@ def new_client(clientsocket, addr):
 		if sql_return != None and sql_return[3] == msg_list[2]:
 			uid = sql_return[0]
 			print(msg_list[1],'has login')
+			clientsocket.send(sql_return[4].encode('utf-8'))
 			msg_suc = 'Welcome, ' + msg_list[1] +'.\r\n'
 		else:
 			msg_suc = 'Login failed.\r\n'

@@ -3,12 +3,25 @@ import sys
 import time
 import boto3
 
+s3 = boto3.resource('s3')
+target_bucket = None
 	
 def command(cmd, msg_in):
 	if msg_in == 'Register successfully.\r\n':
-		bucket_name = '0516319-' + cmd.split()[1] + '-0516319'
-		s3 = boto3.resource('s3')
+		bucket_name = '0516319-' + cmd.split()[1] + '-0516319'		
 		s3.create_bucket(Bucket = bucket_name)
+	elif cmd.startswith('login') and msg_in.startswith('0516319')
+		target_bucket = s3.Bucket(msg_in)
+		print(target_bucket)
+		while True:
+			try:
+				msg_in = s.recv(1024).decode('utf-8')
+				break
+			except:
+				pass		
+	else:
+		pass
+	return msg_in
 
 
 dst_ip = str(sys.argv[1])
@@ -39,6 +52,6 @@ while True:
 				break
 			except:
 				pass
-		command(cmd, msg_in)
+		msg_in = command(cmd, msg_in)
 		print(msg_in ,end = "")
 
