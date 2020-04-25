@@ -41,7 +41,7 @@ def command(cmd, msg_in, s):
 		target_bucket = s3.Bucket(msg_in)
 		while True:
 			try:
-				msg_in = s.recv(1024).decode('utf-8')
+				msg_in = s.recv(12).decode('utf-8')
 				return msg_in
 			except:
 				pass
