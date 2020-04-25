@@ -56,7 +56,7 @@ def new_client(clientsocket, addr):
 			c.execute('delete from COMMENT where Post_id = ?', (post_id,))
 			conn.commit()
 			print('Delete successfully')
-			msg_suc = 'Delete successfully\r\n'
+			msg_suc = 'Delete successfully.\r\n'
 		return msg_suc
 
 	def sql_read_post(c, post_id):

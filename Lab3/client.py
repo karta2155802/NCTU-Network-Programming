@@ -26,6 +26,13 @@ def receive():
 		except:
 			pass
 
+def DeleteObject(cmd):
+	cmd_list = cmd.split()
+	os.remove("./.data/post/p{}.txt".format(cmd_list[1]))
+	os.remove("./.data/comment/c{}.txt".format(cmd_list[1]))
+	target_bucket.Object("p{}.txt".format(cmd_list[1])).delete()
+	target_bucket.Object("c{}.txt".format(cmd_list[1])).delete()
+
 def CreateObject(cmd, msg_in):
 	cmd_list = cmd.split()
 	content_position = cmd_list.index('--content')
@@ -38,6 +45,7 @@ def CreateObject(cmd, msg_in):
 	fp.close()
 	target_bucket.upload_file("./.data/post/p{}.txt".format(msg_in), "p{}.txt".format(msg_in))
 	target_bucket.upload_file("./.data/comment/c{}.txt".format(msg_in), "c{}.txt".format(msg_in))
+	
 def command(cmd, msg_in, s, target_bucket):
 	if msg_in == 'Register successfully.\r\n':
 		bucket_name = '0516319-' + cmd.split()[1] + '-0516319'		
@@ -56,12 +64,13 @@ def command(cmd, msg_in, s, target_bucket):
 		CreateObject(cmd, msg_in)
 		while True:
 			try:
-				msg_in = s.recv(25).decode('utf-8')				
+				msg_in = s.recv(25).decode('utf-8')
+				print(msg_in)		
 				break
 			except:
 				pass
-
-
+	elif cmd.startswith('delete-post') and msg_in == 'Delete successfully\r\n'
+		DeleteObject(cmd)
 
 	elif cmd == 'exit':
 		sys.exit()
