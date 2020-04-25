@@ -28,9 +28,9 @@ def receive():
 
 def GetObject(cmd):
 	cmd_list = cmd.split()
-	target_object1 = target_bucket.Object("./.data/post/p{}.txt".format(cmd_list[1]))
+	target_object1 = target_bucket.Object("p{}.txt".format(cmd_list[1]))
 	object_content = target_object1.get()['Body'].read().decode()
-	target_object2 = target_bucket.Object("./.data/post/c{}.txt".format(cmd_list[1]))
+	target_object2 = target_bucket.Object("c{}.txt".format(cmd_list[1]))
 	object_comment = target_object1.get()['Body'].read().decode()
 	print('    --\r\n')
 	object_content_list = object_content.split('<br>')
