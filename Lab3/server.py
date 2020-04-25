@@ -67,7 +67,7 @@ def new_client(clientsocket, addr):
 			bucket_name = c.execute('select Bucket_name from USERS where Username = ?', (sql_return[0],)).fetchone()[0]
 			msg_out1 = '\r\n    {:<10}:{}\r\n'.format('Author', sql_return[0])
 			msg_out2 = '    {:<10}:{}\r\n'.format('Title', sql_return[1])
-			msg_out3 = '    {:<10}:{}\r\n'.format('Date', sql_return[2])
+			msg_out3 = '    {:<10}:{}'.format('Date', sql_return[2])
 			msg_out = msg_out1 + msg_out2 + msg_out3 + '###' + bucket_name
 			clientsocket.send(msg_out.encode('utf-8'))			
 			print('Read post successfully')

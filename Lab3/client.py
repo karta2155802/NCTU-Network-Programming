@@ -18,10 +18,10 @@ def mkdir():
     except FileExistsError:
     	return
 
-def receive():
+def receive(len):
 	while True:
 		try:
-			msg_in = s.recv(1024).decode('utf-8')
+			msg_in = s.recv(len).decode('utf-8')
 			return msg_in
 		except:
 			pass
@@ -35,13 +35,13 @@ def GetObject(cmd, msg_in):
 	target_object1 = tmp_bucket.Object("p{}.txt".format(cmd_list[1]))
 	object_content = target_object1.get()['Body'].read().decode()
 	target_object2 = tmp_bucket.Object("c{}.txt".format(cmd_list[1]))
-	object_comment = target_object1.get()['Body'].read().decode()
+	object_comment = target_object2.get()['Body'].read().decode()
+
 	print('    --')
 	object_content_list = object_content.split('<br>')
 	for i in object_content_list:
 		print('    {}'.format(i))
-
-	print('    --\r\n')
+	print('    --')
 	msg_in = ""
 	return msg_in
 
@@ -66,40 +66,29 @@ def CreateObject(cmd, msg_in):
 	target_bucket.upload_file("./.data/post/p{}.txt".format(msg_in), "p{}.txt".format(msg_in))
 	target_bucket.upload_file("./.data/comment/c{}.txt".format(msg_in), "c{}.txt".format(msg_in))
 
-def command(cmd, msg_in, s, target_bucket):
+def command(cmd, msg_in, s):
 	if msg_in == 'Register successfully.\r\n':
 		bucket_name = '0516319-' + cmd.split()[1] + '-0516319'		
 		s3.create_bucket(Bucket = bucket_name)
 	elif cmd.startswith('login') and msg_in.startswith('0516319'):
+		global target_bucket
 		target_bucket = s3.Bucket(msg_in)
-		while True:
-			try:
-				msg_in = s.recv(11).decode('utf-8') #recv 'Welcome, {user}.'
-				break
-			except:
-				pass
+		receive(11)
 	elif cmd.startswith('logout') and msg_in.startswith('Bye'):
+		global target_bucket
 		target_bucket = None
 	elif cmd.startswith('create-post') and msg_in.isdigit():
 		CreateObject(cmd, msg_in)
-		while True:
-			try:
-				msg_in = s.recv(25).decode('utf-8')	#recv 'Create post successfully.'	
-				break
-			except:
-				pass
+		receive(25)
 	elif cmd.startswith('delete-post') and msg_in == 'Delete successfully.\r\n':
 		DeleteObject(cmd)
 	elif cmd.startswith('read') and (msg_in != 'Post is not exist.\r\n' or msg_in != 'Usage: read <post-id> \r\n'):
 		msg_in = GetObject(cmd, msg_in)
-
-
 	elif cmd == 'exit':
 		sys.exit()
 	else:
 		pass
-	return msg_in, target_bucket
-
+	return msg_in
 
 dst_ip = str(sys.argv[1])
 port = int(sys.argv[2])
@@ -111,7 +100,7 @@ s.setblocking(0)
 mkdir()
 
 while True:
-	msg_in = receive();	
+	msg_in = receive(1024);	
 	print(msg_in ,end = "")
 	cmd = input()
 	if not cmd or len(cmd.split()) == 0:
@@ -119,8 +108,8 @@ while True:
 		s.send(cmd.encode('utf-8'))
 	else:
 		s.send(cmd.encode('utf-8'))
-		msg_in = receive();
-		msg_in, target_bucket = command(cmd, msg_in, s, target_bucket)
+		msg_in = receive(1024);
+		msg_in = command(cmd, msg_in, s)
 		if msg_in != "":
 			print(msg_in ,end = "")
 
