@@ -39,8 +39,9 @@ def new_client(clientsocket, addr):
 		else:
 			author_id = c.execute('select Author_id from POST where ID = ?', (post_id,)).fetchone()[0]
 			bucket_name = c.execute('select Bucket_name from USERS where UID = ?', (author_id,)).fetchone()[0]
+			commentter = c.execute('select Username from USERS where UID = ?', (uid,)).fetchone()[0]
 			print('Comment successfully')
-			msg_suc = 'Comment successfully.\r\n' + '###' + bucket_name
+			msg_suc = 'Comment successfully.\r\n' + '###' + bucket_name + '###' + commentter
 		return msg_suc
 
 	def sql_delete_post(conn, c, uid, post_id):

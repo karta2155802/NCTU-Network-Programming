@@ -28,7 +28,7 @@ def receive(len):
 
 def Comment(cmd_list, msg_in):
 	msg_in_split = msg_in.split('###')
-	name = msg_in_split[1].split('-')[1]
+	name = msg_in_split[2]
 	comment = ' '.join(cmd_list[2:len(cmd_list)])
 	fp = open("./.data/comment/c{}.txt".format(cmd_list[1]), "a")
 	fp.write('{}: {}\n'.format(name, comment))
