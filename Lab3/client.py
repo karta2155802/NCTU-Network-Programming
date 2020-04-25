@@ -83,7 +83,6 @@ def command(cmd, msg_in, s, target_bucket):
 		while True:
 			try:
 				msg_in = s.recv(11).decode('utf-8')
-				return msg_in
 			except:
 				pass
 	elif cmd.startswith('logout') and msg_in.startswith('Bye'):
