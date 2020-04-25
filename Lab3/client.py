@@ -81,11 +81,11 @@ def command(cmd, msg_in, s, target_bucket):
 		target_bucket = s3.Bucket(msg_in)		
 		while True:
 			try:
-				msg_in = s.recv(11).decode('utf-8')
+				msg_in = s.recv(12).decode('utf-8')
 			except:
 				pass
 		print(msg_in)
-		
+
 	elif cmd.startswith('logout') and msg_in.startswith('Bye'):
 		target_bucket = None
 	elif cmd.startswith('create-post') and msg_in.isdigit():
