@@ -38,7 +38,7 @@ def CreateObject(cmd, msg_in):
 	fp.close()
 	target_bucket.upload_file("./.data/post/p{}.txt".format(msg_in), "p{}.txt".format(msg_in))
 	target_bucket.upload_file("./.data/comment/c{}.txt".format(msg_in), "c{}.txt".format(msg_in))
-def command(cmd, msg_in, s):
+def command(cmd, msg_in, s, target_bucket):
 	if msg_in == 'Register successfully.\r\n':
 		bucket_name = '0516319-' + cmd.split()[1] + '-0516319'		
 		s3.create_bucket(Bucket = bucket_name)
@@ -67,7 +67,7 @@ def command(cmd, msg_in, s):
 		sys.exit()
 	else:
 		pass
-	return msg_in
+	return msg_in, target_bucket
 
 
 dst_ip = str(sys.argv[1])
@@ -89,7 +89,7 @@ while True:
 	else:
 		s.send(cmd.encode('utf-8'))
 		msg_in = receive();
-		msg_in = command(cmd, msg_in, s)
+		msg_in, target_bucket = command(cmd, msg_in, s, target_bucket)
 		print(msg_in ,end = "")
 
 
