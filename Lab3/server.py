@@ -9,10 +9,10 @@ def new_client(clientsocket, addr):
 	msg_suc = ""
 #------------------------------------------------------sqlite3 function
 	def sql_update_post_title(conn, c, uid, post_id, update_data):
-		sql_return_fetch = c.execute('select Author_id from POST where ID = ?', (post_id,)).fetchone()	
-		if sql_return_fetch == None:
+		sql_return = c.execute('select Author_id from POST where ID = ?', (post_id,)).fetchone()	
+		if sql_return == None:
 			msg_suc = 'Post is not exist.\r\n'
-		elif sql_return_fetch[0] != uid:
+		elif sql_return[0] != uid:
 			msg_suc = 'Not the post owner.\r\n'
 		else:
 			c.execute('update POST set Title = ? where ID = ?', (update_data, post_id))
@@ -22,10 +22,10 @@ def new_client(clientsocket, addr):
 		return msg_suc
 
 	def sql_update_post_content(conn, c, uid, post_id, update_data):
-		sql_return_fetch = c.execute('select Author_id from POST where ID = ?', (post_id,)).fetchone()
-		if sql_return_fetch == None:
+		sql_return = c.execute('select Author_id from POST where ID = ?', (post_id,)).fetchone()
+		if sql_return == None:
 			msg_suc = 'Post is not exist.\r\n'
-		elif sql_return_fetch[0] != uid:
+		elif sql_return[0] != uid:
 			msg_suc = 'Not the post owner.\r\n'
 		else:
 			c.execute('update POST set Content = ? where ID = ?', (update_data, post_id))
@@ -35,8 +35,8 @@ def new_client(clientsocket, addr):
 		return msg_suc
 
 	def sql_comment(conn, c , uid, post_id, comment):
-		sql_return_fetch = c.execute('select ID from POST where ID = ?', (post_id,)).fetchone()
-		if sql_return_fetch == None:
+		sql_return = c.execute('select ID from POST where ID = ?', (post_id,)).fetchone()
+		if sql_return == None:
 			msg_suc = 'Post is not exist.\r\n'
 		else:
 			c.execute('insert into COMMENT ("Writer_id", "Comment", "Post_id") values (?,?,?)', (uid, comment, post_id))
@@ -46,10 +46,10 @@ def new_client(clientsocket, addr):
 		return msg_suc
 
 	def sql_delete_post(conn, c, uid, post_id):
-		sql_return_fetch = c.execute('select Author_id from POST where ID = ?', (post_id,)).fetchone()
-		if sql_return_fetch == None:
+		sql_return = c.execute('select Author_id from POST where ID = ?', (post_id,)).fetchone()
+		if sql_return == None:
 			msg_suc = 'Post is not exist.\r\n'
-		elif sql_return_fetch[0] != uid:
+		elif sql_return[0] != uid:
 			msg_suc = 'Not the post owner.\r\n'
 		else:
 			c.execute('delete from POST where ID = ?', (post_id,))
@@ -60,26 +60,26 @@ def new_client(clientsocket, addr):
 		return msg_suc
 
 	def sql_read_post(c, post_id):
-		sql_return_fetch = c.execute('select USERS.Username, POST.Title, POST.Date from POST inner join USERS on POST.Author_id = USERS.UID where POST.ID = ?', (post_id,)).fetchone()
-		if sql_return_fetch == None:
+		sql_return = c.execute('select USERS.Username, POST.Title, POST.Date from POST inner join USERS on POST.Author_id = USERS.UID where POST.ID = ?', (post_id,)).fetchone()
+		if sql_return == None:
 			msg_suc = 'Post is not exist.\r\n'
 		else:
-			msg_out = '\r\n    {:<10}:{}\r\n'.format('Author', sql_return_fetch[0])
-			clientsocket.send(msg_out.encode('utf-8'))
-			msg_out = '    {:<10}:{}\r\n'.format('Title', sql_return_fetch[1])
-			clientsocket.send(msg_out.encode('utf-8'))
-			msg_out = '    {:<10}:{}\r\n'.format('Date', sql_return_fetch[2])
+			bucket_name = c.execute('select Bucket_name from USERS where Username = ?', (sql_return[0],)).fetchone()[0]
+			msg_out1 = '\r\n    {:<10}:{}\r\n'.format('Author', sql_return[0])
+			msg_out2 = '    {:<10}:{}\r\n'.format('Title', sql_return[1])
+			msg_out3 = '    {:<10}:{}\r\n'.format('Date', sql_return[2])
+			msg_out = msg_out1 + msg_out2 + msg_out3 + '###' + bucket_name
 			clientsocket.send(msg_out.encode('utf-8'))			
 			print('Read post successfully')
 			msg_suc = ""
 		return msg_suc
 
 	def sql_list_post(c, board_name, keyword):
-		sql_return_fetch = c.execute('select BOARD.ID from BOARD where BOARD.Name = ?', (board_name,)).fetchone()
-		if sql_return_fetch == None:
+		sql_return = c.execute('select BOARD.ID from BOARD where BOARD.Name = ?', (board_name,)).fetchone()
+		if sql_return == None:
 			msg_suc = 'Board is not exist.\r\n'
 		else:
-			board_id = sql_return_fetch[0]
+			board_id = sql_return[0]
 			print('board_id =', board_id)
 			c.execute('PRAGMA case_sensitive_like = 1')
 			sql_return_post = c.execute('select POST.ID, POST.Title, USERS.Username, POST.Date from POST inner join USERS on POST.Author_id = USERS.UID where Board_id = ? and POST.Title like ?', (board_id, keyword))

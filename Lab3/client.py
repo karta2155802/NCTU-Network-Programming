@@ -26,19 +26,24 @@ def receive():
 		except:
 			pass
 
-def GetObject(cmd):
+def GetObject(cmd, msg_in):
+	msg_in_split = msg_in.split('###')
+	tmp_bucket = s3.Bucket(msg_in_split[1])
+	print(msg_in_split[0])
+
 	cmd_list = cmd.split()
-	target_object1 = target_bucket.Object("p{}.txt".format(cmd_list[1]))
+	target_object1 = tmp_bucket.Object("p{}.txt".format(cmd_list[1]))
 	object_content = target_object1.get()['Body'].read().decode()
-	target_object2 = target_bucket.Object("c{}.txt".format(cmd_list[1]))
+	target_object2 = tmp_bucket.Object("c{}.txt".format(cmd_list[1]))
 	object_comment = target_object1.get()['Body'].read().decode()
-	output = '    --\r\n'
+	print('    --')
 	object_content_list = object_content.split('<br>')
 	for i in object_content_list:
-		output = output + '    {}\r\n'.format(i)
+		print('    {}'.format(i))
 
-	output = output + '    --\r\n\r\n'
-	return output
+	print('    --\r\n')
+	msg_in = ""
+	return msg_in
 
 
 def DeleteObject(cmd):
@@ -62,7 +67,6 @@ def CreateObject(cmd, msg_in):
 	target_bucket.upload_file("./.data/comment/c{}.txt".format(msg_in), "c{}.txt".format(msg_in))
 
 def command(cmd, msg_in, s, target_bucket):
-	output = ""
 	if msg_in == 'Register successfully.\r\n':
 		bucket_name = '0516319-' + cmd.split()[1] + '-0516319'		
 		s3.create_bucket(Bucket = bucket_name)
@@ -87,14 +91,14 @@ def command(cmd, msg_in, s, target_bucket):
 	elif cmd.startswith('delete-post') and msg_in == 'Delete successfully.\r\n':
 		DeleteObject(cmd)
 	elif cmd.startswith('read') and (msg_in != 'Post is not exist.\r\n' or msg_in != 'Usage: read <post-id> \r\n'):
-		output = GetObject(cmd)
+		msg_in = GetObject(cmd, msg_in)
 
 
 	elif cmd == 'exit':
 		sys.exit()
 	else:
 		pass
-	return msg_in, target_bucket, output
+	return msg_in, target_bucket
 
 
 dst_ip = str(sys.argv[1])
@@ -116,7 +120,8 @@ while True:
 	else:
 		s.send(cmd.encode('utf-8'))
 		msg_in = receive();
-		msg_in, target_bucket, output = command(cmd, msg_in, s, target_bucket)
-		print(msg_in , output, end = "")
+		msg_in, target_bucket = command(cmd, msg_in, s, target_bucket)
+		if msg_in != "":
+			print(msg_in ,end = "")
 
 
