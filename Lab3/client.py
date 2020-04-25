@@ -68,7 +68,7 @@ def command(cmd, msg_in, s, target_bucket):
 				break
 			except:
 				pass
-	elif cmd.startswith('delete-post') and msg_in == 'Delete successfully\r\n':
+	elif cmd.startswith('delete-post') and msg_in == 'Delete successfully.\r\n':
 		DeleteObject(cmd)
 
 	elif cmd == 'exit':
