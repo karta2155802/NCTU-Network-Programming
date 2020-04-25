@@ -46,7 +46,7 @@ def command(cmd, msg_in, s):
 				pass
 	elif cmd.startswith('logout') and msg_in.startswith('Bye'):
 		target_bucket = None
-	elif cmd.startswith('create-post') and msg_in.isdigit()
+	elif cmd.startswith('create-post') and msg_in.isdigit():
 		while True:
 			try:
 				msg_in = s.recv(27).decode('utf-8')
