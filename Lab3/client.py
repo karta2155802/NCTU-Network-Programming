@@ -34,7 +34,7 @@ def GetObject(cmd):
 	object_comment = target_object1.get()['Body'].read().decode()
 	print('    --\r\n')
 	object_content_list = object_content.split('<br>')
-	for i in object_content_list
+	for i in object_content_list:
 		print('    {}\r\n'.format(i))
 
 	print('    --\r\n\r\n')
