@@ -60,7 +60,7 @@ def new_client(clientsocket, addr):
 		return msg_suc
 
 	def sql_read_post(c, post_id):
-		sql_return_fetch = c.execute('select USERS.Username, POST.Title, POST.Date, POST.Content from POST inner join USERS on POST.Author_id = USERS.UID where POST.ID = ?', (post_id,)).fetchone()
+		sql_return_fetch = c.execute('select USERS.Username, POST.Title, POST.Date from POST inner join USERS on POST.Author_id = USERS.UID where POST.ID = ?', (post_id,)).fetchone()
 		if sql_return_fetch == None:
 			msg_suc = 'Post is not exist.\r\n'
 		else:
@@ -73,19 +73,7 @@ def new_client(clientsocket, addr):
 			msg_out = '    --\r\n'
 			clientsocket.send(msg_out.encode('utf-8'))
 
-			content = sql_return_fetch[3].split('<br>')
-			for i in content:
-				msg_out = '    {}\r\n'.format(i)
-				clientsocket.send(msg_out.encode('utf-8'))
-
-			msg_out = '    --\r\n'
-			clientsocket.send(msg_out.encode('utf-8'))
-			sql_return_comment = c.execute('select USERS.Username, COMMENT.Comment from COMMENT inner join USERS on COMMENT.Writer_id = USERS.UID where Post_id = ?', (post_id))
-			for row in sql_return_comment:
-				msg_out = '    {}: {}\r\n'.format(row[0], row[1])
-				clientsocket.send(msg_out.encode('utf-8'))
-			msg_out = '\r\n'
-			clientsocket.send(msg_out.encode('utf-8'))
+			
 			print('Read post successfully')
 			msg_suc = ""
 		return msg_suc
