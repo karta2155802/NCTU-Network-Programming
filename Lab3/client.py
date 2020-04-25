@@ -47,6 +47,7 @@ def UpdatePost(cmd_list, msg_in):
 	target_bucket.upload_file("./.data/post/p{}.txt".format(cmd_list[1]), "p{}.txt".format(cmd_list[1]))
 
 def ReadPost(cmd_list, msg_in):
+	print(msg_in)
 	msg_in_split = msg_in.split('###')
 	tmp_bucket = s3.Bucket(msg_in_split[1])
 	print(msg_in_split[0])
