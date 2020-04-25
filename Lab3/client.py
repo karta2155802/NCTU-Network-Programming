@@ -26,13 +26,18 @@ def receive():
 		except:
 			pass
 
-def CreateObject(cmd):
+def CreateObject(cmd, msg_in):
 	cmd_list = cmd.split()
 	content_position = cmd_list.index('--content')
 	content = ' '.join(cmd_list[content_position+1:len(cmd_list)])
 
-	fp = open("./.data/post/p{}".format(), "w")
-	
+	fp = open("./.data/post/p{}.txt".format(msg_in), "w")
+	fp.write(content)
+	fp.close()
+	fp = open("./.data/comment/c{}.txt".format(msg_in), "w")
+	fp.close()
+	target_bucket.upload_file("./.data/post/p{}.txt".format(msg_in), "p{}.txt".format(msg_in))
+	target_bucket.upload_file("./.data/comment/c{}.txt".format(msg_in), "c{}.txt".format(msg_in))
 def command(cmd, msg_in, s):
 	if msg_in == 'Register successfully.\r\n':
 		bucket_name = '0516319-' + cmd.split()[1] + '-0516319'		
@@ -41,18 +46,17 @@ def command(cmd, msg_in, s):
 		target_bucket = s3.Bucket(msg_in)
 		while True:
 			try:
-				msg_in = s.recv(12).decode('utf-8')
-				print(msg_in)
+				msg_in = s.recv(10).decode('utf-8')
 				return msg_in
 			except:
 				pass
 	elif cmd.startswith('logout') and msg_in.startswith('Bye'):
 		target_bucket = None
 	elif cmd.startswith('create-post') and msg_in.isdigit():
+		CreateObject(cmd, msg_in)
 		while True:
 			try:
-				msg_in = s.recv(11).decode('utf-8')
-				
+				msg_in = s.recv(25).decode('utf-8')				
 				return msg_in
 			except:
 				pass
