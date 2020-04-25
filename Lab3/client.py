@@ -5,6 +5,14 @@ import boto3
 
 s3 = boto3.resource('s3')
 target_bucket = None
+
+def receive():
+	while True:
+		try:
+			msg_in = s.recv(12).decode('utf-8')
+			return msg_in
+		except:
+			pass
 	
 def command(cmd, msg_in, s):
 	if msg_in == 'Register successfully.\r\n':
@@ -12,12 +20,7 @@ def command(cmd, msg_in, s):
 		s3.create_bucket(Bucket = bucket_name)
 	elif cmd.startswith('login') and msg_in.startswith('0516319'):
 		target_bucket = s3.Bucket(msg_in)
-		while True:
-			try:
-				msg_in = s.recv(1024).decode('utf-8')
-				break
-			except:
-				pass
+		msg_in = receive();
 	elif cmd.startswith('logout') and msg_in.startswith('Bye'):
 		target_bucket = None
 	elif cmd == 'exit':
@@ -33,15 +36,10 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((dst_ip, port))
 msg_in = s.recv(1024).decode('utf-8')
 print(msg_in,end = "")
-s.setblocking(1)
+s.setblocking(0)
 
 while True:
-	while True:
-		try:
-			msg_in = s.recv(1024).decode('utf-8')
-			break
-		except:
-			pass	
+	msg_in = receive();	
 	print(msg_in ,end = "")
 	cmd = input()
 	if not cmd or len(cmd.split()) == 0:
@@ -49,12 +47,7 @@ while True:
 		s.send(cmd.encode('utf-8'))
 	else:
 		s.send(cmd.encode('utf-8'))
-		while True:
-			try:
-				msg_in = s.recv(1024).decode('utf-8')
-				break
-			except:
-				pass
+		msg_in = receive();
 		msg_in = command(cmd, msg_in, s)
 		print(msg_in ,end = "")
 
