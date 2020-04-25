@@ -45,7 +45,7 @@ def CreateObject(cmd, msg_in):
 	fp.close()
 	target_bucket.upload_file("./.data/post/p{}.txt".format(msg_in), "p{}.txt".format(msg_in))
 	target_bucket.upload_file("./.data/comment/c{}.txt".format(msg_in), "c{}.txt".format(msg_in))
-	
+
 def command(cmd, msg_in, s, target_bucket):
 	if msg_in == 'Register successfully.\r\n':
 		bucket_name = '0516319-' + cmd.split()[1] + '-0516319'		
@@ -69,7 +69,7 @@ def command(cmd, msg_in, s, target_bucket):
 				break
 			except:
 				pass
-	elif cmd.startswith('delete-post') and msg_in == 'Delete successfully\r\n'
+	elif cmd.startswith('delete-post') and msg_in == 'Delete successfully\r\n':
 		DeleteObject(cmd)
 
 	elif cmd == 'exit':
