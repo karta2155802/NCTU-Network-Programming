@@ -37,7 +37,7 @@ def new_client(clientsocket, addr):
 		if sql_return == None:
 			msg_suc = 'Post is not exist.\r\n'
 		else:
-			bucket_name = c.execute('select Bucket_name from USERS where ID = ?', (uid,)).fetchone()[0]
+			bucket_name = c.execute('select Bucket_name from USERS where UID = ?', (uid,)).fetchone()[0]
 			print('Comment successfully')
 			msg_suc = 'Comment successfully.\r\n' + '###' + bucket_name
 		return msg_suc
