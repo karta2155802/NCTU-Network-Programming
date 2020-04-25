@@ -17,7 +17,7 @@ def receive():
 def command(cmd, msg_in, s):
 	if msg_in == 'Register successfully.\r\n':
 		bucket_name = '0516319-' + cmd.split()[1] + '-0516319'		
-		s3.create_bucket(Bucket = bucket_name)
+		print(s3.create_bucket(Bucket = bucket_name))
 	elif cmd.startswith('login') and msg_in.startswith('0516319'):
 		target_bucket = s3.Bucket(msg_in)
 		while True:
