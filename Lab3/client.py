@@ -82,6 +82,7 @@ def command(cmd, msg_in, s, target_bucket):
 		while True:
 			try:
 				msg_in = s.recv(12).decode('utf-8')
+				break
 			except:
 				pass
 		print('111')
@@ -94,6 +95,7 @@ def command(cmd, msg_in, s, target_bucket):
 		while True:
 			try:
 				msg_in = s.recv(25).decode('utf-8')
+				break
 			except:
 				pass
 	elif cmd.startswith('delete-post') and msg_in == 'Delete successfully.\r\n':
