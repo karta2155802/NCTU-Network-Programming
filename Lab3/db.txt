@@ -16,8 +16,3 @@ Title text not null,
 Author_id integer not null,
 Date text not null,
 Board_id integer not null);
-
-CREATE TABLE COMMENT(
-ID integer primary key autoincrement,
-Writer_id integer not null,
-Post_id integer not null);
