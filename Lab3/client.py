@@ -84,7 +84,7 @@ def command(cmd, msg_in, s, target_bucket):
 				pass
 	elif cmd.startswith('delete-post') and msg_in == 'Delete successfully.\r\n':
 		DeleteObject(cmd)
-	elif cmd.startswith('read') and (msg_in != 'Post is not exist.\r\n' or msg_in != 'Usage: read <post-id> \r\n')
+	elif cmd.startswith('read') and (msg_in != 'Post is not exist.\r\n' or msg_in != 'Usage: read <post-id> \r\n'):
 		GetObject(cmd)
 
 
