@@ -5,6 +5,7 @@ import boto3
 import os
 
 s3 = boto3.resource('s3')
+global target_bucket
 target_bucket = None
 
 def mkdir():
@@ -71,11 +72,11 @@ def command(cmd, msg_in, s):
 		bucket_name = '0516319-' + cmd.split()[1] + '-0516319'		
 		s3.create_bucket(Bucket = bucket_name)
 	elif cmd.startswith('login') and msg_in.startswith('0516319'):
-		global target_bucket
+		#global target_bucket
 		target_bucket = s3.Bucket(msg_in)
 		receive(11)
 	elif cmd.startswith('logout') and msg_in.startswith('Bye'):
-		global target_bucket
+		#global target_bucket
 		target_bucket = None
 	elif cmd.startswith('create-post') and msg_in.isdigit():
 		CreateObject(cmd, msg_in)
