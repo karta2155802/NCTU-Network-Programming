@@ -330,7 +330,6 @@ def new_client(clientsocket, addr):
 			uid, msg_suc = string_processing(msg_in, conn, c, uid)
 			if msg_suc != "":
 				clientsocket.send(msg_suc.encode('utf-8'))
-				print('432')
 				msg_suc = ""
 	clientsocket.close()
 
