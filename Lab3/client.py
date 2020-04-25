@@ -32,12 +32,13 @@ def GetObject(cmd):
 	object_content = target_object1.get()['Body'].read().decode()
 	target_object2 = target_bucket.Object("c{}.txt".format(cmd_list[1]))
 	object_comment = target_object1.get()['Body'].read().decode()
-	print('    --\r\n')
+	output = '    --\r\n'
 	object_content_list = object_content.split('<br>')
 	for i in object_content_list:
-		print('    {}\r\n'.format(i))
+		output = output + '    {}\r\n'.format(i)
 
-	print('    --\r\n\r\n')
+	output = output + '    --\r\n\r\n'
+	return output
 
 
 def DeleteObject(cmd):
@@ -61,6 +62,7 @@ def CreateObject(cmd, msg_in):
 	target_bucket.upload_file("./.data/comment/c{}.txt".format(msg_in), "c{}.txt".format(msg_in))
 
 def command(cmd, msg_in, s, target_bucket):
+	output = ""
 	if msg_in == 'Register successfully.\r\n':
 		bucket_name = '0516319-' + cmd.split()[1] + '-0516319'		
 		s3.create_bucket(Bucket = bucket_name)
@@ -78,21 +80,21 @@ def command(cmd, msg_in, s, target_bucket):
 		CreateObject(cmd, msg_in)
 		while True:
 			try:
-				msg_in = s.recv(25).decode('utf-8')	#recv 'Create post successfully'	
+				msg_in = s.recv(25).decode('utf-8')	#recv 'Create post successfully.'	
 				break
 			except:
 				pass
 	elif cmd.startswith('delete-post') and msg_in == 'Delete successfully.\r\n':
 		DeleteObject(cmd)
 	elif cmd.startswith('read') and (msg_in != 'Post is not exist.\r\n' or msg_in != 'Usage: read <post-id> \r\n'):
-		GetObject(cmd)
+		output = GetObject(cmd)
 
 
 	elif cmd == 'exit':
 		sys.exit()
 	else:
 		pass
-	return msg_in, target_bucket
+	return msg_in, target_bucket, output
 
 
 dst_ip = str(sys.argv[1])
@@ -114,7 +116,7 @@ while True:
 	else:
 		s.send(cmd.encode('utf-8'))
 		msg_in = receive();
-		msg_in, target_bucket = command(cmd, msg_in, s, target_bucket)
-		print(msg_in ,end = "")
+		msg_in, target_bucket, output = command(cmd, msg_in, s, target_bucket)
+		print(msg_in , output, end = "")
 
 
