@@ -54,7 +54,7 @@ def command(cmd, msg_in, s, target_bucket):
 		target_bucket = s3.Bucket(msg_in)
 		while True:
 			try:
-				msg_in = s.recv(10).decode('utf-8')
+				msg_in = s.recv(11).decode('utf-8') #recv 'Welcome, {user}.'
 				break
 			except:
 				pass
@@ -64,8 +64,7 @@ def command(cmd, msg_in, s, target_bucket):
 		CreateObject(cmd, msg_in)
 		while True:
 			try:
-				msg_in = s.recv(25).decode('utf-8')
-				print(msg_in)		
+				msg_in = s.recv(25).decode('utf-8')	#recv 'Create post successfully'	
 				break
 			except:
 				pass
