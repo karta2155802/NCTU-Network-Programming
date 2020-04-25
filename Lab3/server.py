@@ -133,8 +133,10 @@ def new_client(clientsocket, addr):
 			board_id = sql_return[0]
 			nowtime =  time.strftime('%m/%d', time.localtime())
 			print('nowtime =', nowtime)
-			c.execute('insert into POST ("Title", "Author_id", "Date", "Content", "Board_id") values (?,?,?,?,?)', (data[1], uid, nowtime, data[2], board_id))
+			c.execute('insert into POST ("Title", "Author_id", "Date", "Board_id") values (?,?,?,?)', (data[1], uid, nowtime, board_id))
 			conn.commit()
+			sql_return = c.execute('select * from POST where Title = ?', (data[1],)).fetchall()
+			clientsocket.send(sql_return[-1][0].encode('utf-8'))
 			print('Create post successfully')
 			msg_suc = 'Create post successfully.\r\n'
 		return msg_suc
@@ -169,7 +171,7 @@ def new_client(clientsocket, addr):
 			uid = sql_return[0]
 			print(msg_list[1],'has login')
 			clientsocket.send(sql_return[4].encode('utf-8'))
-			msg_suc = 'Welcome, ' + msg_list[1] +'.\r\n'
+			msg_suc = 'Welcome, ' + msg_list[1] + '.\r\n'
 		else:
 			msg_suc = 'Login failed.\r\n'
 		return uid, msg_suc
