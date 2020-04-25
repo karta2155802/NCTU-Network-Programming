@@ -136,7 +136,7 @@ def new_client(clientsocket, addr):
 			c.execute('insert into POST ("Title", "Author_id", "Date", "Board_id") values (?,?,?,?)', (data[1], uid, nowtime, board_id))
 			conn.commit()
 			sql_return = c.execute('select * from POST where Title = ?', (data[1],)).fetchall()
-			clientsocket.send(sql_return[-1][0].encode('utf-8'))
+			clientsocket.send(str(sql_return[-1][0]).encode('utf-8'))
 			print('Create post successfully')
 			msg_suc = 'Create post successfully.\r\n'
 		return msg_suc
