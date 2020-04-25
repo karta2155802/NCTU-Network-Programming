@@ -188,6 +188,7 @@ def new_client(clientsocket, addr):
 			elif len(msg_list) == 3 and uid == -1:
 				print('Logging...')
 				uid, msg_suc = sql_login(msg_list, c, uid)
+				print(msg_suc)
 		elif msg_list[0] == 'logout':
 			if uid == -1:
 				msg_suc = 'Please login first.\r\n'
