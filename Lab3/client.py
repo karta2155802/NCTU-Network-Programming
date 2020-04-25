@@ -78,14 +78,14 @@ def command(cmd, msg_in, s, target_bucket):
 		bucket_name = '0516319-' + cmd.split()[1] + '-0516319'		
 		s3.create_bucket(Bucket = bucket_name)
 	elif cmd.startswith('login') and msg_in.startswith('0516319'):
-		target_bucket = s3.Bucket(msg_in)
-		print(msg_in)
-		print(msg_in)
+		target_bucket = s3.Bucket(msg_in)		
 		while True:
 			try:
 				msg_in = s.recv(11).decode('utf-8')
 			except:
 				pass
+		print(msg_in)
+		
 	elif cmd.startswith('logout') and msg_in.startswith('Bye'):
 		target_bucket = None
 	elif cmd.startswith('create-post') and msg_in.isdigit():
