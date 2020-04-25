@@ -47,7 +47,6 @@ def UpdatePost(cmd_list, msg_in):
 	target_bucket.upload_file("./.data/post/p{}.txt".format(cmd_list[1]), "p{}.txt".format(cmd_list[1]))
 
 def ReadPost(cmd_list, msg_in):
-	print(msg_in)
 	msg_in_split = msg_in.split('###')
 	tmp_bucket = s3.Bucket(msg_in_split[1])
 	print(msg_in_split[0])
@@ -99,7 +98,7 @@ def command(cmd, msg_in, s, target_bucket):
 		msg_in = receive(25)
 	elif cmd.startswith('delete-post') and msg_in == 'Delete successfully.\r\n':
 		DeletePost(cmd_list)
-	elif cmd.startswith('read') and (msg_in != 'Post is not exist.\r\n' or msg_in != 'Usage: read <post-id> \r\n'):
+	elif cmd.startswith('read') and not (msg_in == 'Post is not exist.\r\n' or msg_in == 'Usage: read <post-id> \r\n'):
 		msg_in = ReadPost(cmd_list, msg_in)
 	elif cmd.startswith('update-post') and '--content' in cmd and msg_in == 'Update successfully.\r\n':
 		UpdatePost(cmd_list, msg_in)
