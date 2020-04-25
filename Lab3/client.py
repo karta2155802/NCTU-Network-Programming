@@ -89,7 +89,11 @@ def command(cmd, msg_in, s, target_bucket):
 		target_bucket = None
 	elif cmd.startswith('create-post') and msg_in.isdigit():
 		CreateObject(cmd, msg_in)
-		receive(25)
+		while True:
+			try:
+				msg_in = s.recv(25).decode('utf-8')
+			except:
+				pass
 	elif cmd.startswith('delete-post') and msg_in == 'Delete successfully.\r\n':
 		DeleteObject(cmd)
 	elif cmd.startswith('read') and (msg_in != 'Post is not exist.\r\n' or msg_in != 'Usage: read <post-id> \r\n'):
@@ -114,7 +118,7 @@ s.setblocking(0)
 mkdir()
 
 while True:
-	msg_in = receive(1024);	
+	msg_in = receive();	
 	print(msg_in ,end = "")
 	cmd = input()
 	if not cmd or len(cmd.split()) == 0:
