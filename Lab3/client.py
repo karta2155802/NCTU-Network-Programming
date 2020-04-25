@@ -18,10 +18,10 @@ def mkdir():
     except FileExistsError:
     	return
 
-def receive():
+def receive(len):
 	while True:
 		try:
-			msg_in = s.recv(1024).decode('utf-8')
+			msg_in = s.recv(len).decode('utf-8')
 			return msg_in
 		except:
 			pass
@@ -79,12 +79,7 @@ def command(cmd, msg_in, s, target_bucket):
 		s3.create_bucket(Bucket = bucket_name)
 	elif cmd.startswith('login') and msg_in.startswith('0516319'):
 		target_bucket = s3.Bucket(msg_in)		
-		while True:
-			try:
-				msg_in = s.recv(12).decode('utf-8')
-				break
-			except:
-				pass
+		msg_in = receive(11)
 		print('111')
 		print(msg_in)
 
@@ -122,7 +117,7 @@ s.setblocking(0)
 mkdir()
 
 while True:
-	msg_in = receive();	
+	msg_in = receive(1024);	
 	print(msg_in ,end = "")
 	cmd = input()
 	if not cmd or len(cmd.split()) == 0:
@@ -130,7 +125,7 @@ while True:
 		s.send(cmd.encode('utf-8'))
 	else:
 		s.send(cmd.encode('utf-8'))
-		msg_in = receive();
+		msg_in = receive(1024);
 		msg_in, target_bucket = command(cmd, msg_in, s, target_bucket)
 		if msg_in != "":
 			print(msg_in ,end = "")
