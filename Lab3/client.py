@@ -26,6 +26,14 @@ def receive(len):
 		except:
 			pass
 
+def UpdateObject(cmd, msg_in):
+	cmd_list = cmd.split()
+	update_data = ' '.join(cmd_list[3:len(cmd_list)])
+	fp = open("./.data/post/p{}.txt".format(cmd_list[1]), "w")
+	fp.write(content)
+	fp.close()
+	target_bucket.upload_file("./.data/post/p{}.txt".format(msg_in), "p{}.txt".format(msg_in))
+
 def GetObject(cmd, msg_in):
 	msg_in_split = msg_in.split('###')
 	tmp_bucket = s3.Bucket(msg_in_split[1])
@@ -44,7 +52,6 @@ def GetObject(cmd, msg_in):
 	print('    --')
 	msg_in = ""
 	return msg_in
-
 
 def DeleteObject(cmd):
 	cmd_list = cmd.split()
@@ -82,6 +89,9 @@ def command(cmd, msg_in, s, target_bucket):
 		DeleteObject(cmd)
 	elif cmd.startswith('read') and (msg_in != 'Post is not exist.\r\n' or msg_in != 'Usage: read <post-id> \r\n'):
 		msg_in = GetObject(cmd, msg_in)
+	elif cmd.startswith('update-post') and '--content' in cmd and msg_in == 'Update successfully.\r\n':
+		UpdateObject(cmd, msg_in)
+
 	elif cmd == 'exit':
 		sys.exit()
 	else:
