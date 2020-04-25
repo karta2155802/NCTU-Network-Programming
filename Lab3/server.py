@@ -28,8 +28,6 @@ def new_client(clientsocket, addr):
 		elif sql_return[0] != uid:
 			msg_suc = 'Not the post owner.\r\n'
 		else:
-			c.execute('update POST set Content = ? where ID = ?', (update_data, post_id))
-			conn.commit()
 			print('Update post content successfully')
 			msg_suc = 'Update successfully.\r\n'
 		return msg_suc

@@ -80,6 +80,7 @@ def command(cmd, msg_in, s, target_bucket):
 	elif cmd.startswith('login') and msg_in.startswith('0516319'):
 		target_bucket = s3.Bucket(msg_in)
 		print(msg_in)
+		print(msg_in)
 		while True:
 			try:
 				msg_in = s.recv(11).decode('utf-8')
@@ -130,5 +131,6 @@ while True:
 		msg_in, target_bucket = command(cmd, msg_in, s, target_bucket)
 		if msg_in != "":
 			print(msg_in ,end = "")
+			print("123")
 
 
