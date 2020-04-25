@@ -54,7 +54,7 @@ def ReadPost(cmd_list, msg_in):
 	target_object1 = tmp_bucket.Object("p{}.txt".format(cmd_list[1]))
 	object_content = target_object1.get()['Body'].read().decode()
 	target_object2 = tmp_bucket.Object("c{}.txt".format(cmd_list[1]))
-	object_comment = target_object1.get()['Body'].read().decode()
+	object_comment = target_object2.get()['Body'].read().decode()
 
 	print('    --')
 	object_content_list = object_content.split('<br>')
