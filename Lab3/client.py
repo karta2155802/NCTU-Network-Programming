@@ -18,10 +18,10 @@ def mkdir():
     except FileExistsError:
     	return
 
-def receive(len):
+def receive():
 	while True:
 		try:
-			msg_in = s.recv(len).decode('utf-8')
+			msg_in = s.recv(1024).decode('utf-8')
 			return msg_in
 		except:
 			pass
@@ -122,7 +122,7 @@ while True:
 		s.send(cmd.encode('utf-8'))
 	else:
 		s.send(cmd.encode('utf-8'))
-		msg_in = receive(1024);
+		msg_in = receive();
 		msg_in, target_bucket = command(cmd, msg_in, s, target_bucket)
 		if msg_in != "":
 			print(msg_in ,end = "")
