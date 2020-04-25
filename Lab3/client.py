@@ -90,12 +90,12 @@ def command(cmd, msg_in, s, target_bucket):
 		s3.create_bucket(Bucket = bucket_name)
 	elif cmd.startswith('login') and msg_in.startswith('0516319'):
 		target_bucket = s3.Bucket(msg_in)		
-		msg_in = receive(11)
+		msg_in = receive(11)	#recv 'Welcome, {name}.'
 	elif cmd.startswith('logout') and msg_in.startswith('Bye'):
 		target_bucket = None
 	elif cmd.startswith('create-post') and msg_in.isdigit():
 		CreatePost(cmd_list, msg_in)
-		msg_in = receive(25)
+		msg_in = receive(25)	#recv 'Create post successfully.'
 	elif cmd.startswith('delete-post') and msg_in == 'Delete successfully.\r\n':
 		DeletePost(cmd_list)
 	elif cmd.startswith('read') and not (msg_in == 'Post is not exist.\r\n' or msg_in == 'Usage: read <post-id> \r\n'):
@@ -134,6 +134,3 @@ while True:
 		msg_in, target_bucket = command(cmd, msg_in, s, target_bucket)
 		if msg_in != "":
 			print(msg_in ,end = "")
-
-
-
