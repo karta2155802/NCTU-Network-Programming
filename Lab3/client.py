@@ -42,6 +42,7 @@ def command(cmd, msg_in, s):
 		while True:
 			try:
 				msg_in = s.recv(12).decode('utf-8')
+				print(msg_in)
 				return msg_in
 			except:
 				pass
@@ -51,7 +52,7 @@ def command(cmd, msg_in, s):
 		while True:
 			try:
 				msg_in = s.recv(11).decode('utf-8')
-				print(msg_in)
+				
 				return msg_in
 			except:
 				pass
