@@ -30,9 +30,9 @@ def UpdateObject(cmd, msg_in):
 	cmd_list = cmd.split()
 	update_data = ' '.join(cmd_list[3:len(cmd_list)])
 	fp = open("./.data/post/p{}.txt".format(cmd_list[1]), "w")
-	fp.write(content)
+	fp.write(update_data)
 	fp.close()
-	target_bucket.upload_file("./.data/post/p{}.txt".format(msg_in), "p{}.txt".format(msg_in))
+	target_bucket.upload_file("./.data/post/p{}.txt".format(cmd_list[1]), "p{}.txt".format(cmd_list[1]))
 
 def GetObject(cmd, msg_in):
 	msg_in_split = msg_in.split('###')
