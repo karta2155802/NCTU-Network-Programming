@@ -69,11 +69,7 @@ def new_client(clientsocket, addr):
 			msg_out = '    {:<10}:{}\r\n'.format('Title', sql_return_fetch[1])
 			clientsocket.send(msg_out.encode('utf-8'))
 			msg_out = '    {:<10}:{}\r\n'.format('Date', sql_return_fetch[2])
-			clientsocket.send(msg_out.encode('utf-8'))
-			msg_out = '    --\r\n'
-			clientsocket.send(msg_out.encode('utf-8'))
-
-			
+			clientsocket.send(msg_out.encode('utf-8'))			
 			print('Read post successfully')
 			msg_suc = ""
 		return msg_suc

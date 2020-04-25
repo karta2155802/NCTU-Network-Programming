@@ -26,6 +26,20 @@ def receive():
 		except:
 			pass
 
+def GetObject(cmd):
+	cmd_list = cmd.split()
+	target_object1 = target_bucket.Object("./.data/post/p{}.txt".format(cmd_list[1]))
+	object_content = target_object1.get()['Body'].read().decode()
+	target_object2 = target_bucket.Object("./.data/post/c{}.txt".format(cmd_list[1]))
+	object_comment = target_object1.get()['Body'].read().decode()
+	print('    --\r\n')
+	object_content_list = object_content.split('<br>')
+	for i in object_content_list
+		print('    {}\r\n'.format(i))
+
+	print('    --\r\n\r\n')
+
+
 def DeleteObject(cmd):
 	cmd_list = cmd.split()
 	os.remove("./.data/post/p{}.txt".format(cmd_list[1]))
@@ -70,6 +84,9 @@ def command(cmd, msg_in, s, target_bucket):
 				pass
 	elif cmd.startswith('delete-post') and msg_in == 'Delete successfully.\r\n':
 		DeleteObject(cmd)
+	elif cmd.startswith('read') and (msg_in != 'Post is not exist.\r\n' or msg_in != 'Usage: read <post-id> \r\n')
+		GetObject(cmd)
+
 
 	elif cmd == 'exit':
 		sys.exit()
