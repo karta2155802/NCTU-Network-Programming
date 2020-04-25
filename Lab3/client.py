@@ -2,6 +2,7 @@ import socket
 import sys
 import time
 import boto3
+import os
 
 s3 = boto3.resource('s3')
 target_bucket = None
