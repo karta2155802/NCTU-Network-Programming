@@ -37,10 +37,9 @@ def new_client(clientsocket, addr):
 		if sql_return == None:
 			msg_suc = 'Post is not exist.\r\n'
 		else:
-			c.execute('insert into COMMENT ("Writer_id", "Comment", "Post_id") values (?,?,?)', (uid, comment, post_id))
-			conn.commit()
+			bucket_name = c.execute('select Bucket_name from USERS where ID = ?', (uid,)).fetchone()[0]
 			print('Comment successfully')
-			msg_suc = 'Comment successfully.\r\n'
+			msg_suc = 'Comment successfully.\r\n' + '###' + bucket_name
 		return msg_suc
 
 	def sql_delete_post(conn, c, uid, post_id):

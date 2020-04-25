@@ -26,20 +26,31 @@ def receive(len):
 		except:
 			pass
 
-def UpdateObject(cmd, msg_in):
-	cmd_list = cmd.split()
+def Comment(cmd_list, msg_in):
+	msg_in_split = msg_in.split('###')
+	name = msg_in_split[1].split('-')[1]
+	comment = ' '.join(cmd_list[2:len(cmd_list)])
+	fp = open("./.data/comment/c{}.txt".format(cmd_list[1]), "a")
+	fp.write('{}: {}\n'.format(name, comment))
+	fp.close()
+
+	tmp_bucket = s3.Bucket(msg_in_split[1])
+	tmp_bucket.upload_file("./.data/comment/c{}.txt".format(cmd_list[1]), "c{}.txt".format(cmd_list[1]))
+	
+	return msg_in_split[0]
+
+def UpdatePost(cmd_list, msg_in):
 	update_data = ' '.join(cmd_list[3:len(cmd_list)])
 	fp = open("./.data/post/p{}.txt".format(cmd_list[1]), "w")
 	fp.write(update_data)
 	fp.close()
 	target_bucket.upload_file("./.data/post/p{}.txt".format(cmd_list[1]), "p{}.txt".format(cmd_list[1]))
 
-def GetObject(cmd, msg_in):
+def ReadPost(cmd_list, msg_in):
 	msg_in_split = msg_in.split('###')
 	tmp_bucket = s3.Bucket(msg_in_split[1])
 	print(msg_in_split[0])
 
-	cmd_list = cmd.split()
 	target_object1 = tmp_bucket.Object("p{}.txt".format(cmd_list[1]))
 	object_content = target_object1.get()['Body'].read().decode()
 	target_object2 = tmp_bucket.Object("c{}.txt".format(cmd_list[1]))
@@ -53,15 +64,13 @@ def GetObject(cmd, msg_in):
 	msg_in = ""
 	return msg_in
 
-def DeleteObject(cmd):
-	cmd_list = cmd.split()
+def DeletePost(cmd_list):
 	os.remove("./.data/post/p{}.txt".format(cmd_list[1]))
 	os.remove("./.data/comment/c{}.txt".format(cmd_list[1]))
 	target_bucket.Object("p{}.txt".format(cmd_list[1])).delete()
 	target_bucket.Object("c{}.txt".format(cmd_list[1])).delete()
 
-def CreateObject(cmd, msg_in):
-	cmd_list = cmd.split()
+def CreatePost(cmd_list, msg_in):
 	content_position = cmd_list.index('--content')
 	content = ' '.join(cmd_list[content_position+1:len(cmd_list)])
 
@@ -74,24 +83,26 @@ def CreateObject(cmd, msg_in):
 	target_bucket.upload_file("./.data/comment/c{}.txt".format(msg_in), "c{}.txt".format(msg_in))
 
 def command(cmd, msg_in, s, target_bucket):
+	cmd_list = cmd.split()
 	if msg_in == 'Register successfully.\r\n':
-		bucket_name = '0516319-' + cmd.split()[1] + '-0516319'		
+		bucket_name = '0516319-' + cmd_list[1] + '-0516319'		
 		s3.create_bucket(Bucket = bucket_name)
 	elif cmd.startswith('login') and msg_in.startswith('0516319'):
 		target_bucket = s3.Bucket(msg_in)		
 		msg_in = receive(11)
-
 	elif cmd.startswith('logout') and msg_in.startswith('Bye'):
 		target_bucket = None
 	elif cmd.startswith('create-post') and msg_in.isdigit():
-		CreateObject(cmd, msg_in)
+		CreatePost(cmd_list, msg_in)
 		msg_in = receive(25)
 	elif cmd.startswith('delete-post') and msg_in == 'Delete successfully.\r\n':
-		DeleteObject(cmd)
+		DeletePost(cmd_list)
 	elif cmd.startswith('read') and (msg_in != 'Post is not exist.\r\n' or msg_in != 'Usage: read <post-id> \r\n'):
-		msg_in = GetObject(cmd, msg_in)
+		msg_in = ReadPost(cmd_list, msg_in)
 	elif cmd.startswith('update-post') and '--content' in cmd and msg_in == 'Update successfully.\r\n':
-		UpdateObject(cmd, msg_in)
+		UpdatePost(cmd_list, msg_in)
+	elif cmd.startswith('comment') and msg_in.startswith('Comment successfully'):
+		msg_in = Comment(cmd_list, msg_in)
 
 	elif cmd == 'exit':
 		sys.exit()
