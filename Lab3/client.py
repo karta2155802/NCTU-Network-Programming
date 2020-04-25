@@ -50,7 +50,8 @@ def command(cmd, msg_in, s):
 	elif cmd.startswith('create-post') and msg_in.isdigit():
 		while True:
 			try:
-				msg_in = s.recv(27).decode('utf-8')
+				msg_in = s.recv(11).decode('utf-8')
+				print(msg_in)
 				return msg_in
 			except:
 				pass
