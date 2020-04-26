@@ -38,7 +38,7 @@ def SendMail(cmd_list, msg_in):
 	fp.write(content)
 	fp.close()
 	tmp_bucket = s3.Bucket(msg_in_split[2])
-	tm_bucket.upload_file("./.data/post/m{}.txt".format(mail_id), "m{}.txt".format(mail_id))
+	tm_bucket.upload_file("./.data/mail/m{}.txt".format(mail_id), "m{}.txt".format(mail_id))
 	return  msg_in_split[0]
 
 
@@ -124,7 +124,7 @@ def command(cmd, msg_in, s, target_bucket):
 	elif cmd.startswith('comment') and msg_in.startswith('Comment successfully'):
 		msg_in = Comment(cmd_list, msg_in)
 	elif cmd.startswith('mail-to') and msg_in.startswith('Send successfully'):
-		SendMail(cmd_list, msg_in)	
+		msg_in = SendMail(cmd_list, msg_in)	
 
 	elif cmd == 'exit':
 		sys.exit()
