@@ -39,8 +39,8 @@ def receive(len):
 
 def RetrMail(msg_in):
 	msg_in_split = msg_in.split('###')
-	tmp_bucket = s3.Bucket(msg_in_split[1])
-	mail_id_in_db = msg_in_split[2]
+	tmp_bucket = s3.Bucket(msg_in_split[2])
+	mail_id_in_db = msg_in_split[1]
 	print(msg_in_split[0])
 
 	target_object1 = tmp_bucket.Object("m{}.txt".format(mail_id_in_db))
@@ -50,7 +50,7 @@ def RetrMail(msg_in):
 	for i in object_content_list:
 		print('    {}'.format(i))
 	print("")
-	
+
 	msg_in = ""
 	return msg_in
 
@@ -148,7 +148,7 @@ def command(cmd, msg_in, s, target_bucket):
 		UpdatePost(cmd_list, msg_in)
 	elif cmd.startswith('comment') and msg_in.startswith('Comment successfully'):
 		msg_in = Comment(cmd_list, msg_in)
-	elif cmd.startswith('mail-to') and msg_in.startswith('Sent successfully'):
+	elif cmd.startswith('mail-to') and msg_in.endswith('0516319'):
 		msg_in = SendMail(cmd_list, msg_in)	
 
 	elif cmd == 'exit':

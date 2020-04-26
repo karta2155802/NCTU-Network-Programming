@@ -17,9 +17,9 @@ def new_client(clientsocket, addr):
 			msg_out1 = '\r\n    {:<10}:{}\r\n'.format('Subject', sql_return[int(mail_id)-1][1])
 			msg_out2 = '    {:<10}:{}\r\n'.format('From', sql_return[int(mail_id)-1][2])
 			msg_out3 = '    {:<10}:{}'.format('Date', sql_return[int(mail_id)-1][4])
-			msg_out = msg_out1 + msg_out2 + msg_out3 + '###' + bucket_name + '###' + str(sql_return[int(mail_id)-1][0])
+			msg_out = msg_out1 + msg_out2 + msg_out3 + '###' + str(sql_return[int(mail_id)-1][0]) + '###' + bucket_name
 			clientsocket.send(msg_out.encode('utf-8'))			
-			print('Read post successfully')
+			print('Retr mail successfully')
 			msg_suc = ""
 		return msg_suc
 
