@@ -8,6 +8,18 @@ import time
 def new_client(clientsocket, addr):
 	msg_suc = ""
 #------------------------------------------------------sqlite3 function
+	def sql_delete_mail(conn, c, uid, mail_id):
+		sql_return = c.execute('select * from MAIL inner join USERS on MAIL.Receiver = USERS.Username where UID = ?', (uid,)).fetchall()
+		if len(sql_return) < int(mail_id):
+			msg_suc = 'No such mail.\r\n'
+		else:
+			mail_id_in_db = sql_return[int(mail_id)-1][0]
+			c.execute('delete from MAIL where ID = ?', (mail_id_in_db,))
+			conn.commit()
+			print('Mail deleted')
+			msg_suc = 'Mail deleted.\r\n' + '###' + mail_id_in_db
+		return msg_suc
+
 	def sql_retr_mail(c, uid, mail_id):
 		sql_return = c.execute('select * from MAIL inner join USERS on MAIL.Receiver = USERS.Username where UID = ?', (uid,)).fetchall()
 		if len(sql_return) < int(mail_id):
@@ -96,7 +108,6 @@ def new_client(clientsocket, addr):
 			msg_suc = 'Not the post owner.\r\n'
 		else:
 			c.execute('delete from POST where ID = ?', (post_id,))
-			c.execute('delete from COMMENT where Post_id = ?', (post_id,))
 			conn.commit()
 			print('Delete successfully')
 			msg_suc = 'Delete successfully.\r\n'
@@ -367,6 +378,14 @@ def new_client(clientsocket, addr):
 				msg_suc = sql_retr_mail(c, uid, mail_id)
 			else:
 				msg_suc = 'Usage: retr-mail <mail#> \r\n'
+		elif msg_list[0] == 'delete-mail':
+			if uid == -1:
+				msg_suc = 'Please login first.\r\n'
+			elif len(msg_list) == 2:
+				mail_id = msg_list[1]
+				msg_suc = sql_delete_mail(conn, c, uid, mail_id)
+			else:
+				msg_suc = 'Usage: delete-mail <mail#> \r\n'
 		elif msg_list[0] == 'enter&&space':
 			msg_suc = ""
 			pass

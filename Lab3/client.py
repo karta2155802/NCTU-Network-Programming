@@ -37,6 +37,16 @@ def receive(len):
 		except:
 			pass
 
+def DeleteMail(msg_in):
+	msg_in_split = msg_in.split('###')
+	mail_id_in_db = msg_in_split[1]
+
+	os.remove("./.data/mail/m{}.txt".format(mail_id_in_db))
+	target_bucket.Object("m{}.txt".format(mail_id_in_db)).delete()
+
+	msg_in = msg_in_split[0]
+	return msg_in
+
 def RetrMail(msg_in):
 	msg_in_split = msg_in.split('###')
 	tmp_bucket = s3.Bucket(msg_in_split[2])
@@ -151,7 +161,9 @@ def command(cmd, msg_in, s, target_bucket):
 	elif cmd.startswith('mail-to') and msg_in.startswith('Sent successfully'):
 		msg_in = SendMail(cmd_list, msg_in)	
 	elif cmd.startswith('retr-mail') and msg_in.endswith('0516319'):
-		msg_in = RetrMail(msg_in)	
+		msg_in = RetrMail(msg_in)
+	elif cmd.startswith('delete-mail') and msg_in.startswith('Mail deleted'):
+		msg_in = DeleteMail(msg_in)	
 	elif cmd == 'exit':
 		sys.exit()
 	else:
