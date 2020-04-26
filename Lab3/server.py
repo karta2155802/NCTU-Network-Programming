@@ -327,6 +327,8 @@ def new_client(clientsocket, addr):
 					data = [target_name, subject, content]
 					print('mail to...')
 					msg_suc = sql_mail_to(conn, c, uid, data)
+			else:
+				msg_suc = 'Usage: mail-to <username> --subject <subject> --content <content> \r\n'
 		elif msg_list[0] == 'enter&&space':
 			msg_suc = ""
 			pass
