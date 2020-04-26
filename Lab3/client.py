@@ -38,7 +38,7 @@ def SendMail(cmd_list, msg_in):
 	fp.write(content)
 	fp.close()
 	tmp_bucket = s3.Bucket(msg_in_split[2])
-	tm_bucket.upload_file("./.data/mail/m{}.txt".format(mail_id), "m{}.txt".format(mail_id))
+	tmp_bucket.upload_file("./.data/mail/m{}.txt".format(mail_id), "m{}.txt".format(mail_id))
 	return  msg_in_split[0]
 
 
