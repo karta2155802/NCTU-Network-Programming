@@ -17,7 +17,7 @@ def new_client(clientsocket, addr):
 			msg_out1 = '\r\n    {:<10}:{}\r\n'.format('Subject', sql_return[int(mail_id)-1][1])
 			msg_out2 = '    {:<10}:{}\r\n'.format('From', sql_return[int(mail_id)-1][2])
 			msg_out3 = '    {:<10}:{}'.format('Date', sql_return[int(mail_id)-1][4])
-			msg_out = msg_out1 + msg_out2 + msg_out3 + '###' + bucket_name + '###' + sql_return[int(mail_id)-1][0]
+			msg_out = msg_out1 + msg_out2 + msg_out3 + '###' + bucket_name + '###' + str(sql_return[int(mail_id)-1][0])
 			clientsocket.send(msg_out.encode('utf-8'))			
 			print('Read post successfully')
 			msg_suc = ""
@@ -218,7 +218,7 @@ def new_client(clientsocket, addr):
 		msg_list = msg_in.split();
 		if msg_list[0] == 'register':
 			if len(msg_list) != 4:
-				msg_suc = 'Usage: regoster <username> <email> <password>\r\n'
+				msg_suc = 'Usage: register <username> <email> <password>\r\n'
 			else:
 				msg_suc = sql_register(msg_list, conn, c)
 		elif msg_list[0] == 'login':
