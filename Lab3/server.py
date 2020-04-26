@@ -343,7 +343,7 @@ def new_client(clientsocket, addr):
 					msg_suc = sql_mail_to(conn, c, uid, data)
 			else:
 				msg_suc = 'Usage: mail-to <username> --subject <subject> --content <content> \r\n'
-		elif msg_list[0] = 'list-mail' :
+		elif msg_list[0] == 'list-mail':
 			if uid == -1:
 				msg_suc = 'Please login first.\r\n'
 			elif len(msg_list) == 1:
