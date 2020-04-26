@@ -16,7 +16,7 @@ def mkdir():
     	os.makedirs(Pdata)
     	os.makedirs(Ppost)
     	os.makedirs(Pcomment)
-    	os.makefirs(Pmail)
+    	os.makedirs(Pmail)
     except FileExistsError:
     	return
 
