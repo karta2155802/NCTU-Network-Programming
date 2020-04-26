@@ -324,7 +324,7 @@ def new_client(clientsocket, addr):
 				if subject == '' or content == '':
 					msg_suc = 'Usage: create-post <board-name> --subject <subject> --content <content>\r\n'
 				else:
-					data = [board_name, subject, content]
+					data = [target_name, subject, content]
 					print('mail to...')
 					msg_suc = sql_mail_to(conn, c, uid, data)
 		elif msg_list[0] == 'enter&&space':
