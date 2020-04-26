@@ -8,6 +8,21 @@ import time
 def new_client(clientsocket, addr):
 	msg_suc = ""
 #------------------------------------------------------sqlite3 function
+	def sql_mail_to(conn, c, uid, data):
+		sql_return = c.execute('select Bucket_name from USERS where Username = ?', (data[0],)).fetchone()
+		if(sql_return == None):
+			print('<username> does not exist.')
+			msg_suc = '<username> does not exist.\r\n'
+		else:
+			target_bucket = sql_return[0]
+			nowtime =  time.strftime('%m/%d', time.localtime())
+			c.execute('insert into MAIL ("Subject", "Sender_id", "Receiver", "Date") values (?,?,?,?)', (data[1], uid, data[0], nowtime))
+			conn.commit()
+			sql_return = c.execute('select * from MAIL where Subject = ?', (data[1],))
+			print('Sent successfully')
+			msg_suc = 'Sent successfully.\r\n' + '###' + str(sql_return[-1][0]) + '###' + target_bucket
+		return msg_suc
+
 	def sql_update_post_title(conn, c, uid, post_id, update_data):
 		sql_return = c.execute('select Author_id from POST where ID = ?', (post_id,)).fetchone()	
 		if sql_return == None:
@@ -119,9 +134,8 @@ def new_client(clientsocket, addr):
 			c.execute('insert into POST ("Title", "Author_id", "Date", "Board_id") values (?,?,?,?)', (data[1], uid, nowtime, board_id))
 			conn.commit()
 			sql_return = c.execute('select * from POST where Title = ?', (data[1],)).fetchall()
-			clientsocket.send(str(sql_return[-1][0]).encode('utf-8'))
 			print('Create post successfully')
-			msg_suc = 'Create post successfully.\r\n'
+			msg_suc = 'Create post successfully.\r\n' + '###' + str(sql_return[-1][0])
 		return msg_suc
 
 	def sql_create_board(msg_list, conn, c, uid):
@@ -153,8 +167,7 @@ def new_client(clientsocket, addr):
 		if sql_return != None and sql_return[3] == msg_list[2]:
 			uid = sql_return[0]
 			print(msg_list[1],'has login')
-			clientsocket.send(sql_return[4].encode('utf-8'))
-			msg_suc = 'Welcome, ' + msg_list[1] + '.\r\n'
+			msg_suc = 'Welcome, ' + msg_list[1] + '.\r\n' + '###' + sql_return[4]
 		else:
 			msg_suc = 'Login failed.\r\n'
 		return uid, msg_suc
@@ -297,6 +310,23 @@ def new_client(clientsocket, addr):
 				msg_suc = sql_comment(conn, c, uid, post_id, comment)
 			else:
 				msg_suc = 'Usage: comment <post-id> <comment> \r\n'
+		elif msg_list[0] == 'mail-to':
+			if uid == -1:
+				msg_suc = 'Please login first.\r\n'
+			elif len(msg_list) > 5 and msg_list[2] == '--subject' and '--content' in msg_in:
+				target_name = msg_list[1]
+				print('target_name =', target_name)
+				content_position = msg_list.index('--content')
+				subject = ' '.join(msg_list[3:content_position])			
+				print('subject =', subject)
+				content = ' '.join(msg_list[content_position+1:len(msg_list)])
+				print('content =', content)
+				if subject == '' or content == '':
+					msg_suc = 'Usage: create-post <board-name> --subject <subject> --content <content>\r\n'
+				else:
+					data = [board_name, subject, content]
+					print('mail to...')
+					msg_suc = sql_mail_to(conn, c, uid, data)
 		elif msg_list[0] == 'enter&&space':
 			msg_suc = ""
 			pass

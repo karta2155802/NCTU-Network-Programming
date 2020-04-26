@@ -16,3 +16,10 @@ Title text not null,
 Author_id integer not null,
 Date text not null,
 Board_id integer not null);
+
+CREATE TABLE MAIL(
+ID integer primary key autoincrement,
+Subject text not null,
+Sender_id text not null,
+Receiver text not null,
+Date text not null)

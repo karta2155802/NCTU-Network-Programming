@@ -11,10 +11,12 @@ def mkdir():
     Pdata = "./.data"
     Ppost = "./.data/post"
     Pcomment = "./.data/comment"
+    Pmail = "./.data/mail"
     try:
     	os.makedirs(Pdata)
     	os.makedirs(Ppost)
     	os.makedirs(Pcomment)
+    	os.makefirs(Pmail)
     except FileExistsError:
     	return
 
@@ -25,6 +27,19 @@ def receive(len):
 			return msg_in
 		except:
 			pass
+
+def SendMail(cmd_list, msg_in):
+	msg_in_split = msg_in.split('###')
+	content_position = cmd_list.index('--content')
+	content = ' '.join(cmd_list[content_position+1:len(cmd_list)])
+	mail_id = msg_in_split[1]
+	fp = open("./.data/mail/m{}.txt".format(mail_id, "w")
+	fp.write(content)
+	fp.close()
+	tmp_bucket = s3.Bucket(msg_in_split[2])
+	tm_bucket.upload_file("./.data/post/m{}.txt".format(mail_id), "m{}.txt".format(mail_id))
+	return msg_in_split[0]
+
 
 def Comment(cmd_list, msg_in):
 	msg_in_split = msg_in.split('###')
@@ -72,30 +87,33 @@ def DeletePost(cmd_list):
 	target_bucket.Object("c{}.txt".format(cmd_list[1])).delete()
 
 def CreatePost(cmd_list, msg_in):
+	post_id = msg_in.split('###')[1]
 	content_position = cmd_list.index('--content')
 	content = ' '.join(cmd_list[content_position+1:len(cmd_list)])
 
-	fp = open("./.data/post/p{}.txt".format(msg_in), "w")
+	fp = open("./.data/post/p{}.txt".format(post_id), "w")
 	fp.write(content)
 	fp.close()
-	fp = open("./.data/comment/c{}.txt".format(msg_in), "w")
+	fp = open("./.data/comment/c{}.txt".format(post_id), "w")
 	fp.close()
-	target_bucket.upload_file("./.data/post/p{}.txt".format(msg_in), "p{}.txt".format(msg_in))
-	target_bucket.upload_file("./.data/comment/c{}.txt".format(msg_in), "c{}.txt".format(msg_in))
+	target_bucket.upload_file("./.data/post/p{}.txt".format(post_id), "p{}.txt".format(post_id))
+	target_bucket.upload_file("./.data/comment/c{}.txt".format(post_id), "c{}.txt".format(post_id))
+	msg_in = msg_in_split[0]
+	return msg_in
 
 def command(cmd, msg_in, s, target_bucket):
 	cmd_list = cmd.split()
 	if msg_in == 'Register successfully.\r\n':
 		bucket_name = '0516319-' + cmd_list[1] + '-0516319'		
 		s3.create_bucket(Bucket = bucket_name)
-	elif cmd.startswith('login') and msg_in.startswith('0516319'):
-		target_bucket = s3.Bucket(msg_in)		
-		msg_in = receive(11)	#recv 'Welcome, {name}.'
+	elif cmd.startswith('login') and msg_in.startswith('Welcome, '):
+		bucket_name = msg_in.split('###')[1]
+		target_bucket = s3.Bucket(bucket_name)
+		msg_in = msg_in_split[0]		
 	elif cmd.startswith('logout') and msg_in.startswith('Bye'):
 		target_bucket = None
-	elif cmd.startswith('create-post') and msg_in.isdigit():
-		CreatePost(cmd_list, msg_in)
-		msg_in = receive(25)	#recv 'Create post successfully.'
+	elif cmd.startswith('create-post') and msg_in.startswith('Create post successfully'):
+		msg_in = CreatePost(cmd_list, msg_in)		
 	elif cmd.startswith('delete-post') and msg_in == 'Delete successfully.\r\n':
 		DeletePost(cmd_list)
 	elif cmd.startswith('read') and not (msg_in == 'Post is not exist.\r\n' or msg_in == 'Usage: read <post-id> \r\n'):
@@ -104,6 +122,8 @@ def command(cmd, msg_in, s, target_bucket):
 		UpdatePost(cmd_list, msg_in)
 	elif cmd.startswith('comment') and msg_in.startswith('Comment successfully'):
 		msg_in = Comment(cmd_list, msg_in)
+	elif cmd.startswith('mail-to') and msg_in.startswith('Send successfully'):
+		SendMail(cmd_list, msg_in)	
 
 	elif cmd == 'exit':
 		sys.exit()
