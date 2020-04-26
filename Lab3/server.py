@@ -32,7 +32,7 @@ def new_client(clientsocket, addr):
 			clientsocket.send(msg_out.encode('utf-8'))
 		msg_out = '\r\n'
 		clientsocket.send(msg_out.encode('utf-8'))
-		print('List post successfully')
+		print('List mail successfully')
 		msg_suc = ""
 		return msg_suc
 

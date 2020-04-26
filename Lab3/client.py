@@ -177,8 +177,7 @@ while True:
 		s.send(cmd.encode('utf-8'))
 	else:
 		s.send(cmd.encode('utf-8'))
-		msg_in = receive(1024);
+		msg_in = receive(8192);
 		msg_in, target_bucket = command(cmd, msg_in, s, target_bucket)
 		if msg_in != "":
-			print(msg_in ,end = "")
 			print(msg_in ,end = "")
