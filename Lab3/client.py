@@ -43,7 +43,7 @@ def RetrMail(msg_in):
 	mail_id_in_db = msg_in_split[1]
 	print(msg_in_split[0])
 
-	target_object1 = tmp_bucket.Object("m{}.txt".format(mail_id_in_db))
+	target_object = tmp_bucket.Object("m{}.txt".format(mail_id_in_db))
 	object_content = target_object.get()['Body'].read().decode()
 	print('    --')
 	object_content_list = object_content.split('<br>')
