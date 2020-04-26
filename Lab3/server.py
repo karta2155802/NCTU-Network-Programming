@@ -17,7 +17,7 @@ def new_client(clientsocket, addr):
 			c.execute('delete from MAIL where ID = ?', (mail_id_in_db,))
 			conn.commit()
 			print('Mail deleted')
-			msg_suc = 'Mail deleted.\r\n' + '###' + mail_id_in_db
+			msg_suc = 'Mail deleted.\r\n' + '###' + str(mail_id_in_db)
 		return msg_suc
 
 	def sql_retr_mail(c, uid, mail_id):
