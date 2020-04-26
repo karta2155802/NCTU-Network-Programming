@@ -148,9 +148,10 @@ def command(cmd, msg_in, s, target_bucket):
 		UpdatePost(cmd_list, msg_in)
 	elif cmd.startswith('comment') and msg_in.startswith('Comment successfully'):
 		msg_in = Comment(cmd_list, msg_in)
-	elif cmd.startswith('mail-to') and msg_in.endswith('0516319'):
+	elif cmd.startswith('mail-to') and msg_in.startswith('Sent successfully'):
 		msg_in = SendMail(cmd_list, msg_in)	
-
+	elif cmd.startswith('retr-mail') and msg_in.endswith('0516319'):
+		msg_in = RetrMail(cmd_list, msg_in)	
 	elif cmd == 'exit':
 		sys.exit()
 	else:
