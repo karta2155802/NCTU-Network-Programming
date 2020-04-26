@@ -14,11 +14,20 @@ def mkdir():
     Pmail = "./.data/mail"
     try:
     	os.makedirs(Pdata)
+    except FileExistsError:
+    	pass
+    try:
     	os.makedirs(Ppost)
+    except FileExistsError:
+    	pass
+    try:
     	os.makedirs(Pcomment)
+    except FileExistsError:
+    	pass
+    try:
     	os.makedirs(Pmail)
     except FileExistsError:
-    	return
+    	pass
 
 def receive(len):
 	while True:
