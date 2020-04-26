@@ -18,7 +18,7 @@ def new_client(clientsocket, addr):
 			nowtime =  time.strftime('%m/%d', time.localtime())
 			c.execute('insert into MAIL ("Subject", "Sender_id", "Receiver", "Date") values (?,?,?,?)', (data[1], uid, data[0], nowtime))
 			conn.commit()
-			sql_return = c.execute('select * from MAIL where Subject = ?', (data[1],))
+			sql_return = c.execute('select * from MAIL where Subject = ?', (data[1],)).fetchall()
 			print('Sent successfully')
 			msg_suc = 'Sent successfully.\r\n' + '###' + str(sql_return[-1][0]) + '###' + target_bucket
 		return msg_suc
