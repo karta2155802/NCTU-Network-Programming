@@ -28,17 +28,18 @@ def receive(len):
 		except:
 			pass
 
+
 def SendMail(cmd_list, msg_in):
 	msg_in_split = msg_in.split('###')
 	content_position = cmd_list.index('--content')
 	content = ' '.join(cmd_list[content_position+1:len(cmd_list)])
 	mail_id = msg_in_split[1]
-	fp = open("./.data/mail/m{}.txt".format(mail_id, "w")
+	fp = open("./.data/mail/m{}.txt".format(mail_id, "w"))
 	fp.write(content)
 	fp.close()
 	tmp_bucket = s3.Bucket(msg_in_split[2])
 	tm_bucket.upload_file("./.data/post/m{}.txt".format(mail_id), "m{}.txt".format(mail_id))
-	return msg_in_split[0]
+    return  msg_in_split[0]
 
 
 def Comment(cmd_list, msg_in):
