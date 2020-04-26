@@ -152,7 +152,7 @@ s.setblocking(0)
 mkdir()
 
 while True:
-	msg_in = receive(1024);	
+	msg_in = receive(8192);	
 	print(msg_in ,end = "")
 	cmd = input()
 	if not cmd or len(cmd.split()) == 0:

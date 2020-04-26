@@ -347,7 +347,7 @@ def new_client(clientsocket, addr):
 			if uid == -1:
 				msg_suc = 'Please login first.\r\n'
 			elif len(msg_list) == 1:
-				msg_in = sql_list_mail(c, uid)
+				msg_suc = sql_list_mail(c, uid)
 			else:
 				msg_suc = 'Usage: list-mail \r\n'
 		elif msg_list[0] == 'enter&&space':
