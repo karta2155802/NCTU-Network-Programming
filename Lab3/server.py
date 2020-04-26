@@ -8,12 +8,27 @@ import time
 def new_client(clientsocket, addr):
 	msg_suc = ""
 #------------------------------------------------------sqlite3 function
+	def sql_retr_mail(c, uid, mail_id):
+		sql_return = c.execute('select * from MAIL inner join USERS on MAIL.Receiver = USERS.Username where UID = ?', (uid,)).fetchall()
+		if len(sql_return) < int(mail_id):
+			msg_suc = 'No such mail.\r\n'
+		else:
+			bucket_name = c.execute('select Bucket_name from USERS where UID = ?', (uid,)).fetchone()[0]
+			msg_out1 = '\r\n    {:<10}:{}\r\n'.format('Subject', sql_return[int(mail_id)-1][1])
+			msg_out2 = '    {:<10}:{}\r\n'.format('From', sql_return[int(mail_id)-1][2])
+			msg_out3 = '    {:<10}:{}'.format('Date', sql_return[int(mail_id)-1][4])
+			msg_out = msg_out1 + msg_out2 + msg_out3 + '###' + bucket_name + '###' + sql_return[int(mail_id)-1][0]
+			clientsocket.send(msg_out.encode('utf-8'))			
+			print('Read post successfully')
+			msg_suc = ""
+		return msg_suc
+
 	def sql_list_mail(c,uid):
 		sql_return = c.execute('select * from MAIL inner join USERS on MAIL.Receiver = USERS.Username where UID = ?', (uid,)).fetchall()
 		msg_out = '\r\n    {:<7} {:<20} {:<12} {:<9}\r\n'.format('ID', 'Subject', 'From', 'Date')
 		clientsocket.send(msg_out.encode('utf-8'))
 		for i in range(len(sql_return)):
-			msg_out = '    {:<7} {:<20} {:<12} {:<9}\r\n'.format(i+1, sql_return[i][1], sql_return[i][2], sql_return[i][3])
+			msg_out = '    {:<7} {:<20} {:<12} {:<9}\r\n'.format(i+1, sql_return[i][1], sql_return[i][2], sql_return[i][4])
 			clientsocket.send(msg_out.encode('utf-8'))
 		msg_out = '\r\n'
 		clientsocket.send(msg_out.encode('utf-8'))
@@ -144,7 +159,6 @@ def new_client(clientsocket, addr):
 		else:
 			board_id = sql_return[0]
 			nowtime =  time.strftime('%m/%d', time.localtime())
-			print('nowtime =', nowtime)
 			c.execute('insert into POST ("Title", "Author_id", "Date", "Board_id") values (?,?,?,?)', (data[1], uid, nowtime, board_id))
 			conn.commit()
 			sql_return = c.execute('select * from POST where Title = ?', (data[1],)).fetchall()
@@ -206,7 +220,6 @@ def new_client(clientsocket, addr):
 			if len(msg_list) != 4:
 				msg_suc = 'Usage: regoster <username> <email> <password>\r\n'
 			else:
-				print('Inserting...')
 				msg_suc = sql_register(msg_list, conn, c)
 		elif msg_list[0] == 'login':
 			if uid != -1:
@@ -214,7 +227,6 @@ def new_client(clientsocket, addr):
 			elif len(msg_list) != 3:
 				msg_suc = 'Usage: login <username> <password>\r\n'
 			elif len(msg_list) == 3 and uid == -1:
-				print('Logging...')
 				uid, msg_suc = sql_login(msg_list, c, uid)
 		elif msg_list[0] == 'logout':
 			if uid == -1:
@@ -238,7 +250,6 @@ def new_client(clientsocket, addr):
 			elif len(msg_list) != 2:
 				msg_suc = 'Usage: create-board <name>\r\n'
 			else:
-				print('creating board...')
 				msg_suc = sql_create_board(msg_list, conn, c, uid)
 		elif msg_list[0] == 'create-post':
 			if uid == -1:
@@ -255,7 +266,6 @@ def new_client(clientsocket, addr):
 					msg_suc = 'Usage: create-post <board-name> --title <title> --content <content>\r\n'
 				else:
 					data = [board_name, title, content]
-					print('creating post...')
 					msg_suc = sql_create_post(conn, c, uid, data)
 			else:
 				msg_suc = 'Usage: create-post <board-name> --title <title> --content <content>\r\n'
@@ -295,7 +305,6 @@ def new_client(clientsocket, addr):
 				msg_suc = 'Please login first.\r\n'
 			elif len(msg_list) == 2:
 				post_id = msg_list[1]
-				print('Deleting post...')
 				msg_suc = sql_delete_post(conn, c, uid, post_id)
 			else:
 				msg_suc = 'Usage: delete-post <post-id> \r\n'
@@ -350,6 +359,14 @@ def new_client(clientsocket, addr):
 				msg_suc = sql_list_mail(c, uid)
 			else:
 				msg_suc = 'Usage: list-mail \r\n'
+		elif msg_list[0] == 'retr-mail':
+			if uid == -1:
+				msg_suc = 'Please login first.\r\n'
+			elif len(msg_list) == 2 and msg_list[1].isdigit():
+				mail_id = msg_list[1]
+				msg_suc = sql_retr_mail(c, uid, mail_id)
+			else:
+				msg_suc = 'Usage: retr-mail <mail#> \r\n'
 		elif msg_list[0] == 'enter&&space':
 			msg_suc = ""
 			pass

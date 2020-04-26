@@ -37,6 +37,22 @@ def receive(len):
 		except:
 			pass
 
+def RetrMail(msg_in):
+	msg_in_split = msg_in.split('###')
+	tmp_bucket = s3.Bucket(msg_in_split[1])
+	mail_id_in_db = msg_in_split[2]
+	print(msg_in_split[0])
+
+	target_object1 = tmp_bucket.Object("m{}.txt".format(mail_id_in_db))
+	object_content = target_object.get()['Body'].read().decode()
+	print('    --')
+	object_content_list = object_content.split('<br>')
+	for i in object_content_list:
+		print('    {}'.format(i))
+	print("")
+	
+	msg_in = ""
+	return msg_in
 
 def SendMail(cmd_list, msg_in):
 	msg_in_split = msg_in.split('###')
