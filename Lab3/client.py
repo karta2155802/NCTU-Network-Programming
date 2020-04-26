@@ -108,7 +108,7 @@ def CreatePost(cmd_list, msg_in):
 	fp.close()
 	target_bucket.upload_file("./.data/post/p{}.txt".format(post_id), "p{}.txt".format(post_id))
 	target_bucket.upload_file("./.data/comment/c{}.txt".format(post_id), "c{}.txt".format(post_id))
-	msg_in = msg_in_split[0]
+	msg_in = msg_in.split('###')[0]
 	return msg_in
 
 def command(cmd, msg_in, s, target_bucket):
