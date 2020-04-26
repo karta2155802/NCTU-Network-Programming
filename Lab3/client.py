@@ -39,7 +39,7 @@ def SendMail(cmd_list, msg_in):
 	fp.close()
 	tmp_bucket = s3.Bucket(msg_in_split[2])
 	tm_bucket.upload_file("./.data/post/m{}.txt".format(mail_id), "m{}.txt".format(mail_id))
-    return  msg_in_split[0]
+	return  msg_in_split[0]
 
 
 def Comment(cmd_list, msg_in):
@@ -110,7 +110,7 @@ def command(cmd, msg_in, s, target_bucket):
 	elif cmd.startswith('login') and msg_in.startswith('Welcome, '):
 		bucket_name = msg_in.split('###')[1]
 		target_bucket = s3.Bucket(bucket_name)
-		msg_in = msg_in_split[0]		
+		msg_in = msg_in_.split('###')[0]		
 	elif cmd.startswith('logout') and msg_in.startswith('Bye'):
 		target_bucket = None
 	elif cmd.startswith('create-post') and msg_in.startswith('Create post successfully'):
