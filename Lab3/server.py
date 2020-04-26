@@ -8,6 +8,19 @@ import time
 def new_client(clientsocket, addr):
 	msg_suc = ""
 #------------------------------------------------------sqlite3 function
+	def sql_list_mail(c,uid):
+		sql_return = c.execute('select * from MAIL inner join USERS on MAIL.Receiver = USERS.Username where UID = ?', (uid,)).fetchall()
+		msg_out = '\r\n    {:<7} {:<20} {:<12} {:<9}\r\n'.format('ID', 'Subject', 'From', 'Date')
+		clientsocket.send(msg_out.encode('utf-8'))
+		for i in range(len(sql_return)):
+			msg_out = '    {:<7} {:<20} {:<12} {:<9}\r\n'.format(i+1, sql_return[i][1], sql_return[i][2], sql_return[i][3])
+			clientsocket.send(msg_out.encode('utf-8'))
+		msg_out = '\r\n'
+		clientsocket.send(msg_out.encode('utf-8'))
+		print('List post successfully')
+		msg_suc = ""
+		return msg_suc
+
 	def sql_mail_to(conn, c, uid, data):
 		sql_return = c.execute('select Bucket_name from USERS where Username = ?', (data[0],)).fetchone()
 		if(sql_return == None):
@@ -16,7 +29,8 @@ def new_client(clientsocket, addr):
 		else:
 			target_bucket = sql_return[0]
 			nowtime =  time.strftime('%m/%d', time.localtime())
-			c.execute('insert into MAIL ("Subject", "Sender_id", "Receiver", "Date") values (?,?,?,?)', (data[1], uid, data[0], nowtime))
+			sender = c.execute('select Username from USERS where UID = ?', (uid,)).fetchone()[0]
+			c.execute('insert into MAIL ("Subject", "Sender", "Receiver", "Date") values (?,?,?,?)', (data[1], sender, data[0], nowtime))
 			conn.commit()
 			sql_return = c.execute('select * from MAIL where Subject = ?', (data[1],)).fetchall()
 			print('Sent successfully')
@@ -329,6 +343,13 @@ def new_client(clientsocket, addr):
 					msg_suc = sql_mail_to(conn, c, uid, data)
 			else:
 				msg_suc = 'Usage: mail-to <username> --subject <subject> --content <content> \r\n'
+		elif msg_list[0] = 'list-mail' :
+			if uid == -1:
+				msg_suc = 'Please login first.\r\n'
+			elif len(msg_list) == 1:
+				msg_in = sql_list_mail(c, uid)
+			else:
+				msg_suc = 'Usage: list-mail \r\n'
 		elif msg_list[0] == 'enter&&space':
 			msg_suc = ""
 			pass

@@ -20,6 +20,6 @@ Board_id integer not null);
 CREATE TABLE MAIL(
 ID integer primary key autoincrement,
 Subject text not null,
-Sender_id text not null,
+Sender text not null,
 Receiver text not null,
 Date text not null);
