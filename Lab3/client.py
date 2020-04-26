@@ -180,3 +180,4 @@ while True:
 		msg_in, target_bucket = command(cmd, msg_in, s, target_bucket)
 		if msg_in != "":
 			print(msg_in ,end = "")
+			print(msg_in ,end = "")
