@@ -110,7 +110,7 @@ def command(cmd, msg_in, s, target_bucket):
 	elif cmd.startswith('login') and msg_in.startswith('Welcome, '):
 		bucket_name = msg_in.split('###')[1]
 		target_bucket = s3.Bucket(bucket_name)
-		msg_in = msg_in_.split('###')[0]		
+		msg_in = msg_in.split('###')[0]		
 	elif cmd.startswith('logout') and msg_in.startswith('Bye'):
 		target_bucket = None
 	elif cmd.startswith('create-post') and msg_in.startswith('Create post successfully'):
