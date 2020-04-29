@@ -52,7 +52,7 @@ def new_client(clientsocket, addr):
 		sql_return = c.execute('select Bucket_name from USERS where Username = ?', (data[0],)).fetchone()
 		if(sql_return == None):
 			print(data[0],'does not exist.')
-			msg_suc = data[0] + 'does not exist.\r\n'
+			msg_suc = data[0] + ' does not exist.\r\n'
 		else:
 			target_bucket = sql_return[0]
 			nowtime =  time.strftime('%m/%d', time.localtime())
