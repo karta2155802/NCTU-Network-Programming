@@ -190,7 +190,7 @@ def new_client(clientsocket, addr):
 		msg_list = msg_in.split();
 		if msg_list[0] == 'register':
 			if len(msg_list) != 4:
-				msg_suc = 'Usage: regoster <username> <email> <password>\r\n'
+				msg_suc = 'Usage: register <username> <email> <password>\r\n'
 			else:
 				print('Inserting...')
 				msg_suc = sql_register(msg_list, conn, c)

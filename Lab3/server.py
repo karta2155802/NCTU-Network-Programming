@@ -51,8 +51,8 @@ def new_client(clientsocket, addr):
 	def sql_mail_to(conn, c, uid, data):
 		sql_return = c.execute('select Bucket_name from USERS where Username = ?', (data[0],)).fetchone()
 		if(sql_return == None):
-			print('<username> does not exist.')
-			msg_suc = '<username> does not exist.\r\n'
+			print(data[0],'does not exist.')
+			msg_suc = data[0] + 'does not exist.\r\n'
 		else:
 			target_bucket = sql_return[0]
 			nowtime =  time.strftime('%m/%d', time.localtime())
