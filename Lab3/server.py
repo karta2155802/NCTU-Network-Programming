@@ -114,7 +114,7 @@ def new_client(clientsocket, addr):
 		return msg_suc
 
 	def sql_read_post(c, post_id):
-		sql_return = c.execute('select USERS.Username, POST.Title, POST.Date from POST inner join USERS on POST.Author_id = USERS.UID where POST.ID = ?', (post_id,)).fetchone()
+		sql_return = c.execute('select USERS.Username, POST.Title, POST.Date_for_post from POST inner join USERS on POST.Author_id = USERS.UID where POST.ID = ?', (post_id,)).fetchone()
 		if sql_return == None:
 			msg_suc = 'Post is not exist.\r\n'
 		else:
@@ -169,8 +169,9 @@ def new_client(clientsocket, addr):
 			msg_suc = 'Board is not exist.\r\n'
 		else:
 			board_id = sql_return[0]
-			nowtime =  time.strftime('%m/%d', time.localtime())
-			c.execute('insert into POST ("Title", "Author_id", "Date", "Board_id") values (?,?,?,?)', (data[1], uid, nowtime, board_id))
+			nowtime_for_board =  time.strftime('%m/%d', time.localtime())
+			nowtime_for_post =  time.strftime('%Y-%m-%d', time.localtime())
+			c.execute('insert into POST ("Title", "Author_id", "Date_for_board", "Board_id", "Date_for_post") values (?,?,?,?,?)', (data[1], uid, nowtime_for_board, board_id, nowtime_for_post))
 			conn.commit()
 			sql_return = c.execute('select * from POST where Title = ?', (data[1],)).fetchall()
 			print('Create post successfully')
