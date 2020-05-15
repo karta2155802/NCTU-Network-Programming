@@ -15,11 +15,13 @@ ID integer primary key autoincrement,
 Title text not null,
 Author_id integer not null,
 Date text not null,
-Board_id integer not null);
+Board_id integer not null,
+Date_with_year text not null);
 
 CREATE TABLE MAIL(
 ID integer primary key autoincrement,
 Subject text not null,
 Sender text not null,
 Receiver text not null,
-Date text not null);
+Date text not null,
+Date_with_year text not null);

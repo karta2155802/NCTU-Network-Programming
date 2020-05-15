@@ -28,7 +28,7 @@ def new_client(clientsocket, addr):
 			bucket_name = c.execute('select Bucket_name from USERS where UID = ?', (uid,)).fetchone()[0]
 			msg_out1 = '\r\n    {:<10}:{}\r\n'.format('Subject', sql_return[int(mail_id)-1][1])
 			msg_out2 = '    {:<10}:{}\r\n'.format('From', sql_return[int(mail_id)-1][2])
-			msg_out3 = '    {:<10}:{}'.format('Date', sql_return[int(mail_id)-1][4])
+			msg_out3 = '    {:<10}:{}'.format('Date', sql_return[int(mail_id)-1][5])
 			msg_out = msg_out1 + msg_out2 + msg_out3 + '###' + str(sql_return[int(mail_id)-1][0]) + '###' + bucket_name
 			clientsocket.send(msg_out.encode('utf-8'))			
 			print('Retr mail successfully')
@@ -56,8 +56,9 @@ def new_client(clientsocket, addr):
 		else:
 			target_bucket = sql_return[0]
 			nowtime =  time.strftime('%m/%d', time.localtime())
+			nowtime_year =  time.strftime('%Y-%m-%d', time.localtime())
 			sender = c.execute('select Username from USERS where UID = ?', (uid,)).fetchone()[0]
-			c.execute('insert into MAIL ("Subject", "Sender", "Receiver", "Date") values (?,?,?,?)', (data[1], sender, data[0], nowtime))
+			c.execute('insert into MAIL ("Subject", "Sender", "Receiver", "Date", "Date_with_year") values (?,?,?,?,?)', (data[1], sender, data[0], nowtime, nowtime_year))
 			conn.commit()
 			sql_return = c.execute('select * from MAIL where Subject = ?', (data[1],)).fetchall()
 			print('Sent successfully')
@@ -67,7 +68,7 @@ def new_client(clientsocket, addr):
 	def sql_update_post_title(conn, c, uid, post_id, update_data):
 		sql_return = c.execute('select Author_id from POST where ID = ?', (post_id,)).fetchone()	
 		if sql_return == None:
-			msg_suc = 'Post is not exist.\r\n'
+			msg_suc = 'Post does not exist.\r\n'
 		elif sql_return[0] != uid:
 			msg_suc = 'Not the post owner.\r\n'
 		else:
@@ -80,7 +81,7 @@ def new_client(clientsocket, addr):
 	def sql_update_post_content(conn, c, uid, post_id, update_data):
 		sql_return = c.execute('select Author_id from POST where ID = ?', (post_id,)).fetchone()
 		if sql_return == None:
-			msg_suc = 'Post is not exist.\r\n'
+			msg_suc = 'Post does not exist.\r\n'
 		elif sql_return[0] != uid:
 			msg_suc = 'Not the post owner.\r\n'
 		else:
@@ -91,7 +92,7 @@ def new_client(clientsocket, addr):
 	def sql_comment(conn, c , uid, post_id, comment):
 		sql_return = c.execute('select ID from POST where ID = ?', (post_id,)).fetchone()
 		if sql_return == None:
-			msg_suc = 'Post is not exist.\r\n'
+			msg_suc = 'Post does not exist.\r\n'
 		else:
 			author_id = c.execute('select Author_id from POST where ID = ?', (post_id,)).fetchone()[0]
 			bucket_name = c.execute('select Bucket_name from USERS where UID = ?', (author_id,)).fetchone()[0]
@@ -103,7 +104,7 @@ def new_client(clientsocket, addr):
 	def sql_delete_post(conn, c, uid, post_id):
 		sql_return = c.execute('select Author_id from POST where ID = ?', (post_id,)).fetchone()
 		if sql_return == None:
-			msg_suc = 'Post is not exist.\r\n'
+			msg_suc = 'Post does not exist.\r\n'
 		elif sql_return[0] != uid:
 			msg_suc = 'Not the post owner.\r\n'
 		else:
@@ -114,9 +115,9 @@ def new_client(clientsocket, addr):
 		return msg_suc
 
 	def sql_read_post(c, post_id):
-		sql_return = c.execute('select USERS.Username, POST.Title, POST.Date_for_post from POST inner join USERS on POST.Author_id = USERS.UID where POST.ID = ?', (post_id,)).fetchone()
+		sql_return = c.execute('select USERS.Username, POST.Title, POST.Date_with_year from POST inner join USERS on POST.Author_id = USERS.UID where POST.ID = ?', (post_id,)).fetchone()
 		if sql_return == None:
-			msg_suc = 'Post is not exist.\r\n'
+			msg_suc = 'Post does not exist.\r\n'
 		else:
 			bucket_name = c.execute('select Bucket_name from USERS where Username = ?', (sql_return[0],)).fetchone()[0]
 			msg_out1 = '\r\n    {:<10}:{}\r\n'.format('Author', sql_return[0])
@@ -136,7 +137,7 @@ def new_client(clientsocket, addr):
 			board_id = sql_return[0]
 			print('board_id =', board_id)
 			c.execute('PRAGMA case_sensitive_like = 1')
-			sql_return_post = c.execute('select POST.ID, POST.Title, USERS.Username, POST.Date_for_board from POST inner join USERS on POST.Author_id = USERS.UID where Board_id = ? and POST.Title like ?', (board_id, keyword))
+			sql_return_post = c.execute('select POST.ID, POST.Title, USERS.Username, POST.Date from POST inner join USERS on POST.Author_id = USERS.UID where Board_id = ? and POST.Title like ?', (board_id, keyword))
 			msg_out = '\r\n    {:<7} {:<20} {:<12} {:<9}\r\n'.format('ID', 'Title', 'Author', 'Date')
 			clientsocket.send(msg_out.encode('utf-8'))
 			for row in sql_return_post:
@@ -169,9 +170,9 @@ def new_client(clientsocket, addr):
 			msg_suc = 'Board is not exist.\r\n'
 		else:
 			board_id = sql_return[0]
-			nowtime_for_board =  time.strftime('%m/%d', time.localtime())
-			nowtime_for_post =  time.strftime('%Y-%m-%d', time.localtime())
-			c.execute('insert into POST ("Title", "Author_id", "Date_for_board", "Board_id", "Date_for_post") values (?,?,?,?,?)', (data[1], uid, nowtime_for_board, board_id, nowtime_for_post))
+			nowtime =  time.strftime('%m/%d', time.localtime())
+			nowtime_year =  time.strftime('%Y-%m-%d', time.localtime())
+			c.execute('insert into POST ("Title", "Author_id", "Date", "Board_id", "Date_with_year") values (?,?,?,?,?)', (data[1], uid, nowtime, board_id, nowtime_year))
 			conn.commit()
 			sql_return = c.execute('select * from POST where Title = ?', (data[1],)).fetchall()
 			print('Create post successfully')
