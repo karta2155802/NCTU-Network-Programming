@@ -136,7 +136,7 @@ def new_client(clientsocket, addr):
 			board_id = sql_return[0]
 			print('board_id =', board_id)
 			c.execute('PRAGMA case_sensitive_like = 1')
-			sql_return_post = c.execute('select POST.ID, POST.Title, USERS.Username, POST.Date from POST inner join USERS on POST.Author_id = USERS.UID where Board_id = ? and POST.Title like ?', (board_id, keyword))
+			sql_return_post = c.execute('select POST.ID, POST.Title, USERS.Username, POST.Date_for_board from POST inner join USERS on POST.Author_id = USERS.UID where Board_id = ? and POST.Title like ?', (board_id, keyword))
 			msg_out = '\r\n    {:<7} {:<20} {:<12} {:<9}\r\n'.format('ID', 'Title', 'Author', 'Date')
 			clientsocket.send(msg_out.encode('utf-8'))
 			for row in sql_return_post:
