@@ -132,7 +132,7 @@ def new_client(clientsocket, addr):
 	def sql_list_post(c, board_name, keyword):
 		sql_return = c.execute('select BOARD.ID from BOARD where BOARD.Name = ?', (board_name,)).fetchone()
 		if sql_return == None:
-			msg_suc = 'Board is not exist.\r\n'
+			msg_suc = 'Board does not exist.\r\n'
 		else:
 			board_id = sql_return[0]
 			print('board_id =', board_id)
@@ -166,8 +166,8 @@ def new_client(clientsocket, addr):
 	def sql_create_post(conn, c, uid, data):
 		sql_return = c.execute('select * from BOARD where Name = ?', (data[0],)).fetchone()
 		if(sql_return == None):
-			print('Board is not exist')
-			msg_suc = 'Board is not exist.\r\n'
+			print('Board does not exist')
+			msg_suc = 'Board does not exist.\r\n'
 		else:
 			board_id = sql_return[0]
 			nowtime =  time.strftime('%m/%d', time.localtime())
@@ -187,8 +187,8 @@ def new_client(clientsocket, addr):
 			print('Create board successfully')
 			msg_suc = 'Create board successfully.\r\n'
 		else:
-			print('Board is already exist')
-			msg_suc = 'Board is already exist.\r\n'
+			print('Board already exist')
+			msg_suc = 'Board already exist.\r\n'
 		return msg_suc
 
 	def sql_whoami(c, uid):
