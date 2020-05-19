@@ -22,6 +22,7 @@ def new_client(clientsocket, addr):
 				return "Send_suc"
 			except:
 				pass
+				
 	def sql_delete_mail(conn, c, uid, mail_id):
 		sql_return = c.execute('select * from MAIL inner join USERS on MAIL.Receiver = USERS.Username where UID = ?', (uid,)).fetchall()
 		if len(sql_return) < int(mail_id):
