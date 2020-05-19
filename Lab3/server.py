@@ -11,14 +11,14 @@ def new_client(clientsocket, addr):
 	def RECEIVE():
 		while True:
 			try:
-				msg_in = clientSocket.recv(1024).decode('utf-8')
+				msg_in = clientsocket.recv(1024).decode('utf-8')
 				return msg_in
 			except:
 				pass  
 	def SEND(msg):
 		while True:
 			try:
-				clientSocket.send(msg.encode('utf-8'))
+				clientsocket.send(msg.encode('utf-8'))
 				return "Send_suc"
 			except:
 				pass
