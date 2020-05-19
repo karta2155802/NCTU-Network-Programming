@@ -10,11 +10,11 @@ def new_client(clientsocket, addr):
 #------------------------------------------------------sqlite3 function
 	def RECEIVE():
 		while True:
-		    try:
-		        msg_in = ClientSocket.recv(1024).decode('utf-8')
-		    	return msg_in
-		    except:
-		    	pass  
+			try:
+				msg_in = ClientSocket.recv(1024).decode('utf-8')
+				return msg_in
+			except:
+				pass  
 	def SEND(msg):
 		while True:
 			try:
