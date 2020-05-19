@@ -396,7 +396,8 @@ def new_client(clientsocket, addr):
 		print('')
 		return uid, msg_suc
 #-------------------------------------------------------------
-
+	
+	clientsocket.setblocking(0)
 	conn = sqlite3.connect('Database.db')
 	c = conn.cursor()
 	print('Sql Connection Succeed')
@@ -412,7 +413,7 @@ def new_client(clientsocket, addr):
 
 		msg_in = msg_in.replace('\r','').replace('\n','')			
 		print('msg_in = ',msg_in)
-		if msg_in == 'exit':
+		if msg_in.startswith("exit"):
 			clientsocket.close()
 			break		
 		elif not msg_in or len(msg_in.split()) == 0:
