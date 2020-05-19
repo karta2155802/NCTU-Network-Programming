@@ -151,11 +151,11 @@ def new_client(clientsocket, addr):
 
 	def sql_list_board(c, keyword):
 		c.execute('PRAGMA case_sensitive_like = 1')
-		sql_return = c.execute('select BOARD.ID, BOARD.Name, USERS.Username from BOARD inner join USERS on BOARD.Moderator_id = USERS.UID where BOARD.Name like ?', (keyword,))
+		sql_return = c.execute('select BOARD.ID, BOARD.Name, USERS.Username from BOARD inner join USERS on BOARD.Moderator_id = USERS.UID where BOARD.Name like ?', (keyword,)).fetchall()
 		msg_out = '\r\n    {:<7} {:^20} {:^20}\r\n'.format('Index', 'Name', 'Moderator')
 		clientsocket.send(msg_out.encode('utf-8'))
-		for row in sql_return:
-			msg_out = '    {:<7} {:^20} {:^20}\r\n'.format(row[0], row[1], row[2])
+		for i in range(len(sql_return)):
+			msg_out = '    {:<7} {:^20} {:^20}\r\n'.format(i+1, sql_return[i][1], sql_return[i][2])
 			clientsocket.send(msg_out.encode('utf-8'))
 		msg_out = '\r\n'
 		clientsocket.send(msg_out.encode('utf-8'))
