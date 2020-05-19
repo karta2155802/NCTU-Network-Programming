@@ -8,6 +8,13 @@ import time
 def new_client(clientsocket, addr):
 	msg_suc = ""
 #------------------------------------------------------sqlite3 function
+	def RECEIVE():
+		while True:
+		    try:
+		        msg_in = ClientSocket.recv(1024).decode('utf-8')
+		    	return msg_in
+		    except:
+		    	pass  
 	def SEND(msg):
 		while True:
 			try:
@@ -416,7 +423,7 @@ def new_client(clientsocket, addr):
 	while True:
 		msg_out = '% '
 		SEND(msg_out)
-		msg_in = clientsocket.recv(1024).decode('utf-8')	
+		msg_in = RECEIVE()	
 
 		msg_in = msg_in.replace('\r','').replace('\n','')			
 		print('msg_in = ',msg_in)
