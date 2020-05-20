@@ -136,10 +136,10 @@ def new_client(clientsocket, addr):
 			c.execute('PRAGMA case_sensitive_like = 1')
 			sql_return_post = c.execute('select POST.ID, POST.Title, USERS.Username, POST.Date from POST inner join USERS on POST.Author_id = USERS.UID where Board_id = ? and POST.Title like ?', (board_id, keyword))
 			msg_out = '    {:<7} {:<20} {:<12} {:<9}\r\n'.format('ID', 'Title', 'Author', 'Date')
-			#clientsocket.send(msg_out.encode('utf-8'))
-			for row in sql_return_post:
-				msg_out = msg_out + '    {:<7} {:<20} {:<12} {:<9}\r\n'.format(row[0], row[1], row[2], row[3])
 			clientsocket.send(msg_out.encode('utf-8'))
+			for row in sql_return_post:
+				msg_out = '    {:<7} {:<20} {:<12} {:<9}\r\n'.format(row[0], row[1], row[2], row[3])
+				clientsocket.send(msg_out.encode('utf-8'))
 			print('List post successfully')
 			msg_suc = ""
 		return msg_suc
@@ -148,10 +148,10 @@ def new_client(clientsocket, addr):
 		c.execute('PRAGMA case_sensitive_like = 1')
 		sql_return = c.execute('select BOARD.ID, BOARD.Name, USERS.Username from BOARD inner join USERS on BOARD.Moderator_id = USERS.UID where BOARD.Name like ?', (keyword,)).fetchall()
 		msg_out = '    {:<7} {:^20} {:^20}\r\n'.format('Index', 'Name', 'Moderator')
-		#clientsocket.send(msg_out.encode('utf-8'))
-		for i in range(len(sql_return)):
-			msg_out =msg_out + '    {:<7} {:^20} {:^20}\r\n'.format(i+1, sql_return[i][1], sql_return[i][2])
 		clientsocket.send(msg_out.encode('utf-8'))
+		for i in range(len(sql_return)):
+			msg_out = '    {:<7} {:^20} {:^20}\r\n'.format(i+1, sql_return[i][1], sql_return[i][2])
+			clientsocket.send(msg_out.encode('utf-8'))
 		print('List board successfully')
 		msg_suc = ""
 		return msg_suc
@@ -404,15 +404,12 @@ def new_client(clientsocket, addr):
 		print('msg_in = ',msg_in)
 		if msg_in == 'exit':
 			clientsocket.close()
-			break
-		elif not msg_in or len(msg_in.split()) == 0:
-			break
+			break		
 		else:				
 			uid, msg_suc = string_processing(msg_in, conn, c, uid)
 			if msg_suc != "":
 				clientsocket.send(msg_suc.encode('utf-8'))
 				msg_suc = ""
-		clientsocket.close()
 
 
 		
