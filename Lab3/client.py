@@ -81,7 +81,7 @@ def Comment(cmd_list, msg_in):
 	name = msg_in_split[2]
 	comment = ' '.join(cmd_list[2:len(cmd_list)])
 	fp = open("./.data/comment/c{}.txt".format(cmd_list[1]), "a")
-	fp.write('    {}: {}\n'.format(name, comment))
+	fp.write('    {}:{}\n'.format(name, comment))
 	fp.close()
 
 	tmp_bucket = s3.Bucket(msg_in_split[1])
