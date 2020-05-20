@@ -181,13 +181,8 @@ s.setblocking(0)
 mkdir()
 
 while True:
-	#msg_in = receive(8192);	
-	#print(msg_in ,end = "")
-	print('% ')
-	cmd = input()
+	cmd = input("% ")
 	if not cmd or len(cmd.split()) == 0:
-		#cmd = 'enter&&space'
-		#s.send(cmd.encode('utf-8'))
 		pass
 	else:
 		s.send(cmd.encode('utf-8'))
