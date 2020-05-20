@@ -29,18 +29,11 @@ def mkdir():
     except FileExistsError:
     	pass
 
-def RECEIVE():
+def receive(len):
 	while True:
 		try:
-			msg_in = s.recv(1024).decode('utf-8')
+			msg_in = s.recv(len).decode('utf-8')
 			return msg_in
-		except:
-			pass  
-def SEND(msg):
-	while True:
-		try:
-			s.send(msg.encode('utf-8'))
-			return "Send_suc"
 		except:
 			pass
 
@@ -182,20 +175,20 @@ dst_ip = str(sys.argv[1])
 port = int(sys.argv[2])
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((dst_ip, port))
-msg_in = RECEIVE
+msg_in = s.recv(1024).decode('utf-8')
 print(msg_in,end = "")
 s.setblocking(0)
 mkdir()
 
 while True:
-	msg_in = RECEIVE	
+	msg_in = receive(8192);	
 	print(msg_in ,end = "")
 	cmd = input()
 	if not cmd or len(cmd.split()) == 0:
 		cmd = 'enter&&space'
-		SEND(cmd)
+		s.send(cmd.encode('utf-8'))
 	else:
-		SEND(cmd)
+		s.send(cmd.encode('utf-8'))
 		msg_in = receive(8192);
 		msg_in, target_bucket = command(cmd, msg_in, s, target_bucket)
 		if msg_in != "":

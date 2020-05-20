@@ -8,21 +8,6 @@ import time
 def new_client(clientsocket, addr):
 	msg_suc = ""
 #------------------------------------------------------sqlite3 function
-	def RECEIVE():
-		while True:
-			try:
-				msg_in = clientsocket.recv(1024).decode('utf-8')
-				return msg_in
-			except:
-				pass  
-	def SEND(msg):
-		while True:
-			try:
-				clientsocket.send(msg.encode('utf-8'))
-				return "Send_suc"
-			except:
-				pass
-
 	def sql_delete_mail(conn, c, uid, mail_id):
 		sql_return = c.execute('select * from MAIL inner join USERS on MAIL.Receiver = USERS.Username where UID = ?', (uid,)).fetchall()
 		if len(sql_return) < int(mail_id):
@@ -41,24 +26,22 @@ def new_client(clientsocket, addr):
 			msg_suc = 'No such mail.\r\n'
 		else:
 			bucket_name = c.execute('select Bucket_name from USERS where UID = ?', (uid,)).fetchone()[0]
-			msg_out1 = '\r\n    {:<10}:{}\r\n'.format('Subject', sql_return[int(mail_id)-1][1])
+			msg_out1 = '    {:<10}:{}\r\n'.format('Subject', sql_return[int(mail_id)-1][1])
 			msg_out2 = '    {:<10}:{}\r\n'.format('From', sql_return[int(mail_id)-1][2])
 			msg_out3 = '    {:<10}:{}'.format('Date', sql_return[int(mail_id)-1][5])
 			msg_out = msg_out1 + msg_out2 + msg_out3 + '###' + str(sql_return[int(mail_id)-1][0]) + '###' + bucket_name
-			SEND(msg_out)
+			clientsocket.send(msg_out.encode('utf-8'))			
 			print('Retr mail successfully')
 			msg_suc = ""
 		return msg_suc
 
 	def sql_list_mail(c,uid):
 		sql_return = c.execute('select * from MAIL inner join USERS on MAIL.Receiver = USERS.Username where UID = ?', (uid,)).fetchall()
-		msg_out = '\r\n    {:<7} {:<20} {:<12} {:<9}\r\n'.format('ID', 'Subject', 'From', 'Date')
-		SEND(msg_out)
+		msg_out = '    {:<7} {:<20} {:<12} {:<9}\r\n'.format('ID', 'Subject', 'From', 'Date')
+		clientsocket.send(msg_out.encode('utf-8'))
 		for i in range(len(sql_return)):
 			msg_out = '    {:<7} {:<20} {:<12} {:<9}\r\n'.format(i+1, sql_return[i][1], sql_return[i][2], sql_return[i][4])
-			SEND(msg_out)
-		msg_out = '\r\n'
-		SEND(msg_out)
+			clientsocket.send(msg_out.encode('utf-8'))
 		print('List mail successfully')
 		msg_suc = ""
 		return msg_suc
@@ -135,11 +118,11 @@ def new_client(clientsocket, addr):
 			msg_suc = 'Post does not exist.\r\n'
 		else:
 			bucket_name = c.execute('select Bucket_name from USERS where Username = ?', (sql_return[0],)).fetchone()[0]
-			msg_out1 = '\r\n    {:<10}:{}\r\n'.format('Author', sql_return[0])
+			msg_out1 = '    {:<10}:{}\r\n'.format('Author', sql_return[0])
 			msg_out2 = '    {:<10}:{}\r\n'.format('Title', sql_return[1])
 			msg_out3 = '    {:<10}:{}'.format('Date', sql_return[2])
 			msg_out = msg_out1 + msg_out2 + msg_out3 + '###' + bucket_name
-			SEND(msg_out)		
+			clientsocket.send(msg_out.encode('utf-8'))			
 			print('Read post successfully')
 			msg_suc = ""
 		return msg_suc
@@ -153,13 +136,11 @@ def new_client(clientsocket, addr):
 			print('board_id =', board_id)
 			c.execute('PRAGMA case_sensitive_like = 1')
 			sql_return_post = c.execute('select POST.ID, POST.Title, USERS.Username, POST.Date from POST inner join USERS on POST.Author_id = USERS.UID where Board_id = ? and POST.Title like ?', (board_id, keyword))
-			msg_out = '\r\n    {:<7} {:<20} {:<12} {:<9}\r\n'.format('ID', 'Title', 'Author', 'Date')
-			SEND(msg_out)
+			msg_out = '    {:<7} {:<20} {:<12} {:<9}\r\n'.format('ID', 'Title', 'Author', 'Date')
+			clientsocket.send(msg_out.encode('utf-8'))
 			for row in sql_return_post:
 				msg_out = '    {:<7} {:<20} {:<12} {:<9}\r\n'.format(row[0], row[1], row[2], row[3])
-				SEND(msg_out)
-			msg_out = '\r\n'
-			SEND(msg_out)
+				clientsocket.send(msg_out.encode('utf-8'))
 			print('List post successfully')
 			msg_suc = ""
 		return msg_suc
@@ -167,13 +148,11 @@ def new_client(clientsocket, addr):
 	def sql_list_board(c, keyword):
 		c.execute('PRAGMA case_sensitive_like = 1')
 		sql_return = c.execute('select BOARD.ID, BOARD.Name, USERS.Username from BOARD inner join USERS on BOARD.Moderator_id = USERS.UID where BOARD.Name like ?', (keyword,)).fetchall()
-		msg_out = '\r\n    {:<7} {:^20} {:^20}\r\n'.format('Index', 'Name', 'Moderator')
-		SEND(msg_out)
+		msg_out = '    {:<7} {:^20} {:^20}\r\n'.format('Index', 'Name', 'Moderator')
+		clientsocket.send(msg_out.encode('utf-8'))
 		for i in range(len(sql_return)):
 			msg_out = '    {:<7} {:^20} {:^20}\r\n'.format(i+1, sql_return[i][1], sql_return[i][2])
-			SEND(msg_out)
-		msg_out = '\r\n'
-		SEND(msg_out)
+			clientsocket.send(msg_out.encode('utf-8'))
 		print('List board successfully')
 		msg_suc = ""
 		return msg_suc
@@ -411,34 +390,33 @@ def new_client(clientsocket, addr):
 		print('')
 		return uid, msg_suc
 #-------------------------------------------------------------
-	
-	clientsocket.setblocking(0)
+
 	conn = sqlite3.connect('Database.db')
 	c = conn.cursor()
 	print('Sql Connection Succeed')
 	msg_out = '********************************\r\n' + '** Welcome to the BBS server. **\r\n' + '********************************\r\n'
 
-	SEND(msg_out)
+	clientsocket.send(msg_out.encode('utf-8'))
 	uid = -1
 
 	while True:
 		msg_out = '% '
-		SEND(msg_out)
-		msg_in = RECEIVE()	
+		clientsocket.send(msg_out.encode('utf-8'))
+		msg_in = clientsocket.recv(1024).decode('utf-8')	
 
 		msg_in = msg_in.replace('\r','').replace('\n','')			
 		print('msg_in = ',msg_in)
-		if msg_in.startswith("exit"):
+		if msg_in == 'exit':
 			clientsocket.close()
 			break		
 		elif not msg_in or len(msg_in.split()) == 0:
-			pass
+			break
 		else:				
 			uid, msg_suc = string_processing(msg_in, conn, c, uid)
 			if msg_suc != "":
-				SEND(msg_suc)
+				clientsocket.send(msg_suc.encode('utf-8'))
 				msg_suc = ""
-	# clientsocket.close()
+	clientsocket.close()
 
 		
 bind_ip = "0.0.0.0"
