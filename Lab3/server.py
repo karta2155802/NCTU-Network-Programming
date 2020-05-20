@@ -42,6 +42,8 @@ def new_client(clientsocket, addr):
 		for i in range(len(sql_return)):
 			msg_out = '    {:<7} {:<20} {:<12} {:<9}\r\n'.format(i+1, sql_return[i][1], sql_return[i][2], sql_return[i][4])
 			clientsocket.send(msg_out.encode('utf-8'))
+		msg_out = ''
+		clientsocket.send(msg_out.encode('utf-8'))
 		print('List mail successfully')
 		msg_suc = ""
 		return msg_suc
@@ -141,6 +143,8 @@ def new_client(clientsocket, addr):
 			for row in sql_return_post:
 				msg_out = '    {:<7} {:<20} {:<12} {:<9}\r\n'.format(row[0], row[1], row[2], row[3])
 				clientsocket.send(msg_out.encode('utf-8'))
+			msg_out = ''
+			clientsocket.send(msg_out.encode('utf-8'))
 			print('List post successfully')
 			msg_suc = ""
 		return msg_suc
@@ -153,6 +157,8 @@ def new_client(clientsocket, addr):
 		for i in range(len(sql_return)):
 			msg_out = '    {:<7} {:^20} {:^20}\r\n'.format(i+1, sql_return[i][1], sql_return[i][2])
 			clientsocket.send(msg_out.encode('utf-8'))
+		msg_out = ''
+		clientsocket.send(msg_out.encode('utf-8'))
 		print('List board successfully')
 		msg_suc = ""
 		return msg_suc
