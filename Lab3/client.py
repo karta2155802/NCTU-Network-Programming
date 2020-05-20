@@ -152,7 +152,7 @@ def command(cmd, msg_in, s, target_bucket):
 		msg_in = CreatePost(cmd_list, msg_in)		
 	elif cmd.startswith('delete-post') and msg_in == 'Delete successfully.\r\n':
 		DeletePost(cmd_list)
-	elif cmd.startswith('read') and not (msg_in == 'Post is not exist.\r\n' or msg_in == 'Usage: read <post-id> \r\n'):
+	elif cmd.startswith('read') and not (msg_in == 'Post does not exist.\r\n' or msg_in == 'Usage: read <post-id> \r\n'):
 		msg_in = ReadPost(cmd_list, msg_in)
 	elif cmd.startswith('update-post') and '--content' in cmd and msg_in == 'Update successfully.\r\n':
 		UpdatePost(cmd_list, msg_in)
