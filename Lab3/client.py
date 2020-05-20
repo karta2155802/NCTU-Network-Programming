@@ -6,6 +6,15 @@ import os
 
 s3 = boto3.resource('s3')
 target_bucket = None
+def CmdLine():
+    cmd = input("% ")
+    test = cmd.replace(' ', '')
+    while test == "":
+        cmd = input("% ")
+        test = cmd.replace(' ', '')
+    #SEND(CMD = cmd)
+    return cmd
+
 
 def mkdir():
     Pdata = "./.data"
@@ -190,13 +199,13 @@ mkdir()
 while True:
 	msg_in = RECEIVE	
 	print(msg_in ,end = "")
-	cmd = input()
-	if not cmd or len(cmd.split()) == 0:
+	cmd = CmdLine()
+	if 0:
 		cmd = 'enter&&space'
-		SEND(cmd)
+		# SEND(cmd)
 	else:
 		SEND(cmd)
-		msg_in = receive(8192);
+		msg_in = RECEIVE();
 		msg_in, target_bucket = command(cmd, msg_in, s, target_bucket)
 		if msg_in != "":
 			print(msg_in ,end = "")

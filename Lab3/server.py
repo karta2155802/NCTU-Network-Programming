@@ -431,14 +431,14 @@ def new_client(clientsocket, addr):
 		if msg_in.startswith("exit"):
 			clientsocket.close()
 			break		
-		elif not msg_in or len(msg_in.split()) == 0:
-			pass
+		#elif not msg_in or len(msg_in.split()) == 0:
+		#	break		
 		else:				
 			uid, msg_suc = string_processing(msg_in, conn, c, uid)
 			if msg_suc != "":
 				SEND(msg_suc)
 				msg_suc = ""
-	# clientsocket.close()
+	print("i break i break")# clientsocket.close()
 
 		
 bind_ip = "0.0.0.0"
