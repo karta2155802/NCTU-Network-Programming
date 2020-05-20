@@ -59,7 +59,6 @@ def RetrMail(msg_in):
 	object_content_list = object_content.split('<br>')
 	for i in object_content_list:
 		print('    {}'.format(i))
-	print("")
 
 	msg_in = ""
 	return msg_in
@@ -112,7 +111,7 @@ def ReadPost(cmd_list, msg_in):
 	for i in object_content_list:
 		print('    {}'.format(i))
 	print('    --')
-	print(object_comment)
+	print(object_comment, end='')
 	msg_in = ""
 	return msg_in
 
