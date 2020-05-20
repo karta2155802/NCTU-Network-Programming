@@ -406,8 +406,8 @@ def new_client(clientsocket, addr):
 	uid = -1
 
 	while True:
-		msg_out = '% '
-		clientsocket.send(msg_out.encode('utf-8'))
+		#msg_out = '% '
+		#clientsocket.send(msg_out.encode('utf-8'))
 		msg_in = clientsocket.recv(1024).decode('utf-8')	
 
 		msg_in = msg_in.replace('\r','').replace('\n','')			
@@ -415,14 +415,14 @@ def new_client(clientsocket, addr):
 		if msg_in == 'exit':
 			clientsocket.close()
 			break		
-		elif not msg_in or len(msg_in.split()) == 0:
-			break
+		#elif not msg_in or len(msg_in.split()) == 0:
+		#	break
 		else:				
 			uid, msg_suc = string_processing(msg_in, conn, c, uid)
 			if msg_suc != "":
 				clientsocket.send(msg_suc.encode('utf-8'))
 				msg_suc = ""
-	clientsocket.close()
+	print("i am break")#clientsocket.close()
 
 		
 bind_ip = "0.0.0.0"
