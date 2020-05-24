@@ -1,0 +1,27 @@
+CREATE TABLE USERS(
+UID integer primary key autoincrement,
+Username text not null unique,
+Email text not null,
+Password text not null,
+Bucket_name text not null);
+
+CREATE TABLE BOARD(
+ID integer primary key autoincrement,
+Name text not null unique,
+Moderator_id integer not null);
+
+CREATE TABLE POST(
+ID integer primary key autoincrement,
+Title text not null,
+Author_id integer not null,
+Date text not null,
+Board_id integer not null,
+Date_with_year text not null);
+
+CREATE TABLE MAIL(
+ID integer primary key autoincrement,
+Subject text not null,
+Sender text not null,
+Receiver text not null,
+Date text not null,
+Date_with_year text not null);
