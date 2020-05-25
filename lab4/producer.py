@@ -9,6 +9,7 @@ while True:
     msg = "producer1+%d" % i
     print(msg)
     producer.send('test', msg.encode('utf-8'))  # 引數為主題和bytes資料
+    producer.send('test2', msg.encode('utf-8'))
     time.sleep(1)
 
 producer.close()
