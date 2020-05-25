@@ -8,6 +8,7 @@ def consume():
         for message in consumer:
             print("%s:%d:%d: key=%s value=%s" % (message.topic, message.partition,message.offset, message.key,message.value))
 
+       
 t = threading.Thread(target = consume)
 t.start()
 t.setdaemon(True)
