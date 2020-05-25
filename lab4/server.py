@@ -8,6 +8,16 @@ import time
 def new_client(clientsocket, addr):
 	msg_suc = ""
 #------------------------------------------------------sqlite3 function
+	def sql_subscribe_board(conn, c, uid, msg_list):
+		sql_return = c.execute('select * from SUB_BOARD where Board_name = ? and Keyword = ?', (msg_list[2],msg_list[4])).fetchone()
+		if sql_return != None:
+			msg_suc = 'Already subscribed\r\n'
+		else:
+			c.execute('insert into SUB_BOARD ("Board_name", "Keyword", "Subscriber_id") values (?,?,?)', (msg_list[2], msg_list[4], uid))
+			conn.commit()
+			print('Subscribe successfully')
+			msg_suc = 'Subscribe successfully\r\n' + '###' + msg_list[2] + '-' + msg_list[4]
+		return msg_suc
 	def sql_delete_mail(conn, c, uid, mail_id):
 		sql_return = c.execute('select * from MAIL inner join USERS on MAIL.Receiver = USERS.Username where UID = ?', (uid,)).fetchall()
 		if len(sql_return) < int(mail_id):
@@ -379,6 +389,18 @@ def new_client(clientsocket, addr):
 				msg_suc = sql_delete_mail(conn, c, uid, mail_id)
 			else:
 				msg_suc = 'Usage: delete-mail <mail#> \r\n'
+
+		elif msg_list[0] = 'subscribe':
+			if uid == -1:
+				msg_suc = 'Please login first.\r\n'
+			elif len(msg_list) > 4 and msg_list[1] == '--board' and msg_list[3] = '--keyword':
+				msg_suc = sql_subscribe_board(conn, c, uid, msg_list)
+			elif len(msg_list) > 4 and msg_list[1] == '--author' and msg_list[3] = '--keyword':
+
+			else:
+				msg_suc = 'Usage: subscribe --board <board-name>/--author <author_name> --keyword <keyword> \r\n'
+
+
 		elif msg_list[0] == 'enter&&space':
 			msg_suc = ""
 			pass
@@ -418,6 +440,7 @@ serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 serversocket.bind((bind_ip, port))
 serversocket.listen(20)
 print('Waiting for connection...')
+producer = KafkaProducer(bootstrap_servers=['127.0.0.1:9092'])
 
 while True:
 	clientsocket, addr = serversocket.accept();

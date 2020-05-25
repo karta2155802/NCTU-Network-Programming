@@ -6,7 +6,7 @@ import time
 def consume():
     while True:
         consumer = KafkaConsumer(group_id = 'B',bootstrap_servers=['127.0.0.1:9092'])
-        consumer.subscribe(topics=('test'))  #訂閱要消費的主題
+        #consumer.subscribe(topics=('test'))  #訂閱要消費的主題
         for message in consumer:
             print("%s:%d:%d: key=%s value=%s" % (message.topic, message.partition,message.offset, message.key,message.value))
 

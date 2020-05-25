@@ -6,6 +6,14 @@ import os
 
 s3 = boto3.resource('s3')
 target_bucket = None
+t = None
+consumer = None
+
+def consume(consumer):
+	while True:
+		for message in consumer:
+			print("%s:%d:%d: key=%s value=%s" % (message.topic, message.partition,message.offset, message.key,message.value))
+
 
 def mkdir():
     Pdata = "./.data"
@@ -36,6 +44,12 @@ def receive(len):
 			return msg_in
 		except:
 			pass
+
+def Subscribe(msg_in):
+	msg_in_split = msg_in.splite('###')
+	consumer.subscribe(topics=(msg_in_split[1]))
+	msg_in = msg_in_split[0]
+	return msg_in
 
 def DeleteMail(msg_in):
 	msg_in_split = msg_in.split('###')
@@ -144,9 +158,17 @@ def command(cmd, msg_in, s, target_bucket):
 	elif cmd.startswith('login') and msg_in.startswith('Welcome, '):
 		bucket_name = msg_in.split('###')[1]
 		target_bucket = s3.Bucket(bucket_name)
-		msg_in = msg_in.split('###')[0]		
+		msg_in = msg_in.split('###')[0]
+
+		global t,consumer
+		consumer = KafkaConsumer(group_id = bucket_name,bootstrap_servers=['127.0.0.1:9092'])
+		t = threading.Thread(target = consume, args = (consumer,))
+		t.start()
 	elif cmd.startswith('logout') and msg_in.startswith('Bye'):
 		target_bucket = None
+		global t, consumer
+		t.stop()
+		consumer = None
 	elif cmd.startswith('create-post') and msg_in.startswith('Create post successfully'):
 		msg_in = CreatePost(cmd_list, msg_in)		
 	elif cmd.startswith('delete-post') and msg_in == 'Delete successfully.\r\n':
@@ -163,6 +185,8 @@ def command(cmd, msg_in, s, target_bucket):
 		msg_in = RetrMail(msg_in)
 	elif cmd.startswith('delete-mail') and msg_in.startswith('Mail deleted'):
 		msg_in = DeleteMail(msg_in)	
+	elif cmd.startswith('subscribe') and msg_in.startswith('Subscribe successfully'):
+		msg_in = Subscribe(msg_in)
 	elif cmd == 'exit':
 		sys.exit()
 	else:
