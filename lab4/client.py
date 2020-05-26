@@ -6,7 +6,7 @@ import os
 
 s3 = boto3.resource('s3')
 target_bucket = None
-
+uid = -1
 t = None
 consumer = None
 
@@ -152,7 +152,7 @@ def CreatePost(cmd_list, msg_in):
 	return msg_in
 
 def command(cmd, msg_in, s, target_bucket):
-	global t, consumer
+	global t, consumer, uid
 	cmd_list = cmd.split()
 	if msg_in == 'Register successfully.\r\n':
 		bucket_name = '0516319-' + cmd_list[1] + '-0516319'		
@@ -160,19 +160,21 @@ def command(cmd, msg_in, s, target_bucket):
 	elif cmd.startswith('login') and msg_in.startswith('Welcome, '):
 		bucket_name = msg_in.split('###')[1]
 		target_bucket = s3.Bucket(bucket_name)
+		user_name = msg_in.split('-')[1]
 		msg_in = msg_in.split('###')[0]
+		
 
-		
-		consumer = KafkaConsumer(group_id = bucket_name,bootstrap_servers=['127.0.0.1:9092'])
-		
+		sql_return = c.execute('select UID from USERS where Username = ?', (user_name,)).fetchone()
+		uid = sql_return[0]
+		print(uid)
+		consumer = KafkaConsumer(group_id = bucket_name, bootstrap_servers=['127.0.0.1:9092'])
 		t = threading.Thread(target = consume, args = (consumer,))
 		t.start()
 	elif cmd.startswith('logout') and msg_in.startswith('Bye'):
-		target_bucket = None
-		
-		t.stop()
-		
+		target_bucket = None		
+		t.stop()		
 		consumer = None
+		uid = -1
 	elif cmd.startswith('create-post') and msg_in.startswith('Create post successfully'):
 		msg_in = CreatePost(cmd_list, msg_in)		
 	elif cmd.startswith('delete-post') and msg_in == 'Delete successfully.\r\n':
@@ -206,6 +208,8 @@ msg_in = s.recv(1024).decode('utf-8')
 print(msg_in,end = "")
 s.setblocking(0)
 mkdir()
+conn = sqlite3.connect('Database.db')
+c = conn.cursor()
 
 while True:
 	cmd = input("% ")

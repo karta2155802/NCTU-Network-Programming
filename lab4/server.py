@@ -16,7 +16,7 @@ def new_client(clientsocket, addr):
 			c.execute('insert into SUB_BOARD ("Board_name", "Keyword", "Subscriber_id") values (?,?,?)', (msg_list[2], msg_list[4], uid))
 			conn.commit()
 			print('Subscribe successfully')
-			msg_suc = 'Subscribe successfully\r\n' + '###' + msg_list[2] + '-' + msg_list[4]
+			msg_suc = 'Subscribe successfully\r\n' + '###' + msg_list[2]
 		return msg_suc
 	def sql_delete_mail(conn, c, uid, mail_id):
 		sql_return = c.execute('select * from MAIL inner join USERS on MAIL.Receiver = USERS.Username where UID = ?', (uid,)).fetchall()
@@ -390,10 +390,10 @@ def new_client(clientsocket, addr):
 			else:
 				msg_suc = 'Usage: delete-mail <mail#> \r\n'
 
-		elif msg_list[0] = 'subscribe':
+		elif msg_list[0] = ='subscribe':
 			if uid == -1:
 				msg_suc = 'Please login first.\r\n'
-			elif len(msg_list) > 4 and msg_list[1] == '--board' and msg_list[3] = '--keyword':
+			elif len(msg_list) > 4 and msg_list[1] == '--board' and msg_list[3] == '--keyword':
 				msg_suc = sql_subscribe_board(conn, c, uid, msg_list)
 			#elif len(msg_list) > 4 and msg_list[1] == '--author' and msg_list[3] = '--keyword':
 
