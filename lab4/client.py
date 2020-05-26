@@ -23,7 +23,8 @@ def consume(consumer):
 		msg = consumer.poll(timeout_ms = 1000)
 		if msg:			
 			for value in msg.items():
-				for record in value[:10]:
+				for record in value:
+					print(record)
 					print(record[0])
 					print(record[6])
 		#sql_return_post = c.execute('select * from POST where ID = ?', (msg.value.decode('utf-8'),)).fetchone()
