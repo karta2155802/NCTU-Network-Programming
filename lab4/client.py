@@ -19,6 +19,7 @@ def consume(consumer):
 	conn = sqlite3.connect('Database.db')
 	c = conn.cursor()
 	while True:
+		print(stop_flag)
 		for msg in consumer:
 			sql_return_post = c.execute('select * from POST where ID = ?', (msg.value.decode('utf-8'),)).fetchone()
 			board = c.execute('select Name from BOARD where ID = ?',(sql_return_post[4],)).fetchone()[0]
