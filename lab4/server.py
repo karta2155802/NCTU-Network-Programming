@@ -178,7 +178,7 @@ def new_client(clientsocket, addr):
 			conn.commit()
 			sql_return = c.execute('select * from POST where Title = ?', (data[1],)).fetchall()
 
-			sql_author_name = c.execute('select Username from USERS where UID = ?', (uid)).fetchone()
+			sql_author_name = c.execute('select Username from USERS where UID = ?', (uid,)).fetchone()
 			producer.send(data[0], str(sql_return[-1][0]).encode('utf-8'))
 			producer.send(sql_author_name[0], str(sql_return[-1][0]).encode('utf-8'))
 
