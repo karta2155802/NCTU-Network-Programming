@@ -4,6 +4,8 @@ import time
 import boto3
 import os
 from kafka import KafkaConsumer
+import sqlite3
+import threading
 
 s3 = boto3.resource('s3')
 target_bucket = None
