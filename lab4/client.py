@@ -220,6 +220,7 @@ def command(cmd, msg_in, s, target_bucket):
 	elif cmd.startswith('subscribe') and msg_in.startswith('Subscribe successfully'):
 		msg_in = Subscribe(msg_in)
 	elif cmd == 'exit':
+		print('here1')
 		sys.exit()
 	else:
 		pass
@@ -241,6 +242,10 @@ while True:
 	cmd = input("% ")
 	if not cmd or len(cmd.split()) == 0:
 		pass
+	elif cmd == "exit":
+		print('here2')
+		s.send(cmd.encode('utf-8'))
+		sys.exit()
 	else:
 		s.send(cmd.encode('utf-8'))
 		msg_in = receive(8192);

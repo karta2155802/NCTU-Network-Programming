@@ -10,7 +10,7 @@ def new_client(clientsocket, addr):
 	msg_suc = ""
 #------------------------------------------------------sqlite3 function
 	def sql_unsubscribe_board(conn, c, uid, msg_list):
-		sql_return = c.execute('select * from SUB_BOARD where Board_name = ?', (msg_list[2],)).fetchone()
+		sql_return = c.execute('select * from SUB_BOARD where Board_name = ? and Subscriber_id = ?', (msg_list[2], uid)).fetchone()
 		if sql_return != None:
 			c.execute('delete from SUB_BOARD where Board_name = ?', (msg_list[2],))
 			conn.commit()
@@ -31,14 +31,14 @@ def new_client(clientsocket, addr):
 		return msg_suc
 
 	def sql_list_sub(c, uid):
-		msg_suc = 'Board:\r\n'
+		msg_suc = '    {:^15} {:^15}\r\n'.format('Board_name', 'keyword')
 		sql_return = c.execute('select * from SUB_BOARD where Subscriber_id = ?', (uid,))
 		for row in sql_return:
-			msg_suc = msg_suc + '		{:<10} {:<10}\r\n'.format(row[1], row[2])
-		msg_suc = msg_suc + 'Author:\r\n'
+			msg_suc = msg_suc + '	{:^15} {:^15}\r\n'.format(row[1], row[2])
+		msg_suc = msg_suc + '    {:^15} {:^15}\r\n'.format('Author_name', 'keyword')
 		sql_return = c.execute('select * from SUB_AUTHOR where Subscriber_id = ?', (uid,))
 		for row in sql_return:
-			msg_suc = msg_suc + '		{:<10} {:<10}\r\n'.format(row[1], row[2])
+			msg_suc = msg_suc + '	{:^15} {:^15}\r\n'.format(row[1], row[2])
 
 		return msg_suc
 
