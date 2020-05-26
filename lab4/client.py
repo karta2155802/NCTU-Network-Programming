@@ -19,8 +19,7 @@ def consume(consumer):
 	print('start consume')
 	conn = sqlite3.connect('Database.db')
 	c = conn.cursor()
-	while True:
-		print(stop_flag)
+	while True:		
 		for msg in consumer:
 			sql_return_post = c.execute('select * from POST where ID = ?', (msg.value.decode('utf-8'),)).fetchone()
 			board = c.execute('select Name from BOARD where ID = ?',(sql_return_post[4],)).fetchone()[0]
@@ -35,12 +34,11 @@ def consume(consumer):
 				for row in keyword_author:
 					if row[0] in sql_return_post[1]:
 						print('*[{}]{}-by {}*\r\n% '.format(board, sql_return_post[1], author), end = '')
-
 			
-			print(stop_flag)
-			if stop_flag == True:
-				print('thread close')
-				break 
+		print(stop_flag)
+		if stop_flag == True:
+			print('thread close')
+			break 
 		
 
 			#print("%s:%d:%d: key=%s value=%s" % (message.topic, message.partition,message.offset, message.key,message.value))
@@ -195,7 +193,7 @@ def command(cmd, msg_in, s, target_bucket):
 
 		sql_return = c.execute('select UID from USERS where Username = ?', (user_name,)).fetchone()
 		uid = sql_return[0]
-		consumer = KafkaConsumer(group_id = user_name, bootstrap_servers=['127.0.0.1:9092'])
+		consumer = KafkaConsumer(group_id = user_name, bootstrap_servers=['127.0.0.1:9092'], iter_timeout = 0.5)
 		t = threading.Thread(target = consume, args = (consumer,))
 		t.start()
 		stop_flag = False
@@ -247,7 +245,6 @@ while True:
 	if not cmd or len(cmd.split()) == 0:
 		pass
 	elif cmd == "exit":
-		print('here2')
 		s.send(cmd.encode('utf-8'))
 		sys.exit()
 	else:
