@@ -50,7 +50,7 @@ def receive(len):
 			pass
 
 def Subscribe(msg_in):
-	msg_in_split = msg_in.splite('###')
+	msg_in_split = msg_in.split('###')
 	consumer.subscribe(topics=(msg_in_split[1]))
 	msg_in = msg_in_split[0]
 	return msg_in
