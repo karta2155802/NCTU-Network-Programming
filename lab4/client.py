@@ -20,20 +20,21 @@ def consume(consumer):
 	conn = sqlite3.connect('Database.db')
 	c = conn.cursor()
 	while True:		
-		for msg in consumer:
-			sql_return_post = c.execute('select * from POST where ID = ?', (msg.value.decode('utf-8'),)).fetchone()
-			board = c.execute('select Name from BOARD where ID = ?',(sql_return_post[4],)).fetchone()[0]
-			author = c.execute('select Username from USERS where UID = ?', (sql_return_post[2],)).fetchone()[0]
+		#for msg in consumer:
+		msg = consumer.poll(timeout_ms = 5)
+		sql_return_post = c.execute('select * from POST where ID = ?', (msg.value.decode('utf-8'),)).fetchone()
+		board = c.execute('select Name from BOARD where ID = ?',(sql_return_post[4],)).fetchone()[0]
+		author = c.execute('select Username from USERS where UID = ?', (sql_return_post[2],)).fetchone()[0]
 
-			if uid != sql_return_post[2]:
-				keyword_board = c.execute('select Keyword from Sub_BOARD where Board_name = ? and Subscriber_id = ?', (msg.topic, uid))
-				for row in keyword_board:
-					if row[0] in sql_return_post[1]:
-						print('*[{}]{}-by {}*\r\n% '.format(board, sql_return_post[1], author), end = '')
-				keyword_author = c.execute('select Keyword from Sub_AUTHOR where Author_name = ? and Subscriber_id = ?', (msg.topic, uid))
-				for row in keyword_author:
-					if row[0] in sql_return_post[1]:
-						print('*[{}]{}-by {}*\r\n% '.format(board, sql_return_post[1], author), end = '')
+		if uid != sql_return_post[2]:
+			keyword_board = c.execute('select Keyword from Sub_BOARD where Board_name = ? and Subscriber_id = ?', (msg.topic, uid))
+			for row in keyword_board:
+				if row[0] in sql_return_post[1]:
+					print('*[{}]{}-by {}*\r\n% '.format(board, sql_return_post[1], author), end = '')
+			keyword_author = c.execute('select Keyword from Sub_AUTHOR where Author_name = ? and Subscriber_id = ?', (msg.topic, uid))
+			for row in keyword_author:
+				if row[0] in sql_return_post[1]:
+					print('*[{}]{}-by {}*\r\n% '.format(board, sql_return_post[1], author), end = '')
 			
 		print(stop_flag)
 		if stop_flag == True:
