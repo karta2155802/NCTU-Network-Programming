@@ -22,7 +22,8 @@ def consume(consumer):
 		#for msg in consumer:
 		msg = consumer.poll(timeout_ms = 1000)
 		if msg:			
-			for value in msg.items():
+			for key, value in msg.items():
+				print(key)
 				for record in value:
 					print(record)
 					print(record[0])
