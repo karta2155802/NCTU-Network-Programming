@@ -15,6 +15,7 @@ consumer = None
 stop_flag = False
 
 def consume(consumer):
+	global stop_flag
 	print('start consume')
 	conn = sqlite3.connect('Database.db')
 	c = conn.cursor()
@@ -35,7 +36,7 @@ def consume(consumer):
 					if row[0] in sql_return_post[1]:
 						print('*[{}]{}-by {}*\r\n% '.format(board, sql_return_post[1], author), end = '')
 
-			global stop_flag
+			
 			print(stop_flag)
 			if stop_flag == True:
 				print('thread close')
