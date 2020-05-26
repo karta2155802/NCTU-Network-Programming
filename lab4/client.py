@@ -194,7 +194,7 @@ def command(cmd, msg_in, s, target_bucket):
 
 		sql_return = c.execute('select UID from USERS where Username = ?', (user_name,)).fetchone()
 		uid = sql_return[0]
-		consumer = KafkaConsumer(group_id = user_name, bootstrap_servers=['127.0.0.1:9092'], iter_timeout = 0.5)
+		consumer = KafkaConsumer(group_id = user_name, bootstrap_servers=['127.0.0.1:9092'])
 		t = threading.Thread(target = consume, args = (consumer,))
 		t.start()
 		stop_flag = False
