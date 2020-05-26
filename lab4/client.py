@@ -25,6 +25,7 @@ def consume(consumer):
 			for value in msg.items():
 				for record in value[:10]:
 					print(record[0])
+					print(record[6])
 		#sql_return_post = c.execute('select * from POST where ID = ?', (msg.value.decode('utf-8'),)).fetchone()
 		#board = c.execute('select Name from BOARD where ID = ?',(sql_return_post[4],)).fetchone()[0]
 		#author = c.execute('select Username from USERS where UID = ?', (sql_return_post[2],)).fetchone()[0]
