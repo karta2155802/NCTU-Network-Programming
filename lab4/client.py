@@ -21,13 +21,9 @@ def consume(consumer):
 	while True:		
 		#for msg in consumer:
 		msg = consumer.poll(timeout_ms = 1000)
-		if msg:
-			print(msg)
+		if msg:			
 			for value in msg.items():
 				for record in value[:10]:
-					
-					str(record).replace('ConsumerRecord','')
-					print(record)
 					print(record[0])
 		#sql_return_post = c.execute('select * from POST where ID = ?', (msg.value.decode('utf-8'),)).fetchone()
 		#board = c.execute('select Name from BOARD where ID = ?',(sql_return_post[4],)).fetchone()[0]
