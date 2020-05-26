@@ -12,8 +12,10 @@ target_bucket = None
 uid = -1
 t = None
 consumer = None
+stop_flag = False
 
 def consume(consumer):
+	print('start consume')
 	conn = sqlite3.connect('Database.db')
 	c = conn.cursor()
 	while True:
@@ -175,7 +177,7 @@ def CreatePost(cmd_list, msg_in):
 	return msg_in
 
 def command(cmd, msg_in, s, target_bucket):
-	global t, consumer, uid
+	global t, consumer, uid, stop_flag
 	cmd_list = cmd.split()
 	if msg_in == 'Register successfully.\r\n':
 		bucket_name = '0516319-' + cmd_list[1] + '-0516319'		
@@ -219,9 +221,6 @@ def command(cmd, msg_in, s, target_bucket):
 		msg_in = DeleteMail(msg_in)	
 	elif cmd.startswith('subscribe') and msg_in.startswith('Subscribe successfully'):
 		msg_in = Subscribe(msg_in)
-	elif cmd == 'exit':
-		print('here1')
-		sys.exit()
 	else:
 		pass
 	return msg_in, target_bucket

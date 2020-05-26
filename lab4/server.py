@@ -31,14 +31,14 @@ def new_client(clientsocket, addr):
 		return msg_suc
 
 	def sql_list_sub(c, uid):
-		msg_suc = '    {:^15} {:^15}\r\n'.format('Board_name', 'keyword')
+		msg_suc = '{:^15} {:^15}\r\n'.format('Board_name', 'keyword')
 		sql_return = c.execute('select * from SUB_BOARD where Subscriber_id = ?', (uid,))
 		for row in sql_return:
-			msg_suc = msg_suc + '	{:^15} {:^15}\r\n'.format(row[1], row[2])
-		msg_suc = msg_suc + '    {:^15} {:^15}\r\n'.format('Author_name', 'keyword')
+			msg_suc = msg_suc + '{:^15} {:^15}\r\n'.format(row[1], row[2])
+		msg_suc = msg_suc + '{:^15} {:^15}\r\n'.format('Author_name', 'keyword')
 		sql_return = c.execute('select * from SUB_AUTHOR where Subscriber_id = ?', (uid,))
 		for row in sql_return:
-			msg_suc = msg_suc + '	{:^15} {:^15}\r\n'.format(row[1], row[2])
+			msg_suc = msg_suc + '{:^15} {:^15}\r\n'.format(row[1], row[2])
 
 		return msg_suc
 
