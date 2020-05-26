@@ -13,13 +13,13 @@ uid = -1
 t = None
 consumer = None
 
-def consume(consumer):
+def consume(consumer, c):
 	while True:
 		for msg in consumer:
 			sql_return_post = c.execute('select * from POST where ID = ?', (msg.value.decode('utf-8'),)).fetchone()			
 			board = c.execute('select Name from BOARD where ID = ?',(sql_return_post[4],)).fetchone()
 			author = c.excute('select Username from USERS where ID = ?', (sql_return_post[2],))
-			
+
 			sql_return = c.execute('select Keyword from Sub_BOARD where Board_name = ? and Subscriber_id = ?', (msg.topic, uid))
 			for keyword in sql_return:
 				if keyword in sql_return_post[1]:
@@ -183,7 +183,7 @@ def command(cmd, msg_in, s, target_bucket):
 		sql_return = c.execute('select UID from USERS where Username = ?', (user_name,)).fetchone()
 		uid = sql_return[0]
 		consumer = KafkaConsumer(group_id = user_name, bootstrap_servers=['127.0.0.1:9092'])
-		t = threading.Thread(target = consume, args = (consumer,))
+		t = threading.Thread(target = consume, args = (consumer,c))
 		t.start()
 	elif cmd.startswith('logout') and msg_in.startswith('Bye'):
 		target_bucket = None		
