@@ -23,7 +23,7 @@ def consume(consumer):
 		msg = consumer.poll(timeout_ms = 1000)
 		if msg:
 			print(msg)
-			for key, value in dict.items():
+			for key, value in msg.items():
 				print(key)
 				print()
 				for record in value[:10]:
