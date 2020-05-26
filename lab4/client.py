@@ -33,11 +33,13 @@ def consume(consumer):
 				for row in keyword_author:
 					if row[0] in sql_return_post[1]:
 						print('*[{}]{}-by {}*\r\n% '.format(board, sql_return_post[1], author), end = '')
-		global stop_flag
-		print(stop_flag)
-		if stop_flag == True:
-			print('thread close')
-			break 
+
+			global stop_flag
+			print(stop_flag)
+			if stop_flag == True:
+				print('thread close')
+				break 
+		
 
 			#print("%s:%d:%d: key=%s value=%s" % (message.topic, message.partition,message.offset, message.key,message.value))
 
