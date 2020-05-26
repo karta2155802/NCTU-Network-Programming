@@ -11,7 +11,7 @@ def consume():
 consumer = KafkaConsumer(group_id = 'A', bootstrap_servers=['127.0.0.1:9092'])
 consumer.subscribe(topics=('test','test2'))
 consumer.subscribe(topics=('test'))
-consumer.subscribe(topics=(''))
+consumer.subscribe(topics=('test2'))
 t = threading.Thread(target = consume)
 t.start()
 
