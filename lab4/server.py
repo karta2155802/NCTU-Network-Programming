@@ -3,6 +3,7 @@ import sys
 import _thread
 import sqlite3
 import time
+from kafka import KafkaProducer
 
 
 def new_client(clientsocket, addr):

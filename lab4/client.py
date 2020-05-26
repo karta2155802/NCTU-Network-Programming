@@ -3,6 +3,7 @@ import sys
 import time
 import boto3
 import os
+from kafka import KafkaConsumer
 
 s3 = boto3.resource('s3')
 target_bucket = None
