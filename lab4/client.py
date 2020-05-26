@@ -225,7 +225,8 @@ msg_in = s.recv(1024).decode('utf-8')
 print(msg_in,end = "")
 s.setblocking(0)
 mkdir()
-
+conn = sqlite3.connect('Database.db')
+c = conn.cursor()
 
 while True:
 	cmd = input("% ")
