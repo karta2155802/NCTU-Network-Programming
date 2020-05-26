@@ -6,7 +6,7 @@ import os
 
 s3 = boto3.resource('s3')
 target_bucket = None
-global t, consumer
+
 t = None
 consumer = None
 
@@ -161,14 +161,16 @@ def command(cmd, msg_in, s, target_bucket):
 		target_bucket = s3.Bucket(bucket_name)
 		msg_in = msg_in.split('###')[0]
 
-		global t,consumer
+		global consumer
 		consumer = KafkaConsumer(group_id = bucket_name,bootstrap_servers=['127.0.0.1:9092'])
+		global t
 		t = threading.Thread(target = consume, args = (consumer,))
 		t.start()
 	elif cmd.startswith('logout') and msg_in.startswith('Bye'):
 		target_bucket = None
-		global t, consumer
+		global t
 		t.stop()
+		global consumer
 		consumer = None
 	elif cmd.startswith('create-post') and msg_in.startswith('Create post successfully'):
 		msg_in = CreatePost(cmd_list, msg_in)		

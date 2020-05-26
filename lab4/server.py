@@ -395,7 +395,7 @@ def new_client(clientsocket, addr):
 				msg_suc = 'Please login first.\r\n'
 			elif len(msg_list) > 4 and msg_list[1] == '--board' and msg_list[3] = '--keyword':
 				msg_suc = sql_subscribe_board(conn, c, uid, msg_list)
-			elif len(msg_list) > 4 and msg_list[1] == '--author' and msg_list[3] = '--keyword':
+			#elif len(msg_list) > 4 and msg_list[1] == '--author' and msg_list[3] = '--keyword':
 
 			else:
 				msg_suc = 'Usage: subscribe --board <board-name>/--author <author_name> --keyword <keyword> \r\n'
