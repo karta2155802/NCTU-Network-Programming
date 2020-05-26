@@ -20,7 +20,7 @@ def consume(consumer):
 		for msg in consumer:
 			sql_return_post = c.execute('select * from POST where ID = ?', (msg.value.decode('utf-8'),)).fetchone()			
 			board = c.execute('select Name from BOARD where ID = ?',(sql_return_post[4],)).fetchone()
-			author = c.execute('select Username from USERS where ID = ?', (sql_return_post[2],))
+			author = c.execute('select Username from USERS where UID = ?', (sql_return_post[2],))
 
 			sql_return = c.execute('select Keyword from Sub_BOARD where Board_name = ? and Subscriber_id = ?', (msg.topic, uid))
 			for keyword in sql_return:
