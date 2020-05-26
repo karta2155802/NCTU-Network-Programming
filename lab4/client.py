@@ -13,7 +13,9 @@ uid = -1
 t = None
 consumer = None
 
-def consume(consumer, c):
+def consume(consumer):
+	conn = sqlite3.connect('Database.db')
+	c = conn.cursor()
 	while True:
 		for msg in consumer:
 			sql_return_post = c.execute('select * from POST where ID = ?', (msg.value.decode('utf-8'),)).fetchone()			
@@ -183,7 +185,7 @@ def command(cmd, msg_in, s, target_bucket):
 		sql_return = c.execute('select UID from USERS where Username = ?', (user_name,)).fetchone()
 		uid = sql_return[0]
 		consumer = KafkaConsumer(group_id = user_name, bootstrap_servers=['127.0.0.1:9092'])
-		t = threading.Thread(target = consume, args = (consumer,c))
+		t = threading.Thread(target = consume, args = (consumer,))
 		t.start()
 	elif cmd.startswith('logout') and msg_in.startswith('Bye'):
 		target_bucket = None		
@@ -223,8 +225,7 @@ msg_in = s.recv(1024).decode('utf-8')
 print(msg_in,end = "")
 s.setblocking(0)
 mkdir()
-conn = sqlite3.connect('Database.db')
-c = conn.cursor()
+
 
 while True:
 	cmd = input("% ")
