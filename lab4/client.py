@@ -19,15 +19,12 @@ def consume(consumer):
 	conn = sqlite3.connect('Database.db')
 	c = conn.cursor()
 	while True:		
-		#for msg in consumer:
-		msg = consumer.poll(timeout_ms = 1000)
+		msg = consumer.poll(timeout_ms = 500)
 		if msg:			
-			for key, value in msg.items():
-				print(key)
+			for value in msg.values():
 				for record in value:
-					print(record)
 					print(record[0])
-					print(record[6])
+					print(record[6].decord('utf-8'))
 		#sql_return_post = c.execute('select * from POST where ID = ?', (msg.value.decode('utf-8'),)).fetchone()
 		#board = c.execute('select Name from BOARD where ID = ?',(sql_return_post[4],)).fetchone()[0]
 		#author = c.execute('select Username from USERS where UID = ?', (sql_return_post[2],)).fetchone()[0]
