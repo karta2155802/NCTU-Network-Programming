@@ -10,7 +10,7 @@ def new_client(clientsocket, addr):
 	msg_suc = ""
 #------------------------------------------------------sqlite3 function
 	def sql_subscribe_board(conn, c, uid, msg_list):
-		sql_return = c.execute('select * from SUB_BOARD where Board_name = ? and Keyword = ?', (msg_list[2],msg_list[4])).fetchone()
+		sql_return = c.execute('select * from SUB_BOARD where Board_name = ? and Keyword = ? and UID = ?', (msg_list[2], msg_list[4], uid)).fetchone()
 		if sql_return != None:
 			msg_suc = 'Already subscribed\r\n'
 		else:
