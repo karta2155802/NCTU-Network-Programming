@@ -438,7 +438,7 @@ def new_client(clientsocket, addr):
 		elif msg_list[0] == 'list-sub' and len(msg_list) == 1:
 			if uid == -1:
 				msg_suc = 'Please login first.\r\n'
-			else
+			else:
 				msg_suc = sql_list_sub(c, uid)
 		elif msg_list[0] == 'enter&&space':
 			msg_suc = ""
