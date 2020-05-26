@@ -108,7 +108,7 @@ def SendMail(cmd_list, msg_in):
 	return  msg_in_split[0]
 
 
-def Comment(cmd_list, msg_in):
+def Comment(cmd_list, msg_in, c):
 	msg_in_split = msg_in.split('###')
 	name = msg_in_split[2]
 	comment = ' '.join(cmd_list[2:len(cmd_list)])
