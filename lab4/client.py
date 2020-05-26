@@ -152,6 +152,7 @@ def CreatePost(cmd_list, msg_in):
 	return msg_in
 
 def command(cmd, msg_in, s, target_bucket):
+	global t, consumer
 	cmd_list = cmd.split()
 	if msg_in == 'Register successfully.\r\n':
 		bucket_name = '0516319-' + cmd_list[1] + '-0516319'		
@@ -161,16 +162,16 @@ def command(cmd, msg_in, s, target_bucket):
 		target_bucket = s3.Bucket(bucket_name)
 		msg_in = msg_in.split('###')[0]
 
-		global consumer
+		
 		consumer = KafkaConsumer(group_id = bucket_name,bootstrap_servers=['127.0.0.1:9092'])
-		global t
+		
 		t = threading.Thread(target = consume, args = (consumer,))
 		t.start()
 	elif cmd.startswith('logout') and msg_in.startswith('Bye'):
 		target_bucket = None
-		global t
+		
 		t.stop()
-		global consumer
+		
 		consumer = None
 	elif cmd.startswith('create-post') and msg_in.startswith('Create post successfully'):
 		msg_in = CreatePost(cmd_list, msg_in)		
