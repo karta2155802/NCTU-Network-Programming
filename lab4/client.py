@@ -15,8 +15,22 @@ consumer = None
 
 def consume(consumer):
 	while True:
-		for message in consumer:
-			print("%s:%d:%d: key=%s value=%s" % (message.topic, message.partition,message.offset, message.key,message.value))
+		for msg in consumer:
+			sql_return_post = c.execute('select * from POST where ID = ?', (msg.value.decode('utf-8'),)).fetchone()			
+			board = c.execute('select Name from BOARD where ID = ?',(sql_return_post[4],)).fetchone()
+			author = c.excute('select Username from USERS where ID = ?', (sql_return_post[2],))
+			
+			sql_return = c.execute('select Keyword from Sub_BOARD where Board_name = ? and Subscriber_id = ?', (msg.topic, uid))
+			for keyword in sql_return:
+				if keyword in sql_return_post[1]:
+					print('*[{}]{}-by {}*\r\n%'.format(board, sql_return_post[1], author), end = '')
+			sql_return = c.execute('select Keyword from Sub_AUTHOR where Author_name = ? and Subscriber_id = ?', (msg.topic, uid))
+			for keyword in sql_return:
+				if keyword in sql_return_post[1]:
+					print('*[{}]{}-by {}*\r\n%'.format(board, sql_return_post[1], author), end = '')
+
+
+			#print("%s:%d:%d: key=%s value=%s" % (message.topic, message.partition,message.offset, message.key,message.value))
 
 
 def mkdir():
@@ -164,13 +178,11 @@ def command(cmd, msg_in, s, target_bucket):
 		bucket_name = msg_in.split('###')[1]
 		target_bucket = s3.Bucket(bucket_name)
 		user_name = msg_in.split('-')[1]
-		msg_in = msg_in.split('###')[0]
-		
+		msg_in = msg_in.split('###')[0]		
 
 		sql_return = c.execute('select UID from USERS where Username = ?', (user_name,)).fetchone()
 		uid = sql_return[0]
-		print(uid)
-		consumer = KafkaConsumer(group_id = bucket_name, bootstrap_servers=['127.0.0.1:9092'])
+		consumer = KafkaConsumer(group_id = user_name, bootstrap_servers=['127.0.0.1:9092'])
 		t = threading.Thread(target = consume, args = (consumer,))
 		t.start()
 	elif cmd.startswith('logout') and msg_in.startswith('Bye'):

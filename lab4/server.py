@@ -177,6 +177,11 @@ def new_client(clientsocket, addr):
 			c.execute('insert into POST ("Title", "Author_id", "Date", "Board_id", "Date_with_year") values (?,?,?,?,?)', (data[1], uid, nowtime, board_id, nowtime_year))
 			conn.commit()
 			sql_return = c.execute('select * from POST where Title = ?', (data[1],)).fetchall()
+
+			sql_author_name = c.execute('select Username from USERS where UID = ?', (uid)).fetchone()
+			producer.send(data[0], str(sql_return[-1][0]).encode('utf-8'))
+			producer.send(sql_author_name[0], str(sql_return[-1][0]).encode('utf-8'))
+
 			print('Create post successfully')
 			msg_suc = 'Create post successfully.\r\n' + '###' + str(sql_return[-1][0])
 		return msg_suc
@@ -413,12 +418,12 @@ def new_client(clientsocket, addr):
 
 	conn = sqlite3.connect('Database.db')
 	c = conn.cursor()
+	producer = KafkaProducer(bootstrap_servers=['127.0.0.1:9092']) 
 	print('Sql Connection Succeed')
 	msg_out = '********************************\r\n' + '** Welcome to the BBS server. **\r\n' + '********************************\r\n'
 
 	clientsocket.send(msg_out.encode('utf-8'))
 	uid = -1
-
 	while True:
 		msg_in = clientsocket.recv(1024).decode('utf-8')	
 		msg_in = msg_in.replace('\r','').replace('\n','')			
