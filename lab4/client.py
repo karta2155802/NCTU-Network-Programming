@@ -6,6 +6,7 @@ import os
 
 s3 = boto3.resource('s3')
 target_bucket = None
+global t, consumer
 t = None
 consumer = None
 
