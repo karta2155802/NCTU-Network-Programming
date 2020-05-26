@@ -24,10 +24,10 @@ def consume(consumer):
 		if msg:
 			print(msg)
 			for key, value in dict.items():
-		    print(key)
-		    print()
-		    for record in value[:10]:
-        		print(record)
+			print(key)
+			print()
+			for record in value[:10]:
+				print(record)
 		#sql_return_post = c.execute('select * from POST where ID = ?', (msg.value.decode('utf-8'),)).fetchone()
 		#board = c.execute('select Name from BOARD where ID = ?',(sql_return_post[4],)).fetchone()[0]
 		#author = c.execute('select Username from USERS where UID = ?', (sql_return_post[2],)).fetchone()[0]
