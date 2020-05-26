@@ -33,6 +33,7 @@ def consume(consumer):
 						print('*[{}]{}-by {}*\r\n% '.format(board, sql_return_post[1], author), end = '')
 		global stop_flag
 		if stop_flag:
+			print('thread close')
 			break 
 
 			#print("%s:%d:%d: key=%s value=%s" % (message.topic, message.partition,message.offset, message.key,message.value))
