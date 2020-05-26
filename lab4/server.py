@@ -11,12 +11,12 @@ def new_client(clientsocket, addr):
 #------------------------------------------------------sqlite3 function
 	def sql_unsubscribe_board(conn, c, uid, msg_list):
 		sql_return = c.execute('select * from SUB_BOARD where Board_name = ?', (msg_list[2],)).fetchall()
-		if sql_return == None:
+		if sql_return != None:
 			c.execute('delete from SUB_BOARD where Board_name = ?', (msg_list[2],))
 			conn.commit()
 			msg_suc = 'Unsubscribe successfully'
 		else:
-			msg_suc = 'You haven\'t subscribed {}'.format(msg_list[2])
+			msg_suc = 'You haven\'t subscribed {}\r\n'.format(msg_list[2])
 		return msg_suc
 
 	def sql_subscribe_board(conn, c, uid, msg_list):

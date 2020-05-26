@@ -31,7 +31,9 @@ def consume(consumer):
 				for row in keyword_author:
 					if row[0] in sql_return_post[1]:
 						print('*[{}]{}-by {}*\r\n% '.format(board, sql_return_post[1], author), end = '')
-
+		global stop_flag
+		if stop_flag:
+			break 
 
 			#print("%s:%d:%d: key=%s value=%s" % (message.topic, message.partition,message.offset, message.key,message.value))
 
@@ -188,13 +190,14 @@ def command(cmd, msg_in, s, target_bucket):
 		consumer = KafkaConsumer(group_id = user_name, bootstrap_servers=['127.0.0.1:9092'])
 		t = threading.Thread(target = consume, args = (consumer,))
 		t.start()
+		stop_flag = False
 	elif cmd.startswith('logout') and msg_in.startswith('Bye'):
 		c.execute('delete from SUB_BOARD where Subscriber_id = ?', (uid,))
 		c.execute('delete from SUB_AUTHOR where Subscriber_id = ?', (uid,))
 		conn.commit()
 
 		target_bucket = None		
-		t.stop()		
+		stop_flag = True		
 		consumer = None
 		uid = -1
 	elif cmd.startswith('create-post') and msg_in.startswith('Create post successfully'):
