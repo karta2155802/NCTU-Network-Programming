@@ -23,29 +23,24 @@ def consume(consumer):
 		if msg:			
 			for value in msg.values():
 				for record in value:
-					print(record[0])
-					print(record[6].decord('utf-8'))
-		#sql_return_post = c.execute('select * from POST where ID = ?', (msg.value.decode('utf-8'),)).fetchone()
-		#board = c.execute('select Name from BOARD where ID = ?',(sql_return_post[4],)).fetchone()[0]
-		#author = c.execute('select Username from USERS where UID = ?', (sql_return_post[2],)).fetchone()[0]
+					topic = record[0]
+					post_id = record[6].decode('utf-8')
+					sql_return_post = c.execute('select * from POST where ID = ?', (post_id,)).fetchone()
+					board = c.execute('select Name from BOARD where ID = ?',(sql_return_post[4],)).fetchone()[0]
+					author = c.execute('select Username from USERS where UID = ?', (sql_return_post[2],)).fetchone()[0]
 
-		#if uid != sql_return_post[2]:
-		#	keyword_board = c.execute('select Keyword from Sub_BOARD where Board_name = ? and Subscriber_id = ?', (msg.topic, uid))
-		#	for row in keyword_board:
-		#		if row[0] in sql_return_post[1]:
-		#			print('*[{}]{}-by {}*\r\n% '.format(board, sql_return_post[1], author), end = '')
-		#	keyword_author = c.execute('select Keyword from Sub_AUTHOR where Author_name = ? and Subscriber_id = ?', (msg.topic, uid))
-		#	for row in keyword_author:
-		#		if row[0] in sql_return_post[1]:
-		#			print('*[{}]{}-by {}*\r\n% '.format(board, sql_return_post[1], author), end = '')
+					if uid != sql_return_post[2]:
+						keyword_board = c.execute('select Keyword from Sub_BOARD where Board_name = ? and Subscriber_id = ?', (topic, uid))
+						for row in keyword_board:
+							if row[0] in sql_return_post[1]:
+								print('*[{}]{}-by {}*\r\n% '.format(board, sql_return_post[1], author), end = '')
+						keyword_author = c.execute('select Keyword from Sub_AUTHOR where Author_name = ? and Subscriber_id = ?', (topic, uid))
+						for row in keyword_author:
+							if row[0] in sql_return_post[1]:
+								print('*[{}]{}-by {}*\r\n% '.format(board, sql_return_post[1], author), end = '')
 			
 		if stop_flag == True:
-			print('thread close')
 			break 
-		
-
-			#print("%s:%d:%d: key=%s value=%s" % (message.topic, message.partition,message.offset, message.key,message.value))
-
 
 def mkdir():
     Pdata = "./.data"
@@ -204,7 +199,6 @@ def command(cmd, msg_in, s, target_bucket):
 		c.execute('delete from SUB_BOARD where Subscriber_id = ?', (uid,))
 		c.execute('delete from SUB_AUTHOR where Subscriber_id = ?', (uid,))
 		conn.commit()
-
 		target_bucket = None		
 		stop_flag = True		
 		consumer = None
@@ -248,6 +242,10 @@ while True:
 	if not cmd or len(cmd.split()) == 0:
 		pass
 	elif cmd == "exit":
+		if uid != -1:
+			c.execute('delete from SUB_BOARD where Subscriber_id = ?', (uid,))
+			c.execute('delete from SUB_AUTHOR where Subscriber_id = ?', (uid,))
+			conn.commit()
 		s.send(cmd.encode('utf-8'))
 		sys.exit()
 	else:

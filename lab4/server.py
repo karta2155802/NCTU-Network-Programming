@@ -19,12 +19,33 @@ def new_client(clientsocket, addr):
 			msg_suc = 'You haven\'t subscribed {}\r\n'.format(msg_list[2])
 		return msg_suc
 
+	def sql_unsubscribe_author(conn, c, uid, msg_list):
+		sql_return = c.execute('select * from SUB_AUTHOR where Aoard_name = ? and Subscriber_id = ?', (msg_list[2], uid)).fetchone()
+		if sql_return != None:
+			c.execute('delete from SUB_AUTHOR where Author_name = ?', (msg_list[2],))
+			conn.commit()
+			msg_suc = 'Unsubscribe successfully'
+		else:
+			msg_suc = 'You haven\'t subscribed {}\r\n'.format(msg_list[2])
+		return msg_suc
+
 	def sql_subscribe_board(conn, c, uid, msg_list):
 		sql_return = c.execute('select * from SUB_BOARD where Board_name = ? and Keyword = ? and Subscriber_id = ?', (msg_list[2], msg_list[4], uid)).fetchone()
 		if sql_return != None:
 			msg_suc = 'Already subscribed\r\n'
 		else:
 			c.execute('insert into SUB_BOARD ("Board_name", "Keyword", "Subscriber_id") values (?,?,?)', (msg_list[2], msg_list[4], uid))
+			conn.commit()
+			print('Subscribe successfully')
+			msg_suc = 'Subscribe successfully\r\n' + '###' + msg_list[2]
+		return msg_suc
+
+	def sql_subscribe_author(conn, c, uid, msg_list):
+		sql_return = c.execute('select * from SUB_AUTHOR where Author_name = ? and Keyword = ? and Subscriber_id = ?', (msg_list[2], msg_list[4], uid)).fetchone()
+		if sql_return != None:
+			msg_suc = 'Already subscribed\r\n'
+		else:
+			c.execute('insert into SUB_AUTHOR ("Author_name", "Keyword", "Subscriber_id") values (?,?,?)', (msg_list[2], msg_list[4], uid))
 			conn.commit()
 			print('Subscribe successfully')
 			msg_suc = 'Subscribe successfully\r\n' + '###' + msg_list[2]
