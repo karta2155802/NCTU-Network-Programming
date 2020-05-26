@@ -9,6 +9,16 @@ from kafka import KafkaProducer
 def new_client(clientsocket, addr):
 	msg_suc = ""
 #------------------------------------------------------sqlite3 function
+	def sql_unsubscribe_board(conn, c, uid, msg_list):
+		sql_return = c.execute('select * from SUB_BOARD where Board_name = ?', (msg_list[2],)).fetchall()
+		if sql_return == None:
+			c.execute('delete from SUB_BOARD where Board_name = ?', (msg_list[2],))
+			conn.commit()
+			msg_suc = 'Unsubscribe successfully'
+		else:
+			msg_suc = 'You haven\'t subscribed {}'.format(msg_list[2])
+		return msg_suc
+
 	def sql_subscribe_board(conn, c, uid, msg_list):
 		sql_return = c.execute('select * from SUB_BOARD where Board_name = ? and Keyword = ? and Subscriber_id = ?', (msg_list[2], msg_list[4], uid)).fetchone()
 		if sql_return != None:
@@ -19,6 +29,19 @@ def new_client(clientsocket, addr):
 			print('Subscribe successfully')
 			msg_suc = 'Subscribe successfully\r\n' + '###' + msg_list[2]
 		return msg_suc
+
+	def sql_list_sub(c, uid):
+		msg_suc = 'Board:\r\n'
+		sql_return = c.execute('select * from SUB_BOARD where Subscriber_id = ?', (uid,))
+		for row in sql_return:
+			msg_suc = msg_suc + '		{:<10} {:<10}\r\n'.format(row[1], row[2])
+		msg_suc = msg_suc + 'Author:\r\n'
+		sql_return = c.execute('select * from SUB_AUTHOR where Subscriber_id = ?', (uid,))
+		for row in sql_return:
+			msg_suc = msg_suc + '		{:<10} {:<10}\r\n'.format(row[1], row[2])
+
+		return msg_suc
+
 	def sql_delete_mail(conn, c, uid, mail_id):
 		sql_return = c.execute('select * from MAIL inner join USERS on MAIL.Receiver = USERS.Username where UID = ?', (uid,)).fetchall()
 		if len(sql_return) < int(mail_id):
@@ -399,14 +422,24 @@ def new_client(clientsocket, addr):
 		elif msg_list[0] =='subscribe':
 			if uid == -1:
 				msg_suc = 'Please login first.\r\n'
-			elif len(msg_list) > 4 and msg_list[1] == '--board' and msg_list[3] == '--keyword':
+			elif len(msg_list) == 5 and msg_list[1] == '--board' and msg_list[3] == '--keyword':
 				msg_suc = sql_subscribe_board(conn, c, uid, msg_list)
 			#elif len(msg_list) > 4 and msg_list[1] == '--author' and msg_list[3] = '--keyword':
 
 			else:
-				msg_suc = 'Usage: subscribe --board <board-name>/--author <author_name> --keyword <keyword> \r\n'
-
-
+				msg_suc = 'Usage: subscribe --board <board-name>/--author <author_name> --keyword <keyword>\r\n'
+		elif msg_list[0] == 'unsubscribe':
+			if uid == -1:
+				msg_suc = 'Please login first.\r\n'
+			elif msg_list[1] == '--board' and len(msg_list) == 3:
+				msg_suc = sql_unsubscribe_board(conn, c, uid, msg_list) 
+			else:
+				msg_suc = 'Usage: unsubscribe --board <board-name>\r\n'
+		elif msg_list[0] == 'list-sub' and len(msg_list) == 1:
+			if uid == -1:
+				msg_suc = 'Please login first.\r\n'
+			else
+				msg_suc = sql_list_sub(c, uid)
 		elif msg_list[0] == 'enter&&space':
 			msg_suc = ""
 			pass

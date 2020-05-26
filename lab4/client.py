@@ -22,14 +22,15 @@ def consume(consumer):
 			board = c.execute('select Name from BOARD where ID = ?',(sql_return_post[4],)).fetchone()[0]
 			author = c.execute('select Username from USERS where UID = ?', (sql_return_post[2],)).fetchone()[0]
 
-			keyword_board = c.execute('select Keyword from Sub_BOARD where Board_name = ? and Subscriber_id = ?', (msg.topic, uid))
-			for row in keyword_board:
-				if row[0] in sql_return_post[1]:
-					print('*[{}]{}-by {}*\r\n% '.format(board, sql_return_post[1], author), end = '')
-			keyword_author = c.execute('select Keyword from Sub_AUTHOR where Author_name = ? and Subscriber_id = ?', (msg.topic, uid))
-			for row in keyword_author:
-				if row[0] in sql_return_post[1]:
-					print('*[{}]{}-by {}*\r\n% '.format(board, sql_return_post[1], author), end = '')
+			if uid != sql_return_post[2]:
+				keyword_board = c.execute('select Keyword from Sub_BOARD where Board_name = ? and Subscriber_id = ?', (msg.topic, uid))
+				for row in keyword_board:
+					if row[0] in sql_return_post[1]:
+						print('*[{}]{}-by {}*\r\n% '.format(board, sql_return_post[1], author), end = '')
+				keyword_author = c.execute('select Keyword from Sub_AUTHOR where Author_name = ? and Subscriber_id = ?', (msg.topic, uid))
+				for row in keyword_author:
+					if row[0] in sql_return_post[1]:
+						print('*[{}]{}-by {}*\r\n% '.format(board, sql_return_post[1], author), end = '')
 
 
 			#print("%s:%d:%d: key=%s value=%s" % (message.topic, message.partition,message.offset, message.key,message.value))
@@ -188,6 +189,10 @@ def command(cmd, msg_in, s, target_bucket):
 		t = threading.Thread(target = consume, args = (consumer,))
 		t.start()
 	elif cmd.startswith('logout') and msg_in.startswith('Bye'):
+		c.execute('delete from SUB_BOARD where Subscriber_id = ?', (uid,))
+		c.execute('delete from SUB_AUTHOR where Subscriber_id = ?', (uid,))
+		conn.commit()
+
 		target_bucket = None		
 		t.stop()		
 		consumer = None
