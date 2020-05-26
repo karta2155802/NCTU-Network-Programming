@@ -390,7 +390,7 @@ def new_client(clientsocket, addr):
 			else:
 				msg_suc = 'Usage: delete-mail <mail#> \r\n'
 
-		elif msg_list[0] = ='subscribe':
+		elif msg_list[0] =='subscribe':
 			if uid == -1:
 				msg_suc = 'Please login first.\r\n'
 			elif len(msg_list) > 4 and msg_list[1] == '--board' and msg_list[3] == '--keyword':
