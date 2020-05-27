@@ -187,7 +187,7 @@ def command(cmd, msg_in, s, target_bucket):
 		bucket_name = msg_in.split('###')[1]
 		target_bucket = s3.Bucket(bucket_name)
 		user_name = msg_in.split('-')[1]
-		time = str(int(time.time()))
+		timestamp = str(int(time.time()))
 		user_name = user_name + '-' + time 
 		msg_in = msg_in.split('###')[0]		
 
