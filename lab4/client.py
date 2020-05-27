@@ -23,6 +23,7 @@ def consume(consumer):
 		if msg:
 			time.sleep(0.3)			
 			for value in msg.values():
+				#print_flag = False
 				for record in value:
 					topic = record[0]
 					post_id = record[6].decode('utf-8')
@@ -175,7 +176,6 @@ def CreatePost(cmd_list, msg_in):
 	target_bucket.upload_file("./.data/post/p{}.txt".format(post_id), "p{}.txt".format(post_id))
 	target_bucket.upload_file("./.data/comment/c{}.txt".format(post_id), "c{}.txt".format(post_id))
 	msg_in = msg_in.split('###')[0]
-	print('msg_in post:{}',msg_in)
 	return msg_in
 
 def command(cmd_list, msg_in, s, target_bucket):
