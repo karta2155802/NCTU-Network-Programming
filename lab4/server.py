@@ -14,8 +14,9 @@ def new_client(clientsocket, addr):
 		if sql_return != None:
 			c.execute('delete from SUB_BOARD where Board_name = ?', (msg_list[2],))
 			conn.commit()
-			msg_suc = 'Unsubscribe successfully'
+			msg_suc = 'Unsubscribe successfully\r\n'
 		else:
+			print('You haven\'t subscribed')
 			msg_suc = 'You haven\'t subscribed {}\r\n'.format(msg_list[2])
 		return msg_suc
 
@@ -24,8 +25,9 @@ def new_client(clientsocket, addr):
 		if sql_return != None:
 			c.execute('delete from SUB_AUTHOR where Author_name = ?', (msg_list[2],))
 			conn.commit()
-			msg_suc = 'Unsubscribe successfully'
+			msg_suc = 'Unsubscribe successfully\r\n'
 		else:
+			print('You haven\'t subscribed')
 			msg_suc = 'You haven\'t subscribed {}\r\n'.format(msg_list[2])
 		return msg_suc
 
@@ -445,15 +447,17 @@ def new_client(clientsocket, addr):
 				msg_suc = 'Please login first.\r\n'
 			elif len(msg_list) == 5 and msg_list[1] == '--board' and msg_list[3] == '--keyword':
 				msg_suc = sql_subscribe_board(conn, c, uid, msg_list)
-			#elif len(msg_list) > 4 and msg_list[1] == '--author' and msg_list[3] = '--keyword':
-
+			elif len(msg_list) == 5  and msg_list[1] == '--author' and msg_list[3] = '--keyword':
+				msg_suc = sql_subscribe_author(conn, c, uid, msg_list)
 			else:
 				msg_suc = 'Usage: subscribe --board <board-name>/--author <author_name> --keyword <keyword>\r\n'
 		elif msg_list[0] == 'unsubscribe':
 			if uid == -1:
 				msg_suc = 'Please login first.\r\n'
 			elif msg_list[1] == '--board' and len(msg_list) == 3:
-				msg_suc = sql_unsubscribe_board(conn, c, uid, msg_list) 
+				msg_suc = sql_unsubscribe_board(conn, c, uid, msg_list)
+			elif msg_list[1] == '--author' and len(msg_list) == 3:
+				msg_suc = sql_unsubscribe_author(conn, c, uid, msg_list) 
 			else:
 				msg_suc = 'Usage: unsubscribe --board <board-name>\r\n'
 		elif msg_list[0] == 'list-sub' and len(msg_list) == 1:

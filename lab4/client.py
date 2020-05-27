@@ -246,6 +246,7 @@ while True:
 			c.execute('delete from SUB_BOARD where Subscriber_id = ?', (uid,))
 			c.execute('delete from SUB_AUTHOR where Subscriber_id = ?', (uid,))
 			conn.commit()
+		stop_flag = True
 		s.send(cmd.encode('utf-8'))
 		sys.exit()
 	else:
