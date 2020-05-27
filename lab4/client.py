@@ -188,7 +188,7 @@ def command(cmd, msg_in, s, target_bucket):
 		target_bucket = s3.Bucket(bucket_name)
 		user_name = msg_in.split('-')[1]
 		timestamp = str(time.time())
-		user_name = user_name + '-' + time 
+		user_name = user_name + '-' + timestamp
 		msg_in = msg_in.split('###')[0]		
 
 		sql_return = c.execute('select UID from USERS where Username = ?', (user_name,)).fetchone()
