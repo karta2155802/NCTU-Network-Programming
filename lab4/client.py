@@ -178,13 +178,12 @@ def CreatePost(cmd_list, msg_in):
 	print('msg_in post:{}',msg_in)
 	return msg_in
 
-def command(cmd, msg_in, s, target_bucket):
+def command(cmd_list, msg_in, s, target_bucket):
 	global t, consumer, uid, stop_flag
-	cmd_list = cmd.split()
 	if msg_in == 'Register successfully.\r\n':
 		bucket_name = '0516319-' + cmd_list[1] + '-0516319'		
 		s3.create_bucket(Bucket = bucket_name)
-	elif cmd.startswith('login') and msg_in.startswith('Welcome, '):
+	elif cmd_list[0] == 'login' and msg_in.startswith('Welcome, '):
 		bucket_name = msg_in.split('###')[1]
 		target_bucket = s3.Bucket(bucket_name)
 		user_name = msg_in.split('-')[1]
@@ -198,7 +197,7 @@ def command(cmd, msg_in, s, target_bucket):
 		t = threading.Thread(target = consume, args = (consumer,))
 		t.start()
 		stop_flag = False
-	elif cmd.startswith('logout') and msg_in.startswith('Bye'):
+	elif cmd_list[0] == 'logout' and msg_in.startswith('Bye'):
 		c.execute('delete from SUB_BOARD where Subscriber_id = ?', (uid,))
 		c.execute('delete from SUB_AUTHOR where Subscriber_id = ?', (uid,))
 		conn.commit()
@@ -206,23 +205,23 @@ def command(cmd, msg_in, s, target_bucket):
 		stop_flag = True		
 		consumer = None
 		uid = -1
-	elif cmd.startswith('create-post') and msg_in.startswith('Create post successfully'):
+	elif cmd_list[0] == 'create-post' and msg_in.startswith('Create post successfully'):
 		msg_in = CreatePost(cmd_list, msg_in)		
-	elif cmd.startswith('delete-post') and msg_in == 'Delete successfully.\r\n':
+	elif cmd_list[0] == 'delete-post' and msg_in == 'Delete successfully.\r\n':
 		DeletePost(cmd_list)
-	elif cmd.startswith('read') and not (msg_in == 'Post does not exist.\r\n' or msg_in == 'Usage: read <post-id> \r\n'):
+	elif cmd_list[0] == 'read' and not (msg_in == 'Post does not exist.\r\n' or msg_in == 'Usage: read <post-id> \r\n'):
 		msg_in = ReadPost(cmd_list, msg_in)
-	elif cmd.startswith('update-post') and '--content' in cmd and msg_in == 'Update successfully.\r\n':
+	elif cmd_list[0] == 'update-post' and msg_in == 'Update successfully.\r\n':
 		UpdatePost(cmd_list, msg_in)
-	elif cmd.startswith('comment') and msg_in.startswith('Comment successfully'):
+	elif cmd_list[0] == 'comment' and msg_in.startswith('Comment successfully'):
 		msg_in = Comment(cmd_list, msg_in)
-	elif cmd.startswith('mail-to') and msg_in.startswith('Sent successfully'):
+	elif cmd_list[0] == 'mail-to' and msg_in.startswith('Sent successfully'):
 		msg_in = SendMail(cmd_list, msg_in)	
-	elif cmd.startswith('retr-mail') and msg_in.endswith('0516319'):
+	elif cmd_list[0] == 'retr-mail' and msg_in.endswith('0516319'):
 		msg_in = RetrMail(msg_in)
-	elif cmd.startswith('delete-mail') and msg_in.startswith('Mail deleted'):
+	elif cmd_list[0] == 'delete-mail' and msg_in.startswith('Mail deleted'):
 		msg_in = DeleteMail(msg_in)	
-	elif cmd.startswith('subscribe') and msg_in.startswith('Subscribe successfully'):
+	elif cmd_list[0] == 'subscribe' and msg_in.startswith('Subscribe successfully'):
 		msg_in = Subscribe(msg_in)
 	else:
 		pass
@@ -242,9 +241,10 @@ c = conn.cursor()
 
 while True:
 	cmd = input("% ")
-	if not cmd or len(cmd.split()) == 0:
+	cmd_list = cmd.split()
+	if not cmd or len(cmd_list) == 0:
 		pass
-	elif cmd == "exit":
+	elif cmd_list[0] == "exit":
 		if uid != -1:
 			c.execute('delete from SUB_BOARD where Subscriber_id = ?', (uid,))
 			c.execute('delete from SUB_AUTHOR where Subscriber_id = ?', (uid,))
@@ -255,6 +255,6 @@ while True:
 	else:
 		s.send(cmd.encode('utf-8'))
 		msg_in = receive(8192);
-		msg_in, target_bucket = command(cmd, msg_in, s, target_bucket)
+		msg_in, target_bucket = command(cmd_list, msg_in, s, target_bucket)
 		if msg_in != "":
 			print(msg_in ,end = "")
