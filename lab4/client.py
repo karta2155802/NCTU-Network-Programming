@@ -187,12 +187,12 @@ def command(cmd, msg_in, s, target_bucket):
 		bucket_name = msg_in.split('###')[1]
 		target_bucket = s3.Bucket(bucket_name)
 		user_name = msg_in.split('-')[1]
-		#timestamp = str(time.time())
-		#user_name = user_name + '-' + timestamp
 		msg_in = msg_in.split('###')[0]		
 
 		sql_return = c.execute('select UID from USERS where Username = ?', (user_name,)).fetchone()
 		uid = sql_return[0]
+		timestamp = str(time.time())
+		user_name = user_name + '-' + timestamp
 		consumer = KafkaConsumer(group_id = user_name, bootstrap_servers=['127.0.0.1:9092'])
 		t = threading.Thread(target = consume, args = (consumer,))
 		t.start()
