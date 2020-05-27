@@ -20,7 +20,8 @@ def consume(consumer):
 	c = conn.cursor()
 	while True:		
 		msg = consumer.poll(timeout_ms = 500)
-		if msg:			
+		if msg:
+			time.sleep(0.3)			
 			for value in msg.values():
 				for record in value:
 					topic = record[0]
@@ -28,16 +29,15 @@ def consume(consumer):
 					sql_return_post = c.execute('select * from POST where ID = ?', (post_id,)).fetchone()
 					board = c.execute('select Name from BOARD where ID = ?',(sql_return_post[4],)).fetchone()[0]
 					author = c.execute('select Username from USERS where UID = ?', (sql_return_post[2],)).fetchone()[0]
-
-					if uid != sql_return_post[2]:
-						keyword_board = c.execute('select Keyword from Sub_BOARD where Board_name = ? and Subscriber_id = ?', (topic, uid))
-						for row in keyword_board:
-							if row[0] in sql_return_post[1]:
-								print('*[{}]{}-by {}*\r\n% '.format(board, sql_return_post[1], author), end = '')
-						keyword_author = c.execute('select Keyword from Sub_AUTHOR where Author_name = ? and Subscriber_id = ?', (topic, uid))
-						for row in keyword_author:
-							if row[0] in sql_return_post[1]:
-								print('*[{}]{}-by {}*\r\n% '.format(board, sql_return_post[1], author), end = '')
+					
+					keyword_board = c.execute('select Keyword from Sub_BOARD where Board_name = ? and Subscriber_id = ?', (topic, uid))
+					for row in keyword_board:
+						if row[0] in sql_return_post[1]:
+							print('*[{}]{}-by {}*\r\n% '.format(board, sql_return_post[1], author), end = '')
+					keyword_author = c.execute('select Keyword from Sub_AUTHOR where Author_name = ? and Subscriber_id = ?', (topic, uid))
+					for row in keyword_author:
+						if row[0] in sql_return_post[1]:
+							print('*[{}]{}-by {}*\r\n% '.format(board, sql_return_post[1], author), end = '')
 			
 		if stop_flag == True:
 			break 
@@ -187,8 +187,8 @@ def command(cmd, msg_in, s, target_bucket):
 		bucket_name = msg_in.split('###')[1]
 		target_bucket = s3.Bucket(bucket_name)
 		user_name = msg_in.split('-')[1]
-		timestamp = str(time.time())
-		user_name = user_name + '-' + timestamp
+		#timestamp = str(time.time())
+		#user_name = user_name + '-' + timestamp
 		msg_in = msg_in.split('###')[0]		
 
 		sql_return = c.execute('select UID from USERS where Username = ?', (user_name,)).fetchone()
