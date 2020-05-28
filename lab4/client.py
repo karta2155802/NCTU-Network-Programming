@@ -20,11 +20,11 @@ def consume(consumer):
 	c = conn.cursor()
 	while True:		
 		msg = consumer.poll(timeout_ms = 500) ## fetch in 0.5sec
-		print_flag = False	
 		if msg:
-			time.sleep(0.3)				
+			time.sleep(0.3)			
 			for value in msg.values():				
 				for record in value:
+					print_flag = False
 					topic = record[0] ## board or author
 					post_id = record[6].decode('utf-8')
 					sql_return_post = c.execute('select * from POST where ID = ?', (post_id,)).fetchone()
