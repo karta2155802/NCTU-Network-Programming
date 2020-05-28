@@ -23,7 +23,7 @@ def consume(consumer):
 		if msg:
 			time.sleep(0.3)			
 			for value in msg.values():
-				#print_flag = False
+				print_flag = False
 				for record in value:
 					topic = record[0]
 					post_id = record[6].decode('utf-8')
@@ -33,12 +33,14 @@ def consume(consumer):
 					
 					keyword_board = c.execute('select Keyword from Sub_BOARD where Board_name = ? and Subscriber_id = ?', (topic, uid))
 					for row in keyword_board:
-						if row[0] in sql_return_post[1]:
-							print('*[{}]{}-by {}*\r\n% '.format(board, sql_return_post[1], author), end = '')
+						if row[0] in sql_return_post[1] and !print_flag:
+							print('*[{}]{} - by {}*\r\n% '.format(board, sql_return_post[1], author), end = '')
+							print_flag = True
 					keyword_author = c.execute('select Keyword from Sub_AUTHOR where Author_name = ? and Subscriber_id = ?', (topic, uid))
-					for row in keyword_author:
+					for row in keyword_author and !print_flag:
 						if row[0] in sql_return_post[1]:
-							print('*[{}]{}-by {}*\r\n% '.format(board, sql_return_post[1], author), end = '')
+							print('*[{}]{} - by {}*\r\n% '.format(board, sql_return_post[1], author), end = '')
+							print_flag = True
 			
 		if stop_flag == True:
 			break 
@@ -82,7 +84,6 @@ def Subscribe(msg_in):
 	sql_return = c.execute('select Author_name from SUB_AUTHOR where Subscriber_id = ?', (uid,))
 	for row in sql_return:
 		topic.append(row[0])
-	print(topic)
 	consumer.subscribe(topics=(topic))
 	msg_in = msg_in_split[0]
 	return msg_in
