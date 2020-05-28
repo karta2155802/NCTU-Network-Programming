@@ -21,9 +21,9 @@ def consume(consumer):
 	while True:		
 		msg = consumer.poll(timeout_ms = 500) ## fetch in 0.5sec
 		if msg:
-			time.sleep(0.3)			
-			for value in msg.values():
-				print_flag = False
+			time.sleep(0.3)	
+			print_flag = False		
+			for value in msg.values():				
 				for record in value:
 					topic = record[0] ## board or author
 					post_id = record[6].decode('utf-8')
@@ -200,7 +200,7 @@ def command(cmd_list, msg_in, s, target_bucket):
 
 		sql_return = c.execute('select UID from USERS where Username = ?', (user_name,)).fetchone()
 		uid = sql_return[0]
-		#user_name = user_name + '-' + str(time.time())
+		user_name = user_name + '-' + str(time.time())
 		consumer = KafkaConsumer(group_id = user_name, bootstrap_servers=['127.0.0.1:9092'])
 		t = threading.Thread(target = consume, args = (consumer,))
 		t.start()
