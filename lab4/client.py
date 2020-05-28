@@ -20,9 +20,9 @@ def consume(consumer):
 	c = conn.cursor()
 	while True:		
 		msg = consumer.poll(timeout_ms = 500) ## fetch in 0.5sec
+		print_flag = False	
 		if msg:
-			time.sleep(0.3)	
-			print_flag = False		
+			time.sleep(0.3)				
 			for value in msg.values():				
 				for record in value:
 					topic = record[0] ## board or author
