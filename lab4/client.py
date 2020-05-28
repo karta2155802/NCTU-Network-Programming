@@ -82,8 +82,7 @@ def Subscribe(msg_in):
 	sql_return = c.execute('select Author_name from SUB_AUTHOR where Subscriber_id = ?', (uid,))
 	for row in sql_return:
 		topic = topic + row[0] + ','
-	topic.rstrip(',')
-	topic  = topic + msg_in_split[1]
+	topic = topic.rstrip(',')	
 	print(topic)
 	consumer.subscribe(topics=(topic))
 	msg_in = msg_in_split[0]
