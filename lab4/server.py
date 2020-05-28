@@ -226,7 +226,7 @@ def new_client(clientsocket, addr):
 
 			sql_author_name = c.execute('select Username from USERS where UID = ?', (uid,)).fetchone()
 			producer.send(data[0], str(sql_return[-1][0]).encode('utf-8'))
-			producer.send(sql_author_name[0], str(sql_return[-1][0]).encode('utf-8'))
+			producer.send(sql_author_name[0], str(sql_return[-1][0]).encode('utf-8')) # latest post 
 
 			print('Create post successfully')
 			msg_suc = 'Create post successfully.\r\n' + '###' + str(sql_return[-1][0])

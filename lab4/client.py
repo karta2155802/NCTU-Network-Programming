@@ -19,13 +19,13 @@ def consume(consumer):
 	conn = sqlite3.connect('Database.db')
 	c = conn.cursor()
 	while True:		
-		msg = consumer.poll(timeout_ms = 500)
+		msg = consumer.poll(timeout_ms = 500) ## fetch in 0.5sec
 		if msg:
 			time.sleep(0.3)			
 			for value in msg.values():
 				print_flag = False
 				for record in value:
-					topic = record[0]
+					topic = record[0] ## board or author
 					post_id = record[6].decode('utf-8')
 					sql_return_post = c.execute('select * from POST where ID = ?', (post_id,)).fetchone()
 					board = c.execute('select Name from BOARD where ID = ?',(sql_return_post[4],)).fetchone()[0]
@@ -33,7 +33,7 @@ def consume(consumer):
 					
 					keyword_board = c.execute('select Keyword from Sub_BOARD where Board_name = ? and Subscriber_id = ?', (topic, uid))
 					for row in keyword_board:
-						if row[0] in sql_return_post[1] and not print_flag:
+						if row[0] in sql_return_post[1] and not print_flag: # keyword in title or not
 							print('*[{}]{} - by {}*\r\n% '.format(board, sql_return_post[1], author), end = '')
 							print_flag = True
 					keyword_author = c.execute('select Keyword from Sub_AUTHOR where Author_name = ? and Subscriber_id = ?', (topic, uid))
@@ -200,7 +200,7 @@ def command(cmd_list, msg_in, s, target_bucket):
 
 		sql_return = c.execute('select UID from USERS where Username = ?', (user_name,)).fetchone()
 		uid = sql_return[0]
-		user_name = user_name + '-' + str(time.time())
+		#user_name = user_name + '-' + str(time.time())
 		consumer = KafkaConsumer(group_id = user_name, bootstrap_servers=['127.0.0.1:9092'])
 		t = threading.Thread(target = consume, args = (consumer,))
 		t.start()
