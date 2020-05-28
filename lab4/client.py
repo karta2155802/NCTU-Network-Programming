@@ -33,12 +33,12 @@ def consume(consumer):
 					
 					keyword_board = c.execute('select Keyword from Sub_BOARD where Board_name = ? and Subscriber_id = ?', (topic, uid))
 					for row in keyword_board:
-						if row[0] in sql_return_post[1] and !print_flag:
+						if row[0] in sql_return_post[1] and not print_flag:
 							print('*[{}]{} - by {}*\r\n% '.format(board, sql_return_post[1], author), end = '')
 							print_flag = True
 					keyword_author = c.execute('select Keyword from Sub_AUTHOR where Author_name = ? and Subscriber_id = ?', (topic, uid))
-					for row in keyword_author and !print_flag:
-						if row[0] in sql_return_post[1]:
+					for row in keyword_author:
+						if row[0] in sql_return_post[1] and not print_flag:
 							print('*[{}]{} - by {}*\r\n% '.format(board, sql_return_post[1], author), end = '')
 							print_flag = True
 			
