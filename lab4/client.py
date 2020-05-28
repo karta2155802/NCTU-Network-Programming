@@ -75,7 +75,15 @@ def receive(len):
 
 def Subscribe(msg_in):
 	msg_in_split = msg_in.split('###')
-	consumer.subscribe(topics=(msg_in_split[1]))
+	topic = ''
+	sql_return = c.execute('select Board_name from SUB_BOARD where Subscriber_id = ?', (uid,))
+	for row in sql_return:
+		topic = topic + row + ','
+	sql_return = c.execute('select Author_name from SUB_AUTHOR where Subscriber_id = ?', (uid,))
+	for row in sql_return:
+		topic = topic + row + ','
+	topic  = topic + msg_in_split[1]
+	consumer.subscribe(topics=(topic))
 	msg_in = msg_in_split[0]
 	return msg_in
 
@@ -118,7 +126,7 @@ def SendMail(cmd_list, msg_in):
 	return  msg_in_split[0]
 
 
-def Comment(cmd_list, msg_in, c):
+def Comment(cmd_list, msg_in):
 	msg_in_split = msg_in.split('###')
 	name = msg_in_split[2]
 	comment = ' '.join(cmd_list[2:len(cmd_list)])
@@ -191,8 +199,7 @@ def command(cmd_list, msg_in, s, target_bucket):
 
 		sql_return = c.execute('select UID from USERS where Username = ?', (user_name,)).fetchone()
 		uid = sql_return[0]
-		timestamp = str(time.time())
-		user_name = user_name + '-' + timestamp
+		user_name = user_name + '-' + str(time.time())
 		consumer = KafkaConsumer(group_id = user_name, bootstrap_servers=['127.0.0.1:9092'])
 		t = threading.Thread(target = consume, args = (consumer,))
 		t.start()
