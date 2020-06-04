@@ -504,7 +504,7 @@ serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 serversocket.bind((bind_ip, port))
 serversocket.listen(20)
 print('Waiting for connection...')
-producer = KafkaProducer(bootstrap_servers=['127.0.0.1:9092'])
+
 
 while True:
 	clientsocket, addr = serversocket.accept();
