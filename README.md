@@ -1,4 +1,4 @@
-# Network-Programming
-## Practice
+# Network Programming
+## Include
 * python socket
 * SQL
